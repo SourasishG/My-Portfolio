@@ -175,18 +175,24 @@ export function HeroBlob({
     );
 
     const defaultSize =
-      pointCount <= 15_000 ? 2.55 : pointCount <= 30_000 ? 2.05 : 1.72;
+      pointCount <= 15_000 ? 3.1 : pointCount <= 30_000 ? 2.45 : 2.1;
     const defaultOpacity =
-      pointCount <= 15_000 ? 0.72 : pointCount <= 30_000 ? 0.6 : 0.48;
+      pointCount <= 15_000 ? 0.88 : pointCount <= 30_000 ? 0.8 : 0.72;
 
     uniforms.uDisplacementAmp.value = labOverrides?.displacementAmp ?? 0.34;
     uniforms.uNoiseFreq.value = labOverrides?.noiseFreq ?? 1.45;
     uniforms.uCurlMix.value = labOverrides?.curlMix ?? 0.52;
-    uniforms.uBasePointSize.value = labOverrides?.basePointSize ?? defaultSize;
+    uniforms.uBasePointSize.value =
+      labOverrides?.basePointSize !== undefined
+        ? labOverrides.basePointSize * (pointCount <= 15_000 ? 1.45 : pointCount <= 30_000 ? 1.18 : 1.0)
+        : defaultSize;
     uniforms.uPointerStrength.value = reducedMotion
       ? 0
       : (labOverrides?.pointerStrength ?? 0.72);
-    uniforms.uOpacity.value = labOverrides?.opacity ?? defaultOpacity;
+    uniforms.uOpacity.value =
+      labOverrides?.opacity !== undefined
+        ? Math.min(1.0, labOverrides.opacity * (pointCount <= 15_000 ? 1.25 : 1.0))
+        : defaultOpacity;
 
     if (labOverrides?.colorCyan) {
       (uniforms.uColorCyan.value as THREE.Color).set(labOverrides.colorCyan);

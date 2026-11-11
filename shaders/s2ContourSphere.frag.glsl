@@ -32,12 +32,12 @@ void main() {
   vec3 V = normalize(vViewPos);
   float fresnel = pow(1.0 - max(0.0, dot(N, V)), 2.2);
 
-  // Subtle cut-seam highlight when split open (uSplitProgress > 0)
-  float seamLine = vSeamProximity * uSplitProgress;
-  vec3 seamColor = mix(uLineColor, uAccentRim, 0.35);
+  // Crisp razor cut-seam highlight when split open (uSplitProgress > 0)
+  float seamLine = smoothstep(0.35, 0.95, vSeamProximity) * uSplitProgress;
+  vec3 seamColor = mix(uLineColor, uAccentRim, 0.65);
 
-  vec3 col = mix(uBgColor, uLineColor, lineMask * (0.85 + 0.15 * fresnel));
-  col = mix(col, seamColor, seamLine * 0.85);
+  vec3 col = mix(uBgColor, uLineColor, lineMask * (0.88 + 0.12 * fresnel));
+  col = mix(col, seamColor, seamLine * 0.9);
 
   gl_FragColor = vec4(col, 1.0);
 }

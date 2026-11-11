@@ -17,13 +17,14 @@ varying float vSeamProximity;
 void main() {
   vec3 dir = normalize(position);
 
-  // Gentle organic height perturbation for contour elevation
-  float n = snoise(dir * (uNoiseScale * 0.75) + vec3(0.0, uTime * 0.06, uTime * 0.04));
-  vec3 basePos = position + dir * (n * uDisplacementAmp);
-
-  // Angled split plane (reference 5 diagonal split aesthetic)
+  // Gentle organic height perturbation (tapered smoothly toward cut seam when split)
   vec3 splitAxis = normalize(vec3(0.32, 0.92, 0.18));
   float sideDist = dot(dir, splitAxis);
+  float seamDamp = mix(1.0, smoothstep(0.0, 0.12, abs(sideDist)), uSplitProgress);
+
+  float n = snoise(dir * (uNoiseScale * 0.75) + vec3(0.0, uTime * 0.06, uTime * 0.04));
+  vec3 basePos = position + dir * (n * uDisplacementAmp * seamDamp);
+
   // Use precomputed per-triangle centroid side when present so split gap stays razor-clean
   float side = abs(aSplitSide) > 0.5 ? aSplitSide : (sideDist >= 0.0 ? 1.0 : -1.0);
 
@@ -38,5 +39,5 @@ void main() {
   vNormal = normalize(normalMatrix * normal);
   vViewPos = -mvPos.xyz;
   vSplitSide = side;
-  vSeamProximity = 1.0 - smoothstep(0.0, 0.09, abs(sideDist));
+  vSeamProximity = 1.0 - smoothstep(0.0, 0.022, abs(sideDist));
 }

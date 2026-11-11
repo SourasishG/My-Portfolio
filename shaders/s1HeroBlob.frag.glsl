@@ -16,23 +16,25 @@ void main() {
   // Discard corners outside circular point radius
   if (dist > 0.5) discard;
 
-  // Soft luminous core falloff
-  float alpha = smoothstep(0.5, 0.08, dist);
+  // Soft luminous core falloff with vibrant center pinpoint
+  float alpha = smoothstep(0.5, 0.04, dist);
+  float coreBoost = smoothstep(0.28, 0.0, dist) * 0.45;
 
-  // Mix $cyan (#4DA8FF) -> $violet (#B388F5) by noise displacement + Fresnel rim
-  float gradientMix = clamp(vDisplacement * 0.65 + vRim * 0.45, 0.0, 1.0);
+  // Mix $cyan (#4DA8FF) -> $violet (#B388F5) across displacement waves + Fresnel rim
+  float gradientMix = smoothstep(0.16, 0.88, vDisplacement * 0.52 + vRim * 0.48);
   vec3 baseColor = mix(uColorCyan, uColorViolet, gradientMix);
 
-  // Bright cyan-white highlight on displaced outer crests
-  float peak = smoothstep(0.72, 0.96, vDisplacement) * 0.35;
-  baseColor = mix(baseColor, vec3(0.92, 0.96, 1.0), peak);
+  // Luminous cyan-white glint on displaced outer wave crests
+  float peak = smoothstep(0.62, 0.94, vDisplacement) * 0.52;
+  baseColor = mix(baseColor, vec3(0.75, 0.93, 1.0), peak);
+  baseColor *= (1.15 + coreBoost);
 
   // Morph toward clean white contour tint as uScroll -> 1
   vec3 finalColor = mix(baseColor, uColorContour, vContourFactor * 0.85 + uScroll * 0.25);
 
-  // Dim rear hemisphere slightly so front topology reads cleanly
-  float depthAtten = mix(1.0, 0.26, vDepth);
-  float finalAlpha = alpha * depthAtten * uOpacity * mix(1.0, 0.45 + vContourFactor * 0.55, uScroll);
+  // Dim rear hemisphere moderately while keeping front wave crests luminous
+  float depthAtten = mix(1.0, 0.32, vDepth);
+  float finalAlpha = clamp((alpha + coreBoost * 0.35) * depthAtten * uOpacity * mix(1.0, 0.5 + vContourFactor * 0.55, uScroll), 0.0, 1.0);
 
   gl_FragColor = vec4(finalColor, finalAlpha);
 }
