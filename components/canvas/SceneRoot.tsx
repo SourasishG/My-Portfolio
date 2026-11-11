@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { Canvas, useThree } from "@react-three/fiber";
 import { CanvasErrorBoundary } from "@/components/canvas/CanvasErrorBoundary";
 import { GrainOverlay } from "@/components/canvas/GrainOverlay";

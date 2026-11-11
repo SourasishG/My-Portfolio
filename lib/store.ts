@@ -22,6 +22,7 @@ interface SceneState {
   activeSection: SectionId;
   gpuTier: GpuTierLevel;
   webglFailed: boolean;
+  useStaticFallback: boolean;
   preloaderDone: boolean;
 
   setScrollState: (scrollY: number, scrollProgress: number, velocity: number) => void;
@@ -30,6 +31,7 @@ interface SceneState {
   setActiveSection: (section: SectionId) => void;
   setGpuTier: (tier: GpuTierLevel) => void;
   setWebglFailed: (failed: boolean) => void;
+  setUseStaticFallback: (fallback: boolean) => void;
   setPreloaderDone: (done: boolean) => void;
 }
 
@@ -42,6 +44,7 @@ export const useSceneStore = create<SceneState>((set, get) => ({
   activeSection: "hero",
   gpuTier: "mid",
   webglFailed: false,
+  useStaticFallback: false,
   preloaderDone: false,
 
   setScrollState: (scrollY, scrollProgress, velocity) => {
@@ -76,6 +79,12 @@ export const useSceneStore = create<SceneState>((set, get) => ({
   setWebglFailed: (webglFailed) => {
     if (get().webglFailed !== webglFailed) {
       set({ webglFailed });
+    }
+  },
+
+  setUseStaticFallback: (useStaticFallback) => {
+    if (get().useStaticFallback !== useStaticFallback) {
+      set({ useStaticFallback });
     }
   },
 
