@@ -21,6 +21,7 @@ interface SceneState {
   heroMorph: number; // 0 (S1 hero point cloud) -> 1 (S2 contour morph)
   activeSection: SectionId;
   gpuTier: GpuTierLevel;
+  webglFailed: boolean;
   preloaderDone: boolean;
 
   setScrollState: (scrollY: number, scrollProgress: number, velocity: number) => void;
@@ -28,6 +29,7 @@ interface SceneState {
   setHeroMorph: (morph: number) => void;
   setActiveSection: (section: SectionId) => void;
   setGpuTier: (tier: GpuTierLevel) => void;
+  setWebglFailed: (failed: boolean) => void;
   setPreloaderDone: (done: boolean) => void;
 }
 
@@ -39,6 +41,7 @@ export const useSceneStore = create<SceneState>((set, get) => ({
   heroMorph: 0,
   activeSection: "hero",
   gpuTier: "mid",
+  webglFailed: false,
   preloaderDone: false,
 
   setScrollState: (scrollY, scrollProgress, velocity) => {
@@ -67,6 +70,12 @@ export const useSceneStore = create<SceneState>((set, get) => ({
   setGpuTier: (gpuTier) => {
     if (get().gpuTier !== gpuTier) {
       set({ gpuTier });
+    }
+  },
+
+  setWebglFailed: (webglFailed) => {
+    if (get().webglFailed !== webglFailed) {
+      set({ webglFailed });
     }
   },
 

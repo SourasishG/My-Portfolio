@@ -1,0 +1,43 @@
+@use "abstracts/tokens" as *;
+@use "abstracts/mixins" as *;
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: $z-preloader;
+  background-color: $black;
+  display: grid;
+  place-items: center;
+  clip-path: inset(0 0 0 0);
+  cursor: pointer;
+}
+
+.inner {
+  display: grid;
+  justify-items: center;
+  gap: $space-5;
+}
+
+.markWrap {
+  width: 140px;
+  height: 140px;
+}
+
+.meta {
+  display: grid;
+  justify-items: center;
+  gap: $space-2;
+}
+
+.brand {
+  @include hud-label;
+  color: $white;
+  letter-spacing: 0.16em;
+}
+
+.hint {
+  font-family: $font-mono;
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  color: $muted;
+}
