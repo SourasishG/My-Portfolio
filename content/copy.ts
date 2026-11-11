@@ -53,3 +53,18 @@ export const ABOUT_COPY = {
     },
   ],
 } as const;
+
+export const PROJECTS_COPY = {
+  sectionIndex: "03",
+  sectionTag: "[03] // SELECTED ENGINEERING",
+  subTag: "PINNED SHOWCASE & CASE STUDIES",
+  heading: "Systems engineered from architecture to UI.",
+  leadCopy:
+    "Two deep-dive systems built end-to-end—an isolated browser audio engine with race-free API search, and a full-stack workplace platform wired to PostgreSQL and Gemini AI—alongside a compact archive of additional repositories.",
+  shaderHintDesktop: "S3 // HALFTONE OPTICAL REVEAL · MOVE POINTER TO INSPECT FULL-COLOR UI",
+  shaderHintStatic: "FULL-COLOR INTERFACE CAPTURE · CLICK SCREENS TO INSPECT MODULES",
+  moreWorkTag: "03.2 // ADDITIONAL REPOSITORIES",
+  moreWorkHeading: "More engineering work",
+  moreWorkNote:
+    "Focused active index verified directly from public repositories — additional projects will be added over time.",
+} as const;

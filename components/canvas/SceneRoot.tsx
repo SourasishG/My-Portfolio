@@ -7,6 +7,7 @@ import { CanvasErrorBoundary } from "@/components/canvas/CanvasErrorBoundary";
 import { ContourSphere } from "@/components/canvas/ContourSphere";
 import { GrainOverlay } from "@/components/canvas/GrainOverlay";
 import { HeroBlob } from "@/components/canvas/HeroBlob";
+import { ProjectReveal } from "@/components/canvas/ProjectReveal";
 import { useGpuTier } from "@/hooks/useGpuTier";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
@@ -97,9 +98,11 @@ export function SceneRoot() {
     return null;
   }
 
-  const showHeroBlob = activeSection === "hero";
-  const showAboutSphere = activeSection === "about";
-  const canvasBackdrop = activeSection === "hero" ? "#000000" : "#07080B";
+  const isHomeRoute = pathname === "/";
+  const showHeroBlob = isHomeRoute && activeSection === "hero";
+  const showAboutSphere = isHomeRoute && activeSection === "about";
+  const showProjectReveal = isHomeRoute && activeSection === "projects" && isDesktop;
+  const canvasBackdrop = isHomeRoute && activeSection === "hero" ? "#000000" : "#07080B";
 
   return (
     <div
@@ -169,6 +172,13 @@ export function SceneRoot() {
             reducedMotion={reducedMotion}
             visible={showAboutSphere}
             viewportSelector="#about-s2-aperture"
+          />
+
+          {/* S3 — Halftone -> True-Color Optical Reveal synced to Section 03 stage (desktop) */}
+          <ProjectReveal
+            visible={showProjectReveal}
+            reducedMotion={reducedMotion}
+            viewportSelector="#projects-s3-stage"
           />
 
           {/* S8 — Subtle Global Grain & Vignette (disabled on low GPU / muted on $paper) */}

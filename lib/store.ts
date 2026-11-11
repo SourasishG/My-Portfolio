@@ -20,6 +20,11 @@ interface SceneState {
   pointer: { x: number; y: number }; // Normalized -1..1 viewport coordinates
   heroMorph: number; // 0 (S1 hero point cloud) -> 1 (S2 contour morph)
   aboutSplit: number; // 0..1 circular cross-section split inside Section 02
+  activeProjectVisualSrc: string;
+  activeProjectVisualSize: { width: number; height: number };
+  projectUV: { x: number; y: number }; // Normalized [0..1] pointer inside #projects-s3-stage
+  projectHover: number; // 0 resting halftone -> 1 interactive lens -> 2 full-color lock
+  projectShaderReady: boolean;
   activeSection: SectionId;
   gpuTier: GpuTierLevel;
   webglFailed: boolean;
@@ -30,6 +35,9 @@ interface SceneState {
   setPointer: (x: number, y: number) => void;
   setHeroMorph: (morph: number) => void;
   setAboutSplit: (split: number) => void;
+  setProjectVisual: (src: string, width: number, height: number) => void;
+  setProjectPointer: (x: number, y: number, hover: number) => void;
+  setProjectShaderReady: (ready: boolean) => void;
   setActiveSection: (section: SectionId) => void;
   setGpuTier: (tier: GpuTierLevel) => void;
   setWebglFailed: (failed: boolean) => void;
@@ -44,6 +52,11 @@ export const useSceneStore = create<SceneState>((set, get) => ({
   pointer: { x: 0, y: 0 },
   heroMorph: 0,
   aboutSplit: 0,
+  activeProjectVisualSrc: "/images/projects/muzo/screenshot-01.jpg",
+  activeProjectVisualSize: { width: 917, height: 670 },
+  projectUV: { x: 0.5, y: 0.5 },
+  projectHover: 0,
+  projectShaderReady: false,
   activeSection: "hero",
   gpuTier: "mid",
   webglFailed: false,
@@ -69,6 +82,26 @@ export const useSceneStore = create<SceneState>((set, get) => ({
 
   setAboutSplit: (split) => {
     get().aboutSplit = split;
+  },
+
+  setProjectVisual: (src, width, height) => {
+    const state = get();
+    state.activeProjectVisualSrc = src;
+    state.activeProjectVisualSize.width = width;
+    state.activeProjectVisualSize.height = height;
+  },
+
+  setProjectPointer: (x, y, hover) => {
+    const state = get();
+    state.projectUV.x = x;
+    state.projectUV.y = y;
+    state.projectHover = hover;
+  },
+
+  setProjectShaderReady: (projectShaderReady) => {
+    if (get().projectShaderReady !== projectShaderReady) {
+      set({ projectShaderReady });
+    }
   },
 
   setActiveSection: (activeSection) => {

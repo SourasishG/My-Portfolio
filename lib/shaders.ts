@@ -3,6 +3,8 @@ import s1HeroBlobVertRaw from "@/shaders/s1HeroBlob.vert.glsl";
 import s1HeroBlobFragRaw from "@/shaders/s1HeroBlob.frag.glsl";
 import s2ContourSphereVertRaw from "@/shaders/s2ContourSphere.vert.glsl";
 import s2ContourSphereFragRaw from "@/shaders/s2ContourSphere.frag.glsl";
+import s3HalftoneRevealVertRaw from "@/shaders/s3HalftoneReveal.vert.glsl";
+import s3HalftoneRevealFragRaw from "@/shaders/s3HalftoneReveal.frag.glsl";
 import s8GrainVignetteVertRaw from "@/shaders/s8GrainVignette.vert.glsl";
 import s8GrainVignetteFragRaw from "@/shaders/s8GrainVignette.frag.glsl";
 
@@ -27,6 +29,11 @@ export const S1_HERO_BLOB_SHADERS = {
 export const S2_CONTOUR_SPHERE_SHADERS = {
   vertexShader: resolveShaderChunks(s2ContourSphereVertRaw),
   fragmentShader: resolveShaderChunks(s2ContourSphereFragRaw),
+} as const;
+
+export const S3_HALFTONE_REVEAL_SHADERS = {
+  vertexShader: resolveShaderChunks(s3HalftoneRevealVertRaw),
+  fragmentShader: resolveShaderChunks(s3HalftoneRevealFragRaw),
 } as const;
 
 export const S8_GRAIN_VIGNETTE_SHADERS = {
