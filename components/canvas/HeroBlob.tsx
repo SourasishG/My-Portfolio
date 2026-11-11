@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useFrame, useThree } from "@react-three/fiber";
 import { S1_HERO_BLOB_SHADERS } from "@/lib/shaders";
@@ -81,6 +81,24 @@ function buildFibonacciSphereGeometry(
   return geometry;
 }
 
+function createHeroInitialUniforms() {
+  return {
+    uTime: { value: 0 },
+    uPointer: { value: new THREE.Vector2(0, 0) },
+    uPointerStrength: { value: 0.72 },
+    uScroll: { value: 0 },
+    uDisplacementAmp: { value: 0.34 },
+    uNoiseFreq: { value: 1.45 },
+    uCurlMix: { value: 0.52 },
+    uBasePointSize: { value: 1.9 },
+    uPixelRatio: { value: 1 },
+    uColorCyan: { value: new THREE.Color("#4DA8FF") },
+    uColorViolet: { value: new THREE.Color("#B388F5") },
+    uColorContour: { value: new THREE.Color("#F3F5F9") },
+    uOpacity: { value: 0.56 },
+  };
+}
+
 /**
  * Shader S1 — Hero Point-Cloud Blob.
  * Renders a curl-displaced Fibonacci sphere morphing cyan (#4DA8FF) -> violet (#B388F5)
@@ -96,6 +114,7 @@ export function HeroBlob({
   labOverrides,
 }: HeroBlobProps) {
   const pointsRef = useRef<THREE.Points>(null);
+  const materialRef = useRef<THREE.ShaderMaterial>(null);
   const glPixelRatio = useThree((state) => state.gl.getPixelRatio());
   const smoothPointerRef = useRef(new THREE.Vector2(0, 0));
 
@@ -107,54 +126,25 @@ export function HeroBlob({
     [pointCount]
   );
 
-  // Use stable refs inside uniforms once created, updating values imperatively inside useFrame.
-  const material = useMemo(() => {
-    return new THREE.ShaderMaterial({
-      vertexShader: S1_HERO_BLOB_SHADERS.vertexShader,
-      fragmentShader: S1_HERO_BLOB_SHADERS.fragmentShader,
-      transparent: true,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending,
-      uniforms: {
-        uTime: { value: 0 },
-        uPointer: { value: new THREE.Vector2(0, 0) },
-        uPointerStrength: { value: 0.72 },
-        uScroll: { value: 0 },
-        uDisplacementAmp: { value: 0.34 },
-        uNoiseFreq: { value: 1.45 },
-        uCurlMix: { value: 0.52 },
-        uBasePointSize: { value: 1.9 },
-        uPixelRatio: { value: 1 },
-        uColorCyan: { value: new THREE.Color("#4DA8FF") },
-        uColorViolet: { value: new THREE.Color("#B388F5") },
-        uColorContour: { value: new THREE.Color("#F3F5F9") },
-        uOpacity: { value: 0.56 },
-      },
-    });
-  }, []);
+  const initialUniforms = useMemo(() => createHeroInitialUniforms(), []);
 
-  // Dispose dynamic GPU buffers on rebuild or unmount.
+  // Explicitly dispose rebuilt BufferGeometry whenever density tier swaps or on unmount.
   useEffect(() => {
     return () => {
       geometry.dispose();
     };
   }, [geometry]);
 
-  useEffect(() => {
-    return () => {
-      material.dispose();
-    };
-  }, [material]);
-
   useFrame((_, delta) => {
-    if (!visible) return;
+    const shaderMat = materialRef.current;
+    if (!visible || !shaderMat) return;
 
     const clampedDelta = Math.min(delta, 0.05);
     const storeState = useSceneStore.getState();
-    const uniforms = material.uniforms;
+    const uniforms = shaderMat.uniforms;
 
     if (!reducedMotion) {
-      uniforms.uTime.value += clampedDelta;
+      uniforms.uTime.value = (uniforms.uTime.value as number) + clampedDelta;
     }
 
     // Smooth transient pointer tracking (zero React re-renders).
@@ -184,16 +174,18 @@ export function HeroBlob({
       Math.min(1, clampedDelta * 10)
     );
 
-    // Apply either mobile-balanced defaults or live /lab Leva overrides.
-    const defaultSize = pointCount <= 15_000 ? 2.55 : pointCount <= 30_000 ? 2.05 : 1.72;
-    const defaultOpacity = pointCount <= 15_000 ? 0.72 : pointCount <= 30_000 ? 0.6 : 0.48;
+    const defaultSize =
+      pointCount <= 15_000 ? 2.55 : pointCount <= 30_000 ? 2.05 : 1.72;
+    const defaultOpacity =
+      pointCount <= 15_000 ? 0.72 : pointCount <= 30_000 ? 0.6 : 0.48;
 
     uniforms.uDisplacementAmp.value = labOverrides?.displacementAmp ?? 0.34;
     uniforms.uNoiseFreq.value = labOverrides?.noiseFreq ?? 1.45;
     uniforms.uCurlMix.value = labOverrides?.curlMix ?? 0.52;
     uniforms.uBasePointSize.value = labOverrides?.basePointSize ?? defaultSize;
-    uniforms.uPointerStrength.value =
-      reducedMotion ? 0 : labOverrides?.pointerStrength ?? 0.72;
+    uniforms.uPointerStrength.value = reducedMotion
+      ? 0
+      : (labOverrides?.pointerStrength ?? 0.72);
     uniforms.uOpacity.value = labOverrides?.opacity ?? defaultOpacity;
 
     if (labOverrides?.colorCyan) {
@@ -221,12 +213,21 @@ export function HeroBlob({
     <points
       ref={pointsRef}
       geometry={geometry}
-      material={material}
       position={position}
       scale={scale}
       visible={visible}
       frustumCulled={false}
-    />
+    >
+      <shaderMaterial
+        ref={materialRef}
+        vertexShader={S1_HERO_BLOB_SHADERS.vertexShader}
+        fragmentShader={S1_HERO_BLOB_SHADERS.fragmentShader}
+        uniforms={initialUniforms}
+        transparent
+        depthWrite={false}
+        blending={THREE.AdditiveBlending}
+      />
+    </points>
   );
 }
 

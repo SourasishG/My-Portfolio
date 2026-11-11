@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
   },
   sassOptions: {
-    includePaths: [path.join(process.cwd(), "styles")],
+    loadPaths: [path.join(process.cwd(), "styles")],
   },
   turbopack: {
     rules: {

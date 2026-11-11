@@ -1,6 +1,13 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import Link from "next/link";
 import { Canvas } from "@react-three/fiber";
 import { Leva, useControls } from "leva";
@@ -16,6 +23,7 @@ import {
   HeroBlobFallback,
 } from "@/components/canvas/HeroBlob";
 import { useGpuTier } from "@/hooks/useGpuTier";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { GpuTierLevel, useSceneStore } from "@/lib/store";
 import styles from "./lab.module.scss";
@@ -23,20 +31,79 @@ import styles from "./lab.module.scss";
 type LabSceneMode = "s1" | "s2" | "morph";
 type PresetTier = "desktop" | "mid" | "mobile";
 
+const emptySubscribe = () => () => {};
+
+function getUrlParam(name: string): string | null {
+  return new URLSearchParams(window.location.search).get(name);
+}
+
+function getInitialSceneMode(): LabSceneMode {
+  const qScene = getUrlParam("scene");
+  if (qScene === "s1" || qScene === "s2" || qScene === "morph") return qScene;
+  return "s1";
+}
+
+function getInitialPresetTier(): PresetTier {
+  const qPreset = getUrlParam("preset");
+  if (qPreset === "desktop" || qPreset === "mid" || qPreset === "mobile") {
+    return qPreset;
+  }
+  return window.innerWidth < 768 ? "mobile" : "desktop";
+}
+
+function getInitialFallback(): boolean {
+  const qFallback = getUrlParam("fallback");
+  return qFallback === "1" || qFallback === "true";
+}
+
+function getInitialNumberParam(name: string, fallback: number): number {
+  const raw = getUrlParam(name);
+  if (raw === null) return fallback;
+  const parsed = Number.parseFloat(raw);
+  return Number.isNaN(parsed) ? fallback : Math.min(1, Math.max(0, parsed));
+}
+
 export function ShaderLabClient() {
+  const isClient = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false
+  );
+
+  if (!isClient) {
+    return (
+      <main id="main-content" className={styles.labShell}>
+        <div className={styles.stageFrame} />
+      </main>
+    );
+  }
+
+  return <ShaderLabInteractive />;
+}
+
+function ShaderLabInteractive() {
   const gpuProfile = useGpuTier();
   const osReducedMotion = useReducedMotion();
+  const isNarrowViewport = useMediaQuery("(max-width: 767px)");
 
-  const [mounted, setMounted] = useState(false);
-  const [sceneMode, setSceneMode] = useState<LabSceneMode>("s1");
-  const [presetTier, setPresetTier] = useState<PresetTier>("desktop");
-  const [isNarrowViewport, setIsNarrowViewport] = useState(false);
-  const [forceFallback, setForceFallback] = useState(false);
+  const [sceneMode, setSceneMode] = useState<LabSceneMode>(getInitialSceneMode);
+  const [presetTier, setPresetTier] = useState<PresetTier>(getInitialPresetTier);
+  const [forceFallback, setForceFallback] = useState<boolean>(getInitialFallback);
   const [forceReducedMotion, setForceReducedMotion] = useState(false);
   const [contextLost, setContextLost] = useState(false);
 
   const canvasElementRef = useRef<HTMLCanvasElement | null>(null);
   const pointerReadoutRef = useRef<HTMLSpanElement | null>(null);
+
+  const initialScrollValue = useMemo(() => {
+    const fallbackScroll = getInitialSceneMode() === "morph" ? 0.65 : 0.0;
+    return getInitialNumberParam("scroll", fallbackScroll);
+  }, []);
+
+  const initialSplitValue = useMemo(
+    () => getInitialNumberParam("split", 0.0),
+    []
+  );
 
   const [s1Values, setS1Values] = useControls("S1 — Hero Point Cloud", () => ({
     displacementAmp: { value: 0.34, min: 0.0, max: 0.85, step: 0.01 },
@@ -44,7 +111,7 @@ export function ShaderLabClient() {
     curlMix: { value: 0.52, min: 0.0, max: 1.4, step: 0.02 },
     basePointSize: { value: 1.85, min: 0.8, max: 4.5, step: 0.05 },
     pointerStrength: { value: 0.78, min: 0.0, max: 1.8, step: 0.02 },
-    scrollMorph: { value: 0.0, min: 0.0, max: 1.0, step: 0.01 },
+    scrollMorph: { value: initialScrollValue, min: 0.0, max: 1.0, step: 0.01 },
     opacity: { value: 0.54, min: 0.15, max: 1.0, step: 0.02 },
     colorCyan: "#4DA8FF",
     colorViolet: "#B388F5",
@@ -55,63 +122,13 @@ export function ShaderLabClient() {
     displacementAmp: { value: 0.085, min: 0.0, max: 0.35, step: 0.005 },
     contourCount: { value: 14.0, min: 4.0, max: 32.0, step: 1.0 },
     lineWidth: { value: 0.055, min: 0.015, max: 0.18, step: 0.005 },
-    splitProgress: { value: 0.0, min: 0.0, max: 1.0, step: 0.01 },
+    splitProgress: { value: initialSplitValue, min: 0.0, max: 1.0, step: 0.01 },
     splitGap: { value: 0.36, min: 0.05, max: 0.75, step: 0.01 },
     lineColor: "#F3F5F9",
     bgColor: "#07080B",
     accentRim: "#FF5B1F",
   }));
 
-  // Apply URL parameters cleanly after mount (used both for sharing lab presets and verification)
-  useEffect(() => {
-    setMounted(true);
-    const updateViewport = () => setIsNarrowViewport(window.innerWidth < 768);
-    updateViewport();
-    window.addEventListener("resize", updateViewport);
-
-    const params = new URLSearchParams(window.location.search);
-    const qScene = params.get("scene");
-    if (qScene === "s1" || qScene === "s2" || qScene === "morph") {
-      setSceneMode(qScene);
-      if (qScene === "morph") {
-        setS1Values({ scrollMorph: 0.65 });
-      }
-    }
-
-    const qPreset = params.get("preset");
-    if (qPreset === "desktop" || qPreset === "mid" || qPreset === "mobile") {
-      setPresetTier(qPreset);
-    } else if (window.innerWidth < 768) {
-      setPresetTier("mobile");
-    }
-
-    const qFallback = params.get("fallback");
-    if (qFallback === "1" || qFallback === "true") {
-      setForceFallback(true);
-    }
-
-    const qSplit = params.get("split");
-    if (qSplit !== null) {
-      const parsed = Number.parseFloat(qSplit);
-      if (!Number.isNaN(parsed)) {
-        setS2Values({ splitProgress: Math.min(1, Math.max(0, parsed)) });
-      }
-    }
-
-    const qScroll = params.get("scroll");
-    if (qScroll !== null) {
-      const parsed = Number.parseFloat(qScroll);
-      if (!Number.isNaN(parsed)) {
-        setS1Values({ scrollMorph: Math.min(1, Math.max(0, parsed)) });
-      }
-    }
-
-    return () => {
-      window.removeEventListener("resize", updateViewport);
-    };
-  }, [setS1Values, setS2Values]);
-
-  // Clean up WebGL context-lost listeners on unmount
   useEffect(() => {
     const canvas = canvasElementRef.current;
     if (!canvas) return;
@@ -130,7 +147,7 @@ export function ShaderLabClient() {
       canvas.removeEventListener("webglcontextlost", handleLost);
       canvas.removeEventListener("webglcontextrestored", handleRestored);
     };
-  }, [mounted, forceFallback]);
+  }, [forceFallback]);
 
   const effectiveTier: GpuTierLevel =
     presetTier === "desktop" ? "high" : presetTier === "mid" ? "mid" : "low";
@@ -201,35 +218,31 @@ export function ShaderLabClient() {
 
   return (
     <main id="main-content" className={styles.labShell}>
-      {/* Leva dev tuning drawer (sandboxed inside /lab only) */}
-      {mounted && (
-        <div className={styles.levaWrapper}>
-          <Leva
-            collapsed={isNarrowViewport || isMobilePreset}
-            oneLineLabels={false}
-            titleBar={{ title: "SIGNAL // SHADER UNIFORMS", drag: true }}
-            theme={{
-              colors: {
-                elevation1: "#07080B",
-                elevation2: "#101218",
-                elevation3: "#191D26",
-                accent1: "#4DA8FF",
-                accent2: "#FF5B1F",
-                accent3: "#B388F5",
-                highlight1: "#8A90A0",
-                highlight2: "#F3F5F9",
-                highlight3: "#FFFFFF",
-              },
-              fonts: {
-                mono: "var(--font-geist-mono), monospace",
-                sans: "var(--font-geist-sans), sans-serif",
-              },
-            }}
-          />
-        </div>
-      )}
+      <div className={styles.levaWrapper}>
+        <Leva
+          collapsed={isNarrowViewport || isMobilePreset}
+          oneLineLabels={false}
+          titleBar={{ title: "SIGNAL // SHADER UNIFORMS", drag: true }}
+          theme={{
+            colors: {
+              elevation1: "#07080B",
+              elevation2: "#101218",
+              elevation3: "#191D26",
+              accent1: "#4DA8FF",
+              accent2: "#FF5B1F",
+              accent3: "#B388F5",
+              highlight1: "#8A90A0",
+              highlight2: "#F3F5F9",
+              highlight3: "#FFFFFF",
+            },
+            fonts: {
+              mono: "var(--font-geist-mono), monospace",
+              sans: "var(--font-geist-sans), sans-serif",
+            },
+          }}
+        />
+      </div>
 
-      {/* Top HUD Bar */}
       <header className={styles.topBar}>
         <div className={styles.brandGroup}>
           <Link href="/" className={styles.backLink}>
@@ -334,7 +347,6 @@ export function ShaderLabClient() {
         </nav>
       </header>
 
-      {/* Main WebGL / Fallback Stage */}
       <section
         className={`${styles.stageFrame} ${
           isMobilePreset ? styles.mobilePreviewFrame : ""
@@ -348,7 +360,7 @@ export function ShaderLabClient() {
         <div className={styles.stageCornerBL} aria-hidden="true" />
         <div className={styles.stageCornerBR} aria-hidden="true" />
 
-        {mounted && !showFallback ? (
+        {!showFallback ? (
           <CanvasErrorBoundary fallback={fallbackNode}>
             <Canvas
               camera={{ position: [0, 0, isMobilePreset ? 5.2 : 4.2], fov: 42 }}
@@ -434,7 +446,10 @@ export function ShaderLabClient() {
                       basePointSize: s1Values.basePointSize,
                       pointerStrength: s1Values.pointerStrength,
                       scroll: s1Values.scrollMorph,
-                      opacity: Math.max(0.12, s1Values.opacity * (1 - s1Values.scrollMorph * 0.45)),
+                      opacity: Math.max(
+                        0.12,
+                        s1Values.opacity * (1 - s1Values.scrollMorph * 0.45)
+                      ),
                       colorCyan: s1Values.colorCyan,
                       colorViolet: s1Values.colorViolet,
                     }}
@@ -447,7 +462,6 @@ export function ShaderLabClient() {
           fallbackNode
         )}
 
-        {/* Bottom-left diagnostic & plain-language readout */}
         <aside className={styles.infoOverlay} aria-label="Active shader summary">
           <div className={styles.infoHeader}>
             <span className={styles.shaderCode}>{activeInfo.code}</span>

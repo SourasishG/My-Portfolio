@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { S2_CONTOUR_SPHERE_SHADERS } from "@/lib/shaders";
@@ -71,6 +71,21 @@ function buildSplitAwareContourSphereGeometry(
   return nonIndexed;
 }
 
+function createContourInitialUniforms() {
+  return {
+    uTime: { value: 0 },
+    uNoiseScale: { value: 2.15 },
+    uDisplacementAmp: { value: 0.085 },
+    uContourCount: { value: 14.0 },
+    uLineWidth: { value: 0.055 },
+    uSplitProgress: { value: 0.0 },
+    uSplitGap: { value: 0.36 },
+    uLineColor: { value: new THREE.Color("#F3F5F9") },
+    uBgColor: { value: new THREE.Color("#07080B") },
+    uAccentRim: { value: new THREE.Color("#FF5B1F") },
+  };
+}
+
 /**
  * Shader S2 — Topographic Contour Sphere.
  * Procedural monochrome contour isolines computed in the fragment shader via `fwidth()`
@@ -86,6 +101,7 @@ export function ContourSphere({
   labOverrides,
 }: ContourSphereProps) {
   const meshRef = useRef<THREE.Mesh>(null);
+  const materialRef = useRef<THREE.ShaderMaterial>(null);
   const detail = isMobile || tier === "low" ? 4 : 5;
 
   const geometry = useMemo(
@@ -93,25 +109,7 @@ export function ContourSphere({
     [detail]
   );
 
-  const material = useMemo(() => {
-    return new THREE.ShaderMaterial({
-      vertexShader: S2_CONTOUR_SPHERE_SHADERS.vertexShader,
-      fragmentShader: S2_CONTOUR_SPHERE_SHADERS.fragmentShader,
-      side: THREE.DoubleSide,
-      uniforms: {
-        uTime: { value: 0 },
-        uNoiseScale: { value: 2.15 },
-        uDisplacementAmp: { value: 0.085 },
-        uContourCount: { value: 14.0 },
-        uLineWidth: { value: 0.055 },
-        uSplitProgress: { value: 0.0 },
-        uSplitGap: { value: 0.36 },
-        uLineColor: { value: new THREE.Color("#F3F5F9") },
-        uBgColor: { value: new THREE.Color("#07080B") },
-        uAccentRim: { value: new THREE.Color("#FF5B1F") },
-      },
-    });
-  }, []);
+  const initialUniforms = useMemo(() => createContourInitialUniforms(), []);
 
   useEffect(() => {
     return () => {
@@ -119,20 +117,16 @@ export function ContourSphere({
     };
   }, [geometry]);
 
-  useEffect(() => {
-    return () => {
-      material.dispose();
-    };
-  }, [material]);
-
   useFrame((_, delta) => {
-    if (!visible) return;
+    const shaderMat = materialRef.current;
+    if (!visible || !shaderMat) return;
+
     const clampedDelta = Math.min(delta, 0.05);
-    const uniforms = material.uniforms;
+    const uniforms = shaderMat.uniforms;
     const storeState = useSceneStore.getState();
 
     if (!reducedMotion) {
-      uniforms.uTime.value += clampedDelta;
+      uniforms.uTime.value = (uniforms.uTime.value as number) + clampedDelta;
     }
 
     uniforms.uNoiseScale.value = labOverrides?.noiseScale ?? 2.15;
@@ -174,11 +168,18 @@ export function ContourSphere({
     <mesh
       ref={meshRef}
       geometry={geometry}
-      material={material}
       position={position}
       scale={scale}
       visible={visible}
-    />
+    >
+      <shaderMaterial
+        ref={materialRef}
+        vertexShader={S2_CONTOUR_SPHERE_SHADERS.vertexShader}
+        fragmentShader={S2_CONTOUR_SPHERE_SHADERS.fragmentShader}
+        uniforms={initialUniforms}
+        side={THREE.DoubleSide}
+      />
+    </mesh>
   );
 }
 
@@ -226,25 +227,129 @@ export function ContourSphereFallback({
           clipPath="url(#s2UpperClip)"
           transform={split ? "translate(-10,-16)" : undefined}
         >
-          <circle cx="210" cy="210" r="148" fill="#07080B" stroke="#F3F5F9" strokeWidth="1.2" />
-          <ellipse cx="210" cy="186" rx="136" ry="52" fill="none" stroke="#F3F5F9" strokeOpacity="0.85" strokeWidth="1.15" />
-          <ellipse cx="210" cy="156" rx="116" ry="38" fill="none" stroke="#F3F5F9" strokeOpacity="0.72" strokeWidth="1.1" />
-          <ellipse cx="210" cy="128" rx="88" ry="26" fill="none" stroke="#F3F5F9" strokeOpacity="0.62" strokeWidth="1.05" />
-          <ellipse cx="210" cy="102" rx="54" ry="15" fill="none" stroke="#F3F5F9" strokeOpacity="0.55" strokeWidth="1" />
-          <path d="M68 205 C 128 164, 240 240, 352 192" fill="none" stroke="#F3F5F9" strokeOpacity="0.8" strokeWidth="1.2" />
-          <path d="M88 150 C 165 112, 260 176, 336 140" fill="none" stroke="#FF5B1F" strokeOpacity={split ? "0.78" : "0.28"} strokeWidth="1.2" />
+          <circle
+            cx="210"
+            cy="210"
+            r="148"
+            fill="#07080B"
+            stroke="#F3F5F9"
+            strokeWidth="1.2"
+          />
+          <ellipse
+            cx="210"
+            cy="186"
+            rx="136"
+            ry="52"
+            fill="none"
+            stroke="#F3F5F9"
+            strokeOpacity="0.85"
+            strokeWidth="1.15"
+          />
+          <ellipse
+            cx="210"
+            cy="156"
+            rx="116"
+            ry="38"
+            fill="none"
+            stroke="#F3F5F9"
+            strokeOpacity="0.72"
+            strokeWidth="1.1"
+          />
+          <ellipse
+            cx="210"
+            cy="128"
+            rx="88"
+            ry="26"
+            fill="none"
+            stroke="#F3F5F9"
+            strokeOpacity="0.62"
+            strokeWidth="1.05"
+          />
+          <ellipse
+            cx="210"
+            cy="102"
+            rx="54"
+            ry="15"
+            fill="none"
+            stroke="#F3F5F9"
+            strokeOpacity="0.55"
+            strokeWidth="1"
+          />
+          <path
+            d="M68 205 C 128 164, 240 240, 352 192"
+            fill="none"
+            stroke="#F3F5F9"
+            strokeOpacity="0.8"
+            strokeWidth="1.2"
+          />
+          <path
+            d="M88 150 C 165 112, 260 176, 336 140"
+            fill="none"
+            stroke="#FF5B1F"
+            strokeOpacity={split ? "0.78" : "0.28"}
+            strokeWidth="1.2"
+          />
         </g>
 
         <g
           clipPath="url(#s2LowerClip)"
           transform={split ? "translate(10,16)" : undefined}
         >
-          <circle cx="210" cy="210" r="148" fill="#07080B" stroke="#F3F5F9" strokeWidth="1.2" />
-          <ellipse cx="210" cy="236" rx="138" ry="52" fill="none" stroke="#F3F5F9" strokeOpacity="0.85" strokeWidth="1.15" />
-          <ellipse cx="210" cy="268" rx="112" ry="36" fill="none" stroke="#F3F5F9" strokeOpacity="0.72" strokeWidth="1.1" />
-          <ellipse cx="210" cy="296" rx="82" ry="23" fill="none" stroke="#F3F5F9" strokeOpacity="0.62" strokeWidth="1.05" />
-          <ellipse cx="210" cy="322" rx="46" ry="13" fill="none" stroke="#F3F5F9" strokeOpacity="0.55" strokeWidth="1" />
-          <path d="M74 238 C 154 275, 258 196, 348 242" fill="none" stroke="#FF5B1F" strokeOpacity={split ? "0.85" : "0.28"} strokeWidth="1.2" />
+          <circle
+            cx="210"
+            cy="210"
+            r="148"
+            fill="#07080B"
+            stroke="#F3F5F9"
+            strokeWidth="1.2"
+          />
+          <ellipse
+            cx="210"
+            cy="236"
+            rx="138"
+            ry="52"
+            fill="none"
+            stroke="#F3F5F9"
+            strokeOpacity="0.85"
+            strokeWidth="1.15"
+          />
+          <ellipse
+            cx="210"
+            cy="268"
+            rx="112"
+            ry="36"
+            fill="none"
+            stroke="#F3F5F9"
+            strokeOpacity="0.72"
+            strokeWidth="1.1"
+          />
+          <ellipse
+            cx="210"
+            cy="296"
+            rx="82"
+            ry="23"
+            fill="none"
+            stroke="#F3F5F9"
+            strokeOpacity="0.62"
+            strokeWidth="1.05"
+          />
+          <ellipse
+            cx="210"
+            cy="322"
+            rx="46"
+            ry="13"
+            fill="none"
+            stroke="#F3F5F9"
+            strokeOpacity="0.55"
+            strokeWidth="1"
+          />
+          <path
+            d="M74 238 C 154 275, 258 196, 348 242"
+            fill="none"
+            stroke="#FF5B1F"
+            strokeOpacity={split ? "0.85" : "0.28"}
+            strokeWidth="1.2"
+          />
         </g>
       </svg>
     </div>
