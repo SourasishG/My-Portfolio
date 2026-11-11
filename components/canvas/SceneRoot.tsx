@@ -8,6 +8,7 @@ import { ContourSphere } from "@/components/canvas/ContourSphere";
 import { GrainOverlay } from "@/components/canvas/GrainOverlay";
 import { HeroBlob } from "@/components/canvas/HeroBlob";
 import { ProjectReveal } from "@/components/canvas/ProjectReveal";
+import { ToolkitConstellation } from "@/components/canvas/ToolkitConstellation";
 import { useGpuTier } from "@/hooks/useGpuTier";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
@@ -102,6 +103,7 @@ export function SceneRoot() {
   const showHeroBlob = isHomeRoute && activeSection === "hero";
   const showAboutSphere = isHomeRoute && activeSection === "about";
   const showProjectReveal = isHomeRoute && activeSection === "projects" && isDesktop;
+  const showToolkitConstellation = isHomeRoute && activeSection === "toolkit";
   const canvasBackdrop = isHomeRoute && activeSection === "hero" ? "#000000" : "#07080B";
 
   return (
@@ -179,6 +181,14 @@ export function SceneRoot() {
             visible={showProjectReveal}
             reducedMotion={reducedMotion}
             viewportSelector="#projects-s3-stage"
+          />
+
+          {/* Section 04 Restrained Point Constellation */}
+          <ToolkitConstellation
+            tier={gpuProfile.tier}
+            isMobile={!isDesktop}
+            reducedMotion={reducedMotion}
+            visible={showToolkitConstellation}
           />
 
           {/* S8 — Subtle Global Grain & Vignette (disabled on low GPU / muted on $paper) */}
