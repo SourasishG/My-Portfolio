@@ -4,6 +4,8 @@ uniform float uDisplacementAmp;
 uniform float uSplitProgress;
 uniform float uSplitGap;
 
+attribute float aSplitSide;
+
 varying vec3 vObjectPos;
 varying vec3 vNormal;
 varying vec3 vViewPos;
@@ -22,9 +24,10 @@ void main() {
   // Angled split plane (reference 5 diagonal split aesthetic)
   vec3 splitAxis = normalize(vec3(0.32, 0.92, 0.18));
   float sideDist = dot(dir, splitAxis);
-  float side = sideDist >= 0.0 ? 1.0 : -1.0;
+  // Use precomputed per-triangle centroid side when present so split gap stays razor-clean
+  float side = abs(aSplitSide) > 0.5 ? aSplitSide : (sideDist >= 0.0 ? 1.0 : -1.0);
 
-  // Separate two halves along splitAxis and introduce slight opposing tilt
+  // Separate two halves along splitAxis
   vec3 offset = splitAxis * (side * uSplitGap * uSplitProgress);
   vec3 finalPos = basePos + offset;
 
@@ -35,5 +38,5 @@ void main() {
   vNormal = normalize(normalMatrix * normal);
   vViewPos = -mvPos.xyz;
   vSplitSide = side;
-  vSeamProximity = 1.0 - smoothstep(0.0, 0.08, abs(sideDist));
+  vSeamProximity = 1.0 - smoothstep(0.0, 0.09, abs(sideDist));
 }

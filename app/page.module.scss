@@ -1,0 +1,67 @@
+@use "abstracts/tokens" as *;
+@use "abstracts/mixins" as *;
+
+.stage {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: $space-6;
+  background-color: $black;
+}
+
+.panel {
+  width: min(100%, 42rem);
+  padding: $space-7;
+  background-color: $charcoal;
+  @include hairline-grid($line);
+  display: grid;
+  gap: $space-5;
+}
+
+.hud {
+  @include hud-label;
+  color: $cyan;
+}
+
+.title {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 0.96;
+  letter-spacing: -0.03em;
+  color: $white;
+}
+
+.copy {
+  color: $muted;
+  max-width: 54ch;
+
+  strong {
+    color: $white;
+    font-weight: 500;
+  }
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-3;
+}
+
+.primaryCta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: $space-3 $space-5;
+  background-color: $signal;
+  color: $black;
+  font-family: $font-mono;
+  font-size: $text-hud;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: transform 0.2s $ease-expo-out, background-color 0.2s ease;
+
+  &:hover {
+    background-color: $white;
+    transform: translateY(-1px);
+  }
+}

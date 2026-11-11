@@ -1,0 +1,271 @@
+@use "abstracts/tokens" as *;
+@use "abstracts/mixins" as *;
+
+.labShell {
+  position: relative;
+  min-height: 100dvh;
+  background-color: $black;
+  color: $white;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  overflow: hidden;
+}
+
+.levaWrapper {
+  position: fixed;
+  top: 4.75rem;
+  right: $space-4;
+  z-index: $z-nav;
+  max-width: min(320px, calc(100vw - 2rem));
+}
+
+.topBar {
+  position: relative;
+  z-index: $z-content;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-4;
+  padding: $space-3 $space-5;
+  background-color: rgba($ink, 0.9);
+  border-bottom: 1px solid $line;
+}
+
+.brandGroup {
+  display: flex;
+  align-items: center;
+  gap: $space-4;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  min-height: 40px;
+  padding: $space-2 $space-3;
+  @include hairline-grid($line);
+  font-family: $font-mono;
+  font-size: $text-hud;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: $muted;
+  transition: color 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    color: $white;
+    border-color: $line-strong;
+  }
+}
+
+.titleBlock {
+  display: grid;
+  gap: 2px;
+}
+
+.hudTag {
+  @include hud-label;
+  font-size: 0.6875rem;
+  color: $cyan;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.controlsStrip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-3;
+}
+
+.segmented {
+  display: inline-flex;
+  background-color: $charcoal;
+  @include hairline-grid($line);
+}
+
+.segBtn,
+.toggleBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  min-height: 36px;
+  padding: $space-2 $space-3;
+  font-family: $font-mono;
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: $muted;
+  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    color: $white;
+  }
+}
+
+.segBtn + .segBtn {
+  border-left: 1px solid $line;
+}
+
+.active {
+  background-color: rgba($cyan, 0.16);
+  color: $cyan;
+}
+
+.toggleBtn {
+  background-color: $charcoal;
+  @include hairline-grid($line);
+}
+
+.toggleSignal {
+  border-color: rgba($signal, 0.7);
+  background-color: rgba($signal, 0.14);
+  color: $signal;
+}
+
+.stageFrame {
+  position: relative;
+  width: 100%;
+  height: calc(100dvh - 76px);
+  min-height: 520px;
+  margin-inline: auto;
+  background: radial-gradient(circle at 50% 48%, #090c14 0%, $black 68%);
+  transition: width 0.3s $ease-expo-out;
+}
+
+.mobilePreviewFrame {
+  width: min(390px, 100%);
+  height: min(760px, calc(100dvh - 96px));
+  margin-top: $space-4;
+  @include hairline-grid($line-strong);
+}
+
+.stageCornerTL,
+.stageCornerTR,
+.stageCornerBL,
+.stageCornerBR {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.stageCornerTL {
+  top: $space-4;
+  left: $space-4;
+  border-top: 1px solid $line-strong;
+  border-left: 1px solid $line-strong;
+}
+
+.stageCornerTR {
+  top: $space-4;
+  right: $space-4;
+  border-top: 1px solid $line-strong;
+  border-right: 1px solid $line-strong;
+}
+
+.stageCornerBL {
+  bottom: $space-4;
+  left: $space-4;
+  border-bottom: 1px solid $line-strong;
+  border-left: 1px solid $line-strong;
+}
+
+.stageCornerBR {
+  bottom: $space-4;
+  right: $space-4;
+  border-bottom: 1px solid $line-strong;
+  border-right: 1px solid $line-strong;
+}
+
+.infoOverlay {
+  position: absolute;
+  left: $space-5;
+  bottom: $space-5;
+  z-index: 4;
+  width: min(30rem, calc(100% - 2.5rem));
+  padding: $space-4;
+  background-color: rgba($ink, 0.84);
+  backdrop-filter: blur(10px);
+  @include hairline-grid($line);
+  display: grid;
+  gap: $space-2;
+  pointer-events: none;
+}
+
+.infoHeader {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: $space-2;
+}
+
+.shaderCode {
+  @include hud-label;
+  color: $cyan;
+}
+
+.telemetry {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: $font-mono;
+  font-size: 0.6875rem;
+  color: $muted;
+}
+
+.infoBudget {
+  font-family: $font-mono;
+  font-size: 0.75rem;
+  color: $white;
+}
+
+.infoSummary {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: $muted;
+}
+
+.fallbackNote {
+  font-family: $font-mono;
+  font-size: 0.75rem;
+  color: $signal;
+}
+
+@media (max-width: $bp-md) {
+  .topBar {
+    padding: $space-3;
+    gap: $space-2;
+  }
+
+  .levaWrapper {
+    top: auto;
+    bottom: $space-3;
+    right: $space-3;
+    left: $space-3;
+    max-width: none;
+  }
+
+  .stageFrame {
+    height: calc(100dvh - 148px);
+  }
+
+  .infoOverlay {
+    left: $space-3;
+    right: $space-3;
+    bottom: 4.1rem;
+    top: auto;
+    width: auto;
+    padding: $space-3;
+  }
+
+  .infoSummary {
+    display: none;
+  }
+}
