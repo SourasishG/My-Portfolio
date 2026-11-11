@@ -1,0 +1,863 @@
+@use "abstracts/tokens" as *;
+@use "abstracts/mixins" as *;
+
+.journeySection {
+  position: relative;
+  padding-block: clamp(4.5rem, 10vh, 8.5rem);
+  border-top: 1px solid $line;
+  background-color: transparent;
+  overflow-x: clip;
+  scroll-margin-top: 80px;
+}
+
+.container {
+  @include container;
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: clamp(2.25rem, 4.5vw, 3.75rem);
+}
+
+// ---------------------------------------------------------------------------
+// Header Band
+// ---------------------------------------------------------------------------
+
+.headerBand {
+  display: grid;
+  gap: $space-3;
+}
+
+.headerMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-2 $space-4;
+}
+
+.hudTag {
+  @include hud-label;
+  color: $cyan;
+}
+
+.subTag {
+  @include hud-label;
+  color: $muted;
+}
+
+.hudLineSvg {
+  width: 100%;
+  height: 16px;
+  display: block;
+  overflow: visible;
+}
+
+.introRow {
+  display: grid;
+  gap: $space-3;
+
+  @include respond-up($bp-lg) {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    align-items: end;
+    gap: $space-6;
+  }
+}
+
+.heading {
+  font-size: clamp(2rem, 4.4vw, 3.65rem);
+  font-weight: 700;
+  line-height: 1.03;
+  letter-spacing: -0.032em;
+  color: $white;
+  max-width: 18ch;
+}
+
+.leadCopy {
+  font-size: $text-body;
+  line-height: 1.66;
+  color: $muted;
+  max-width: 58ch;
+}
+
+// ---------------------------------------------------------------------------
+// Sub-Band Shared Typography
+// ---------------------------------------------------------------------------
+
+.subBand {
+  display: grid;
+  gap: $space-5;
+}
+
+.subBandHeader {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.subBandTag {
+  @include hud-label;
+  color: $cyan;
+}
+
+.subHeading {
+  font-size: clamp(1.35rem, 2.4vw, 1.9rem);
+  font-weight: 650;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  color: $white;
+}
+
+// ---------------------------------------------------------------------------
+// Corner Brackets
+// ---------------------------------------------------------------------------
+
+.cornerTL,
+.cornerTR,
+.cornerBL,
+.cornerBR {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.cornerTL {
+  top: -1px;
+  left: -1px;
+  border-top: 1px solid rgba($cyan, 0.52);
+  border-left: 1px solid rgba($cyan, 0.52);
+}
+
+.cornerTR {
+  top: -1px;
+  right: -1px;
+  border-top: 1px solid rgba($cyan, 0.52);
+  border-right: 1px solid rgba($cyan, 0.52);
+}
+
+.cornerBL {
+  bottom: -1px;
+  left: -1px;
+  border-bottom: 1px solid rgba($cyan, 0.52);
+  border-left: 1px solid rgba($cyan, 0.52);
+}
+
+.cornerBR {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 1px solid rgba($cyan, 0.52);
+  border-right: 1px solid rgba($cyan, 0.52);
+}
+
+// ---------------------------------------------------------------------------
+// 05.1 Experience Spotlight + Vertical Chronological Spine
+// ---------------------------------------------------------------------------
+
+.experienceGrid {
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  align-items: start;
+
+  @include respond-up($bp-lg) {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  }
+}
+
+.spotlightCard {
+  position: relative;
+  background-color: rgba($charcoal, 0.9);
+  border: 1px solid $line;
+  padding: clamp(1.25rem, 2.5vw, 1.85rem);
+  display: grid;
+  gap: 0.95rem;
+  min-width: 0;
+
+  @include respond-up($bp-lg) {
+    position: sticky;
+    top: 88px;
+  }
+}
+
+.spotlightTop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.internBadge {
+  @include hud-label;
+  font-size: 0.68rem;
+  color: $signal;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.55rem;
+  border: 1px solid rgba($signal, 0.35);
+  background-color: rgba($signal, 0.08);
+}
+
+.periodTag {
+  @include hud-label;
+  font-size: 0.68rem;
+  color: $muted;
+}
+
+.spotlightRole {
+  font-size: clamp(1.35rem, 2.2vw, 1.7rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: $white;
+}
+
+.spotlightOrg {
+  font-family: $font-mono;
+  font-size: 0.82rem;
+  color: $cyan;
+}
+
+.spotlightProgram {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: $muted;
+
+  code {
+    font-family: $font-mono;
+    color: $white;
+    font-size: 0.82rem;
+    padding: 0.1rem 0.35rem;
+    background-color: rgba($white, 0.06);
+    border: 1px solid $line;
+  }
+}
+
+.responsibilityList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+  border-top: 1px solid $line;
+  padding-top: 0.9rem;
+}
+
+.responsibilityItem {
+  position: relative;
+  padding-left: 1rem;
+  font-size: 0.91rem;
+  line-height: 1.55;
+  color: rgba($white, 0.88);
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.58em;
+    width: 5px;
+    height: 1px;
+    background-color: $cyan;
+  }
+}
+
+// Timeline Spine Column
+.timelineWrap {
+  position: relative;
+  padding-left: clamp(1.4rem, 2.8vw, 2rem);
+  min-width: 0;
+}
+
+.spineRail {
+  position: absolute;
+  left: 7px;
+  top: 0.45rem;
+  bottom: 0.45rem;
+  width: 2px;
+  pointer-events: none;
+}
+
+.spineTrack {
+  position: absolute;
+  inset: 0;
+  background-color: rgba($white, 0.12);
+}
+
+.spineSvg {
+  position: absolute;
+  inset: 0;
+  width: 2px;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+.milestoneList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1.1rem;
+}
+
+.milestoneItem {
+  position: relative;
+  min-width: 0;
+}
+
+.nodeMarker {
+  position: absolute;
+  left: calc(-1 * clamp(1.4rem, 2.8vw, 2rem) + 1px);
+  top: 1.15rem;
+  width: 14px;
+  height: 14px;
+  background-color: $ink;
+  border: 1px solid rgba($cyan, 0.72);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.nodeCore {
+  width: 4px;
+  height: 4px;
+  background-color: $cyan;
+}
+
+.nodeMarkerActive {
+  border-color: $signal;
+
+  .nodeCore {
+    background-color: $signal;
+  }
+}
+
+.milestoneCard {
+  background-color: rgba($charcoal, 0.72);
+  border: 1px solid $line;
+  padding: clamp(1rem, 2.1vw, 1.35rem);
+  display: grid;
+  gap: 0.62rem;
+  min-width: 0;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+
+  &:hover {
+    border-color: rgba($cyan, 0.35);
+    background-color: rgba($charcoal, 0.92);
+  }
+}
+
+.milestoneCardFeatured {
+  border-color: rgba($signal, 0.32);
+  background-color: rgba($charcoal, 0.88);
+}
+
+.milestoneMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.45rem;
+}
+
+.milestoneIndex {
+  @include hud-label;
+  font-size: 0.68rem;
+  color: $cyan;
+}
+
+.milestonePeriod {
+  @include hud-label;
+  font-size: 0.68rem;
+  color: $muted;
+}
+
+.milestoneTitle {
+  font-size: 1.08rem;
+  font-weight: 650;
+  line-height: 1.25;
+  letter-spacing: -0.012em;
+  color: $white;
+}
+
+.milestoneOrg {
+  font-family: $font-mono;
+  font-size: 0.76rem;
+  color: $muted;
+}
+
+.milestoneSummary {
+  font-size: 0.92rem;
+  line-height: 1.56;
+  color: rgba($white, 0.84);
+}
+
+.milestoneHighlights {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.milestoneHighlightItem {
+  position: relative;
+  padding-left: 0.85rem;
+  font-size: 0.85rem;
+  line-height: 1.48;
+  color: $muted;
+
+  &::before {
+    content: ">";
+    position: absolute;
+    left: 0;
+    color: rgba($cyan, 0.75);
+    font-family: $font-mono;
+    font-size: 0.72rem;
+  }
+}
+
+.milestoneFooter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  padding-top: 0.35rem;
+}
+
+.milestoneLinks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.inlineLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: $font-mono;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: $cyan;
+  text-decoration: none;
+  min-height: 32px;
+
+  &:hover {
+    color: $white;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $cyan;
+    outline-offset: 2px;
+  }
+}
+
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.techChip {
+  font-family: $font-mono;
+  font-size: 0.68rem;
+  color: rgba($white, 0.86);
+  background-color: rgba($white, 0.04);
+  border: 1px solid $line;
+  padding: 0.22rem 0.5rem;
+  letter-spacing: 0.03em;
+}
+
+// ---------------------------------------------------------------------------
+// 05.2 Verified Certifications
+// ---------------------------------------------------------------------------
+
+.certSection {
+  display: grid;
+  gap: $space-4;
+  padding-top: $space-4;
+  border-top: 1px solid $line;
+}
+
+.certHeader {
+  display: grid;
+  gap: $space-3;
+
+  @include respond-up($bp-lg) {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: end;
+    gap: $space-6;
+  }
+}
+
+.certHint {
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: $muted;
+  max-width: 54ch;
+
+  @include respond-up($bp-lg) {
+    justify-self: end;
+    text-align: right;
+  }
+}
+
+.certList {
+  border-top: 1px solid $line;
+  border-bottom: 1px solid $line;
+  display: grid;
+}
+
+.certItem {
+  border-bottom: 1px solid $line;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.certTrigger {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.6rem 0.9rem;
+  padding: 1rem 0.5rem;
+  background: transparent;
+  border: none;
+  color: $white;
+  text-align: left;
+  cursor: pointer;
+  min-height: 54px;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: rgba($white, 0.03);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $cyan;
+    outline-offset: -2px;
+  }
+
+  @include respond-up($bp-lg) {
+    grid-template-columns: 44px minmax(0, 1.35fr) minmax(0, 0.9fr) 120px 150px 104px;
+    padding: 1.05rem 0.75rem;
+  }
+}
+
+.certIndex {
+  font-family: $font-mono;
+  font-size: 0.74rem;
+  color: $cyan;
+}
+
+.certTitle {
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: $white;
+  min-width: 0;
+}
+
+.certIssuer {
+  display: none;
+  font-family: $font-mono;
+  font-size: 0.74rem;
+  color: $muted;
+  min-width: 0;
+
+  @include respond-up($bp-lg) {
+    display: block;
+  }
+}
+
+.certDate {
+  display: none;
+  font-family: $font-mono;
+  font-size: 0.74rem;
+  color: $muted;
+
+  @include respond-up($bp-lg) {
+    display: block;
+  }
+}
+
+.certCredentialCode {
+  display: none;
+  font-family: $font-mono;
+  font-size: 0.72rem;
+  color: rgba($white, 0.78);
+  white-space: nowrap;
+
+  @include respond-up($bp-lg) {
+    display: block;
+  }
+}
+
+.certChevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.35rem;
+  font-family: $font-mono;
+  font-size: 0.7rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: $cyan;
+}
+
+.certPanelWrap {
+  overflow: hidden;
+  background-color: rgba($charcoal, 0.78);
+}
+
+.certPanelBody {
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+  border-top: 1px solid $line;
+  display: grid;
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+
+  @include respond-up($bp-md) {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    align-items: center;
+  }
+}
+
+.certDetailsCol {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.certMetaTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.certStatusBadge {
+  @include hud-label;
+  font-size: 0.68rem;
+  color: $cyan;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.38rem;
+  padding: 0.25rem 0.55rem;
+  border: 1px solid rgba($cyan, 0.35);
+  background-color: rgba($cyan, 0.08);
+}
+
+.certMobileMeta {
+  font-family: $font-mono;
+  font-size: 0.76rem;
+  color: rgba($white, 0.85);
+  overflow-wrap: anywhere;
+
+  code {
+    color: $cyan;
+  }
+
+  @include respond-up($bp-lg) {
+    display: none;
+  }
+}
+
+.certSubtitleNote {
+  font-size: 0.84rem;
+  font-family: $font-mono;
+  color: $muted;
+}
+
+.certVerifyNote {
+  font-size: 0.92rem;
+  line-height: 1.58;
+  color: rgba($white, 0.86);
+}
+
+.certActionRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+  padding-top: 0.2rem;
+}
+
+.verifyBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 40px;
+  padding: 0 0.95rem;
+  border: 1px solid $cyan;
+  background-color: rgba($cyan, 0.12);
+  color: $white;
+  font-family: $font-mono;
+  font-size: 0.74rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    background-color: rgba($signal, 0.16);
+    border-color: $signal;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $cyan;
+    outline-offset: 2px;
+  }
+}
+
+.needsInputPill {
+  @include hud-label;
+  font-size: 0.68rem;
+  color: $muted;
+  padding: 0.45rem 0.7rem;
+  border: 1px dashed rgba($white, 0.24);
+  background-color: rgba($ink, 0.55);
+}
+
+.certMediaCol {
+  min-width: 0;
+}
+
+.certScanFrame {
+  border: 1px solid $line-strong;
+  background-color: $ink;
+  padding: 0.45rem;
+}
+
+.certScanImg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.certPlaceholderBox {
+  border: 1px dashed rgba($cyan, 0.38);
+  background-color: rgba($ink, 0.72);
+  padding: 1.35rem 1.15rem;
+  display: grid;
+  gap: 0.5rem;
+  color: $cyan;
+}
+
+.placeholderTag {
+  @include hud-label;
+  font-size: 0.68rem;
+  color: $cyan;
+}
+
+.placeholderText {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: $muted;
+
+  code {
+    color: $white;
+    font-family: $font-mono;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// 05.3 Education Grid
+// ---------------------------------------------------------------------------
+
+.educationSection {
+  display: grid;
+  gap: $space-4;
+  padding-top: $space-4;
+  border-top: 1px solid $line;
+}
+
+.educationGrid {
+  display: grid;
+  gap: clamp(1rem, 2.2vw, 1.5rem);
+
+  @include respond-up($bp-md) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.educationCard {
+  position: relative;
+  background-color: rgba($charcoal, 0.86);
+  border: 1px solid $line;
+  padding: clamp(1.25rem, 2.4vw, 1.75rem);
+  display: grid;
+  gap: 0.72rem;
+  align-content: start;
+  min-width: 0;
+}
+
+.eduTop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.eduIndex {
+  @include hud-label;
+  font-size: 0.68rem;
+  color: $cyan;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.eduInstitution {
+  font-size: clamp(1.2rem, 1.9vw, 1.45rem);
+  font-weight: 700;
+  line-height: 1.18;
+  letter-spacing: -0.02em;
+  color: $white;
+}
+
+.eduProgram {
+  font-size: 0.98rem;
+  font-weight: 500;
+  color: rgba($white, 0.9);
+}
+
+.eduBoard {
+  font-family: $font-mono;
+  font-size: 0.75rem;
+  color: $muted;
+}
+
+.eduMetricsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding-block: 0.35rem;
+}
+
+.eduMetricBox {
+  border: 1px solid rgba($cyan, 0.32);
+  background-color: rgba($cyan, 0.06);
+  padding: 0.55rem 0.85rem;
+  display: grid;
+  gap: 0.15rem;
+}
+
+.eduMetricLabel {
+  @include hud-label;
+  font-size: 0.64rem;
+  color: $muted;
+}
+
+.eduMetricValue {
+  font-family: $font-mono;
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: $white;
+  letter-spacing: -0.02em;
+}

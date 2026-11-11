@@ -294,3 +294,26 @@ Presents technical skills cleanly grouped across 6 disciplined categories (**Pro
    **A:** Separating them cleanly into an explicit **"Currently exploring"** band—using distinct visual styling (`$violet` `#B388F5` + `EXPLORING` tags) and a short transparent engineering note—lets recruiters appreciate hands-on curiosity while keeping mastered fundamentals unmistakable.
 3. **Q:** *How does `ToolkitConstellation` shift between `$cyan` and `$violet` on chip hover without causing React re-renders across the `<Canvas>` tree?*  
    **A:** Hover handlers invoke `useSceneStore.getState().setToolkitVisual(accentMix, pulse)`, mutating scalar fields directly on the Zustand store without triggering component subscriptions. Inside `useFrame`, Three.js `THREE.MathUtils.lerp` glides `uAccentMix` and `uActivityBoost` smoothly toward the target floats.
+
+---
+
+## Module 13 — Section 05 Experience, Credentials & Education (`components/sections/Journey.tsx`, `content/timeline.ts`, `content/certifications.ts`)
+
+### What it does
+Structured career & academic record uniting:
+1. **Work Experience Spotlight & Chronological Spine (`05.1`):** Sticky highlight card for the remote **AWS DevOps Intern** tenure at **Employability.life** (`Nov 2025 – Jan 2026`, exact unexaggerated duties across AWS EC2, S3, and CI/CD fundamentals), paired beside a vertical chronological spine covering Office Aid, MUZO, the internship, B.Tech CSE at SNU (`2023–2027 · CGPA 8.08`), and CBSE Class XII (`80%`) / X (`86%`).
+2. **Verified Certifications Accordion (`05.2`):** Interactive `4 Credentials` ledger (`XPro27566969`, `03ISU86UC5K4`, `AZ1QO9FKWWB0`, `7QAB657M7FS4`) displaying supplied high-clarity scans via `next/image`, direct Coursera verification links, and honest `NEEDS INPUT` labels where a QR verification URL or optional scan image is not yet supplied.
+3. **Academic Foundations (`05.3`):** Dedicated recruiter-scannable cards for Sister Nivedita University and Aditya Academy Senior Secondary.
+
+### Architecture & Motion Choices
+1. **Sticky Desktop Spotlight + Scroll-Scrubbed SVG Spine:** Using `overflow-x: clip` (instead of `overflow-x: hidden`) on `.journeySection` preserves CSS `position: sticky; top: 88px` on the left internship card while scrolling beside the `timelineWrap` vertical SVG spine (`.journey-spine-line` scrubbed with GSAP `strokeDashoffset: 1 -> 0` and `vectorEffect="non-scaling-stroke"`).
+2. **Downstream `ScrollTrigger` Synchronization:** Because `#journey` mounts downstream of Section 03's desktop pinned showcase, `Projects.tsx`'s `refreshPriority: 1` + `ScrollTrigger.refresh()` ensures `#journey` triggers compute accurate offsets below the `+820px` pin-spacer.
+3. **Isolated Framer Motion Accordion:** `AnimatePresence` strictly animates `.cert-detail-panel` (`height`, `opacity`) inside clickable credential rows, leaving `.journey-entry` entrance containers purely to GSAP.
+
+### Interview Questions & Model Answers
+1. **Q:** *Why did you use `overflow-x: clip` rather than `overflow-x: hidden` on sections containing a sticky column?*  
+   **A:** Applying `overflow: hidden` or `overflow-x: hidden` establishes a scroll container according to the CSS spec, which silently breaks `position: sticky` on descendant elements. `overflow-x: clip` clips stray horizontal pixels visually without creating a scroll container, keeping sticky sidebars working reliably.
+2. **Q:** *How do you keep a responsive vertical SVG timeline line crisp at any height without stroke stretching?*  
+   **A:** Giving the SVG `<path>` `vectorEffect="non-scaling-stroke"`, `preserveAspectRatio="none"`, and `pathLength={1}` allows CSS/container height to scale dynamically to match the 6 timeline items while keeping the stroke width exactly `2px` and animating `strokeDashoffset` cleanly from `1` to `0`.
+3. **Q:** *Why separate `Employability.life`'s certificate scan preview from live Coursera verification links instead of auto-linking or omitting the 4th cert?*  
+   **A:** Every link and scan must be verifiable. Three certifications have working Coursera registry URLs (`coursera.org/verify/...`), two also have supplied scans, the XPro scan is inspectable locally while its QR target URL stays labeled `NEEDS INPUT`, and the 4th LLM credential links to Coursera while marking its optional image as `NEEDS INPUT`—keeping every claim transparent.

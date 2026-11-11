@@ -82,3 +82,19 @@ export const TOOLKIT_COPY = {
   exploringNote:
     "These technologies are labeled Currently exploring rather than mastered skills. In fact, building this SIGNAL portfolio with Next.js, TypeScript, Three.js, React Three Fiber, and Framer Motion is hands-on practice turning active study into working software.",
 } as const;
+
+export const JOURNEY_COPY = {
+  sectionIndex: "05",
+  sectionTag: "[05] // EXPERIENCE, CREDENTIALS & EDUCATION",
+  subTag: "VERIFIED MILESTONES · HONEST SCOPE",
+  heading: "Academic base, internship practice & credentials.",
+  leadCopy:
+    "From CBSE foundations in Kolkata to B.Tech Computer Science at Sister Nivedita University, AWS & DevOps internship exposure at Employability.life, and verified Coursera credentials.",
+  experienceTag: "05.1 // WORK EXPERIENCE & TIMELINE",
+  certificationsTag: "05.2 // VERIFIED CERTIFICATIONS",
+  certificationsHeading: "4 Credentials",
+  certificationsHint:
+    "Select any credential row to inspect certificate details, supplied scans, and verification links.",
+  educationTag: "05.3 // ACADEMIC FOUNDATIONS",
+  educationHeading: "Education",
+} as const;
