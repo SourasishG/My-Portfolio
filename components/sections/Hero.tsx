@@ -44,8 +44,12 @@ export function Hero() {
 
       const store = useSceneStore.getState();
       let split: SplitText | null = null;
+      const preferReduced =
+        reducedMotion ||
+        (typeof window !== "undefined" &&
+          window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
-      if (!reducedMotion && nameEl) {
+      if (!preferReduced && nameEl) {
         split = SplitText.create(nameEl, {
           type: "lines,chars",
           mask: "lines",
@@ -86,7 +90,7 @@ export function Hero() {
         split?.revert();
       };
     },
-    { scope: sectionRef, dependencies: [reducedMotion] }
+    { scope: sectionRef, dependencies: [reducedMotion], revertOnUpdate: true }
   );
 
   return (

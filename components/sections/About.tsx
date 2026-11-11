@@ -59,9 +59,19 @@ export function About() {
           })
         : null;
 
-      if (reducedMotion) {
+      const preferReduced =
+        reducedMotion ||
+        (typeof window !== "undefined" &&
+          window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+
+      const revealEls = sectionEl.querySelectorAll(".about-reveal");
+
+      if (preferReduced) {
         if (tracePath) {
-          gsap.set(tracePath, { strokeDashoffset: 0 });
+          gsap.set(tracePath, { clearProps: "strokeDasharray,strokeDashoffset" });
+        }
+        if (revealEls.length > 0) {
+          gsap.set(revealEls, { clearProps: "opacity,transform" });
         }
         return () => {
           activeTrigger.kill();
@@ -83,15 +93,13 @@ export function About() {
         });
       }
 
-      const revealEls = sectionEl.querySelectorAll(".about-reveal");
       if (revealEls.length > 0) {
         gsap.from(revealEls, {
-          y: 20,
-          opacity: 0.2,
-          duration: 0.62,
+          y: 18,
+          duration: 0.6,
           ease: "expo.out",
-          stagger: 0.06,
-          clearProps: "transform,opacity",
+          stagger: 0.055,
+          clearProps: "transform",
           scrollTrigger: {
             trigger: sectionEl,
             start: "top 84%",
@@ -122,7 +130,7 @@ export function About() {
         splitTrigger?.kill();
       };
     },
-    { scope: sectionRef, dependencies: [reducedMotion] }
+    { scope: sectionRef, dependencies: [reducedMotion], revertOnUpdate: true }
   );
 
   return (
