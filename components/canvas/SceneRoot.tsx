@@ -31,12 +31,16 @@ function ResponsiveSceneCamera({ isDesktop }: { isDesktop: boolean }) {
  * - Full bypass when `prefers-reduced-motion: reduce` is enabled
  */
 export function SceneRoot() {
+  const pathname = usePathname();
+  const isLabRoute = pathname?.startsWith("/lab") ?? false;
+
   const gpuProfile = useGpuTier();
   const reducedMotion = useReducedMotion();
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   const activeSection = useSceneStore((s) => s.activeSection);
   const webglFailed = useSceneStore((s) => s.webglFailed);
   const setWebglFailed = useSceneStore((s) => s.setWebglFailed);
+  const setUseStaticFallback = useSceneStore((s) => s.setUseStaticFallback);
 
   const [tabHidden, setTabHidden] = useState(false);
   const cleanupContextListenersRef = useRef<(() => void) | null>(null);
@@ -57,19 +61,36 @@ export function SceneRoot() {
     }
   }, [gpuProfile.ready, gpuProfile.webglSupported, setWebglFailed]);
 
+  const shouldRenderCanvas =
+    !isLabRoute &&
+    !reducedMotion &&
+    !webglFailed &&
+    gpuProfile.webglSupported &&
+    gpuProfile.webglViable;
+
+  useEffect(() => {
+    const needsFallback =
+      !isLabRoute &&
+      (reducedMotion ||
+        webglFailed ||
+        (gpuProfile.ready && (!gpuProfile.webglSupported || !gpuProfile.webglViable)));
+    setUseStaticFallback(needsFallback);
+  }, [
+    gpuProfile.ready,
+    gpuProfile.webglSupported,
+    gpuProfile.webglViable,
+    isLabRoute,
+    reducedMotion,
+    setUseStaticFallback,
+    webglFailed,
+  ]);
+
   useEffect(() => {
     return () => {
       cleanupContextListenersRef.current?.();
       cleanupContextListenersRef.current = null;
     };
   }, []);
-
-  // Do not boot GPU loop when reduced motion is active, WebGL failed, or device scored low tier
-  const shouldRenderCanvas =
-    !reducedMotion &&
-    !webglFailed &&
-    gpuProfile.webglSupported &&
-    gpuProfile.tier !== "low";
 
   if (!shouldRenderCanvas) {
     return null;
@@ -85,6 +106,7 @@ export function SceneRoot() {
         inset: 0,
         zIndex: 0,
         pointerEvents: "none",
+        backgroundColor: "#000000",
       }}
     >
       <CanvasErrorBoundary

@@ -17,6 +17,8 @@ function getIsFinePointer(): boolean {
  * Completely disabled on touch screens and under `prefers-reduced-motion: reduce`.
  */
 export function CustomCursor() {
+  const pathname = usePathname();
+  const isLabRoute = pathname?.startsWith("/lab") ?? false;
   const reducedMotion = useReducedMotion();
   const isFinePointer = useSyncExternalStore(
     emptySubscribe,
@@ -27,7 +29,7 @@ export function CustomCursor() {
   const ringRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (reducedMotion || !isFinePointer) return;
+    if (isLabRoute || reducedMotion || !isFinePointer) return;
 
     const ring = ringRef.current;
     if (!ring) return;
@@ -71,9 +73,9 @@ export function CustomCursor() {
       window.removeEventListener("pointermove", handleMove);
       document.removeEventListener("mouseleave", handleLeave);
     };
-  }, [isFinePointer, reducedMotion]);
+  }, [isFinePointer, isLabRoute, reducedMotion]);
 
-  if (reducedMotion || !isFinePointer) {
+  if (isLabRoute || reducedMotion || !isFinePointer) {
     return null;
   }
 

@@ -17,11 +17,14 @@ export function SmoothScrollProvider({
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  const isLabRoute = pathname?.startsWith("/lab") ?? false;
   const reducedMotion = useReducedMotion();
   const lenisRef = useRef<Lenis | null>(null);
 
   // Fine-pointer telemetry -> Zustand transient pointer coordinates
   useEffect(() => {
+    if (isLabRoute) return;
     const fineMq = window.matchMedia("(pointer: fine)");
     if (!fineMq.matches) return;
 
@@ -43,10 +46,11 @@ export function SmoothScrollProvider({
       window.removeEventListener("pointermove", handlePointerMove);
       document.removeEventListener("mouseleave", handlePointerLeave);
     };
-  }, []);
+  }, [isLabRoute]);
 
   // Single Lenis instance synced with GSAP ticker
   useEffect(() => {
+    if (isLabRoute) return;
     ensureGsapRegistered();
 
     if (reducedMotion) {
@@ -118,7 +122,7 @@ export function SmoothScrollProvider({
       lenis.destroy();
       lenisRef.current = null;
     };
-  }, [reducedMotion]);
+  }, [isLabRoute, reducedMotion]);
 
   return <>{children}</>;
 }

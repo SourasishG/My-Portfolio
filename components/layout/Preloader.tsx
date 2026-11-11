@@ -15,6 +15,8 @@ const SESSION_KEY = "signal_preloader_seen_v1";
  * Uses sessionStorage so returning visits stay instantaneous, and returns `null` under reduced motion.
  */
 export function Preloader() {
+  const pathname = usePathname();
+  const isLabRoute = pathname?.startsWith("/lab") ?? false;
   const reducedMotion = useReducedMotion();
   const setPreloaderDone = useSceneStore((s) => s.setPreloaderDone);
 
@@ -35,7 +37,7 @@ export function Preloader() {
   }, [setPreloaderDone]);
 
   useEffect(() => {
-    if (reducedMotion) {
+    if (isLabRoute || reducedMotion) {
       queueMicrotask(finishPreloader);
       return;
     }
@@ -96,9 +98,9 @@ export function Preloader() {
       window.removeEventListener("keydown", onKeyDown);
       tl.kill();
     };
-  }, [finishPreloader, reducedMotion]);
+  }, [finishPreloader, isLabRoute, reducedMotion]);
 
-  if (reducedMotion || dismissed) {
+  if (isLabRoute || reducedMotion || dismissed) {
     return null;
   }
 
@@ -107,11 +109,8 @@ export function Preloader() {
       ref={rootRef}
       className={styles.overlay}
       role="dialog"
+      aria-modal="true"
       aria-label="SIGNAL intro sequence"
-      onClick={() => {
-        timelineRef.current?.kill();
-        finishPreloader();
-      }}
     >
       <div className={styles.inner}>
         <div ref={sphereWrapRef} className={styles.markWrap}>
@@ -119,7 +118,16 @@ export function Preloader() {
         </div>
         <div ref={labelRef} className={styles.meta}>
           <span className={styles.brand}>SG // SIGNAL</span>
-          <span className={styles.hint}>CLICK OR PRESS ESC TO SKIP</span>
+          <button
+            type="button"
+            className={styles.skipBtn}
+            onClick={() => {
+              timelineRef.current?.kill();
+              finishPreloader();
+            }}
+          >
+            CLICK OR PRESS ESC TO SKIP
+          </button>
         </div>
       </div>
     </div>

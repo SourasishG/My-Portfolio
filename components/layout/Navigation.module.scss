@@ -1,0 +1,348 @@
+@use "abstracts/tokens" as *;
+@use "abstracts/mixins" as *;
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: $z-nav;
+  height: 64px;
+  background-color: rgba($ink, 0.78);
+  border-bottom: 1px solid $line;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.inner {
+  @include container;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-4;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  min-height: 44px;
+  padding-inline: $space-1;
+  font-family: $font-mono;
+  font-size: $text-hud;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: $white;
+  flex-shrink: 0;
+  transition: color 0.18s ease;
+
+  &:hover {
+    color: $cyan;
+  }
+}
+
+.brandBrackets {
+  color: $muted;
+  font-weight: 400;
+}
+
+.brandSub {
+  display: none;
+  color: $muted;
+  font-weight: 400;
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+
+  @include respond-up($bp-xl) {
+    display: inline;
+  }
+}
+
+.desktopNav {
+  display: none;
+
+  @include respond-up($bp-lg) {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  @include respond-up(1280px) {
+    gap: $space-2;
+  }
+}
+
+.navLink {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 44px;
+  padding-inline: 6px;
+  font-family: $font-mono;
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: $muted;
+  white-space: nowrap;
+  transition: color 0.18s ease;
+
+  @include respond-up(1280px) {
+    padding-inline: $space-2;
+  }
+
+  &:hover {
+    color: $white;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 6px;
+    right: 6px;
+    bottom: 10px;
+    height: 1px;
+    background-color: $cyan;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s $ease-expo-out;
+  }
+}
+
+.navIndex {
+  color: rgba($muted, 0.7);
+  font-size: 0.625rem;
+}
+
+.navLinkActive {
+  color: $white;
+
+  .navIndex {
+    color: $cyan;
+  }
+
+  &::after {
+    transform: scaleX(1);
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  flex-shrink: 0;
+}
+
+.clockTelemetry {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  font-family: $font-mono;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  color: $muted;
+  white-space: nowrap;
+  padding-right: $space-2;
+  border-right: 1px solid $line;
+
+  @include respond-up(1280px) {
+    display: inline-flex;
+  }
+}
+
+.clockDot {
+  width: 5px;
+  height: 5px;
+  border-radius: $radius-pill;
+  background-color: $cyan;
+}
+
+.resumeLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding-inline: $space-3;
+  font-family: $font-mono;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $white;
+  border: 1px solid $line-strong;
+  background-color: rgba($charcoal, 0.72);
+  white-space: nowrap;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    background-color 0.2s ease;
+
+  &:hover {
+    border-color: $cyan;
+    color: $cyan;
+    background-color: rgba($cyan, 0.08);
+  }
+}
+
+.menuToggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  border: 1px solid $line-strong;
+  background-color: rgba($charcoal, 0.72);
+  color: $white;
+  transition: border-color 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    border-color: $cyan;
+    color: $cyan;
+  }
+
+  @include respond-up($bp-lg) {
+    display: none;
+  }
+}
+
+// Mobile / Tablet Navigation Drawer
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: $z-drawer;
+  background-color: rgba($black, 0.72);
+  backdrop-filter: blur(6px);
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: calc(#{$z-drawer} + 1);
+  width: min(100vw, 24rem);
+  background-color: $ink;
+  border-left: 1px solid $line-strong;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: $space-5;
+  overflow-y: auto;
+}
+
+.drawerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: $space-4;
+  border-bottom: 1px solid $line;
+}
+
+.drawerTag {
+  @include hud-label;
+  color: $muted;
+}
+
+.closeBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  border: 1px solid $line;
+  color: $white;
+
+  &:hover {
+    border-color: $cyan;
+    color: $cyan;
+  }
+}
+
+.drawerList {
+  display: grid;
+  gap: $space-1;
+  padding-block: $space-5;
+}
+
+.drawerLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 48px;
+  padding-inline: $space-3;
+  border-bottom: 1px solid $line;
+  font-family: $font-mono;
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $muted;
+  transition: color 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
+
+  &:hover {
+    color: $white;
+    background-color: rgba($white, 0.03);
+  }
+}
+
+.drawerLinkActive {
+  color: $white;
+  border-bottom-color: $cyan;
+}
+
+.drawerIndex {
+  color: $cyan;
+  margin-right: $space-3;
+}
+
+.drawerFooter {
+  display: grid;
+  gap: $space-4;
+  padding-top: $space-4;
+  border-top: 1px solid $line;
+}
+
+.drawerClock {
+  @include hud-label;
+  color: $muted;
+}
+
+.drawerResume {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-2;
+  min-height: 46px;
+  background-color: $white;
+  color: $black;
+  font-family: $font-mono;
+  font-size: $text-hud;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  &:hover {
+    background-color: $signal;
+  }
+}
+
+.drawerSocials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-3;
+}
+
+.drawerSocialLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-family: $font-mono;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $muted;
+
+  &:hover {
+    color: $cyan;
+  }
+}
