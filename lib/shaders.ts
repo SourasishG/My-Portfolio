@@ -7,6 +7,8 @@ import s3HalftoneRevealVertRaw from "@/shaders/s3HalftoneReveal.vert.glsl";
 import s3HalftoneRevealFragRaw from "@/shaders/s3HalftoneReveal.frag.glsl";
 import s8GrainVignetteVertRaw from "@/shaders/s8GrainVignette.vert.glsl";
 import s8GrainVignetteFragRaw from "@/shaders/s8GrainVignette.frag.glsl";
+import toolkitConstellationVertRaw from "@/shaders/toolkitConstellation.vert.glsl";
+import toolkitConstellationFragRaw from "@/shaders/toolkitConstellation.frag.glsl";
 
 const INCLUDE_SIMPLEX_TOKEN = "// @include simplex3d";
 
@@ -39,4 +41,9 @@ export const S3_HALFTONE_REVEAL_SHADERS = {
 export const S8_GRAIN_VIGNETTE_SHADERS = {
   vertexShader: resolveShaderChunks(s8GrainVignetteVertRaw),
   fragmentShader: resolveShaderChunks(s8GrainVignetteFragRaw),
+} as const;
+
+export const TOOLKIT_CONSTELLATION_SHADERS = {
+  vertexShader: resolveShaderChunks(toolkitConstellationVertRaw),
+  fragmentShader: resolveShaderChunks(toolkitConstellationFragRaw),
 } as const;

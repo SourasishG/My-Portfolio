@@ -68,3 +68,17 @@ export const PROJECTS_COPY = {
   moreWorkNote:
     "Focused active index verified directly from public repositories — additional projects will be added over time.",
 } as const;
+
+export const TOOLKIT_COPY = {
+  sectionIndex: "04",
+  sectionTag: "[04] // TECHNICAL TOOLKIT",
+  subTag: "GROUPED BY DISCIPLINE · ZERO ARBITRARY PERCENTAGES",
+  heading: "Core engineering stack & active exploration.",
+  leadCopy:
+    "Every technology below reflects direct practical usage across applications, REST APIs, relational/document databases, and cloud deployments—paired honestly with the newer stack I am currently exploring.",
+  inspectHint: "Hover or select any technology to trace where it is applied across projects.",
+  exploringTag: "ACTIVE LEARNING ARC // CURRENTLY EXPLORING",
+  exploringHeading: "Currently exploring",
+  exploringNote:
+    "These technologies are labeled Currently exploring rather than mastered skills. In fact, building this SIGNAL portfolio with Next.js, TypeScript, Three.js, React Three Fiber, and Framer Motion is hands-on practice turning active study into working software.",
+} as const;
