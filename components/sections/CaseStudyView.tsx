@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, ArrowUpRight, Layers } from "lucide-react";
 import { FeaturedProject } from "@/content/projects";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
@@ -18,7 +18,7 @@ interface CaseStudyViewProps {
  * Interactive Case Study presentation for `/projects/[slug]`.
  *
  * Animation Ownership:
- * - Framer Motion (`AnimatePresence`) owns gallery screenshot swaps cleanly
+ * - Framer Motion (`motion.div`) owns gallery crossfade opacity across stacked screen layers
  *   and drops to `duration: 0` when `prefers-reduced-motion: reduce` is enabled.
  */
 export function CaseStudyView({ project, nextProject }: CaseStudyViewProps) {
@@ -108,25 +108,32 @@ export function CaseStudyView({ project, nextProject }: CaseStudyViewProps) {
             <div className={styles.cornerBR} aria-hidden="true" />
 
             <div className={styles.galleryViewport}>
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeScreen.id}
-                  className={`${styles.galleryImgWrap} case-study-gallery-frame`}
-                  initial={reducedMotion ? false : { opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={reducedMotion ? undefined : { opacity: 0 }}
-                  transition={{ duration: reducedMotion ? 0 : 0.22 }}
-                >
-                  <Image
-                    src={activeScreen.src}
-                    alt={activeScreen.alt}
-                    fill
-                    sizes="(max-width: 1023px) 94vw, 1280px"
-                    priority
-                    className={styles.galleryImg}
-                  />
-                </motion.div>
-              </AnimatePresence>
+              {project.screens.map((screen, idx) => {
+                const isSelected = idx === activeScreenIdx;
+                return (
+                  <motion.div
+                    key={screen.id}
+                    aria-hidden={!isSelected}
+                    className={`${styles.galleryImgWrap} case-study-gallery-frame`}
+                    initial={false}
+                    animate={{ opacity: isSelected ? 1 : 0 }}
+                    transition={{ duration: reducedMotion ? 0 : 0.22 }}
+                    style={{
+                      zIndex: isSelected ? 2 : 1,
+                      pointerEvents: isSelected ? "auto" : "none",
+                    }}
+                  >
+                    <Image
+                      src={screen.src}
+                      alt={screen.alt}
+                      fill
+                      sizes="(max-width: 1023px) 94vw, 1280px"
+                      priority
+                      className={styles.galleryImg}
+                    />
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
 

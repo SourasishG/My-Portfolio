@@ -7,6 +7,7 @@
   border-top: 1px solid $line;
   background-color: transparent;
   overflow-x: clip;
+  scroll-margin-top: 80px;
 }
 
 .container {
@@ -532,6 +533,7 @@
   gap: $space-4;
   padding-top: clamp(2rem, 5vh, 3.5rem);
   border-top: 1px solid $line;
+  scroll-margin-top: 84px;
 }
 
 .moreWorkHeader {
