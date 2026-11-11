@@ -39,14 +39,6 @@ export function About() {
 
       const store = useSceneStore.getState();
 
-      const activeTrigger = ScrollTrigger.create({
-        trigger: sectionEl,
-        start: "top 45%",
-        end: "bottom 45%",
-        onEnter: () => store.setActiveSection("about"),
-        onEnterBack: () => store.setActiveSection("about"),
-      });
-
       const splitTrigger = apertureEl
         ? ScrollTrigger.create({
             trigger: apertureEl,
@@ -74,7 +66,6 @@ export function About() {
           gsap.set(revealEls, { clearProps: "opacity,transform" });
         }
         return () => {
-          activeTrigger.kill();
           splitTrigger?.kill();
         };
       }
@@ -126,7 +117,6 @@ export function About() {
       }
 
       return () => {
-        activeTrigger.kill();
         splitTrigger?.kill();
       };
     },

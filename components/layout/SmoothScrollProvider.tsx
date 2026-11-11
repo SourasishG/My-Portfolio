@@ -5,12 +5,65 @@ import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { ensureGsapRegistered, gsap, ScrollTrigger } from "@/lib/gsap";
-import { useSceneStore } from "@/lib/store";
+import { SectionId, useSceneStore } from "@/lib/store";
+
+const ORDERED_SECTIONS: SectionId[] = [
+  "hero",
+  "about",
+  "projects",
+  "toolkit",
+  "journey",
+  "beyond",
+  "aspirations",
+  "contact",
+];
+
+/**
+ * Resolves the single active home section strictly from current DOM bounding geometry
+ * along an upper-mid viewport probe line (`42%` of viewport height).
+ * Avoids multi-trigger overlap and stale pin-spacer offsets across instant jumps,
+ * Lenis smooth scrolling, native reduced-motion scroll, and resize/refresh passes.
+ */
+function syncActiveSection() {
+  if (typeof window === "undefined" || window.location.pathname !== "/") return;
+
+  const store = useSceneStore.getState();
+
+  if (window.scrollY <= 8) {
+    store.setActiveSection("hero");
+    return;
+  }
+
+  const probeY = Math.round(window.innerHeight * 0.42);
+  let matched: SectionId | null = null;
+  let lastPassedReal: SectionId | null = null;
+
+  for (const id of ORDERED_SECTIONS) {
+    const el = document.getElementById(id);
+    if (!el || el.dataset.stagingSentinel === "true") continue;
+
+    const rect = el.getBoundingClientRect();
+    if (rect.top <= probeY) {
+      lastPassedReal = id;
+    }
+    if (rect.top <= probeY && rect.bottom > probeY) {
+      matched = id;
+      break;
+    }
+  }
+
+  if (matched) {
+    store.setActiveSection(matched);
+  } else if (lastPassedReal) {
+    store.setActiveSection(lastPassedReal);
+  }
+}
 
 /**
  * Single Lenis smooth-scroll owner synced 1:1 with `gsap.ticker` + ScrollTrigger.
+ * Also owns deterministic viewport-probe active-section synchronization on `/`.
  * Feeds transient scroll & pointer telemetry into `useSceneStore` with zero React re-renders.
- * Completely bypassed under `prefers-reduced-motion: reduce`.
+ * Lenis is completely bypassed under `prefers-reduced-motion: reduce`.
  */
 export function SmoothScrollProvider({
   children,
@@ -21,6 +74,13 @@ export function SmoothScrollProvider({
   const isLabRoute = pathname?.startsWith("/lab") ?? false;
   const reducedMotion = useReducedMotion();
   const lenisRef = useRef<Lenis | null>(null);
+
+  // Sync active section immediately upon client route transitions onto "/"
+  useEffect(() => {
+    if (pathname !== "/") return;
+    const rafId = window.requestAnimationFrame(syncActiveSection);
+    return () => window.cancelAnimationFrame(rafId);
+  }, [pathname]);
 
   // Fine-pointer telemetry -> Zustand transient pointer coordinates
   useEffect(() => {
@@ -48,10 +108,15 @@ export function SmoothScrollProvider({
     };
   }, [isLabRoute]);
 
-  // Single Lenis instance synced with GSAP ticker
+  // Single Lenis instance synced with GSAP ticker + activeSection geometry observer
   useEffect(() => {
     if (isLabRoute) return;
     ensureGsapRegistered();
+
+    const onRefresh = () => syncActiveSection();
+    ScrollTrigger.addEventListener("refresh", onRefresh);
+    window.addEventListener("resize", syncActiveSection, { passive: true });
+    const initialRaf = window.requestAnimationFrame(syncActiveSection);
 
     if (reducedMotion) {
       const onNativeScroll = () => {
@@ -61,9 +126,15 @@ export function SmoothScrollProvider({
         );
         const y = window.scrollY;
         useSceneStore.getState().setScrollState(y, Math.min(1, Math.max(0, y / docHeight)), 0);
+        syncActiveSection();
       };
       window.addEventListener("scroll", onNativeScroll, { passive: true });
-      return () => window.removeEventListener("scroll", onNativeScroll);
+      return () => {
+        window.cancelAnimationFrame(initialRaf);
+        ScrollTrigger.removeEventListener("refresh", onRefresh);
+        window.removeEventListener("resize", syncActiveSection);
+        window.removeEventListener("scroll", onNativeScroll);
+      };
     }
 
     const lenis = new Lenis({
@@ -80,7 +151,11 @@ export function SmoothScrollProvider({
       const progress = Math.min(1, Math.max(0, instance.scroll / maxScroll));
       const clampedVelocity = Math.max(-1.5, Math.min(1.5, instance.velocity / 20));
       useSceneStore.getState().setScrollState(instance.scroll, progress, clampedVelocity);
+      syncActiveSection();
     });
+
+    // Ensure instant programmatic window.scrollTo jumps sync active section immediately too
+    window.addEventListener("scroll", syncActiveSection, { passive: true });
 
     const onTick = (time: number) => {
       lenis.raf(time * 1000);
@@ -117,6 +192,10 @@ export function SmoothScrollProvider({
     document.addEventListener("click", onAnchorClick);
 
     return () => {
+      window.cancelAnimationFrame(initialRaf);
+      ScrollTrigger.removeEventListener("refresh", onRefresh);
+      window.removeEventListener("resize", syncActiveSection);
+      window.removeEventListener("scroll", syncActiveSection);
       document.removeEventListener("click", onAnchorClick);
       gsap.ticker.remove(onTick);
       lenis.destroy();

@@ -16,6 +16,7 @@ export default function HomePage() {
       {/* Minimal staging sentinel queued for Checkpoint 4d (Section 05 Experience, Certs & Education) */}
       <section
         id="journey"
+        data-staging-sentinel="true"
         className={styles.sentinelBand}
         aria-label="Section 05 staging gate"
       >

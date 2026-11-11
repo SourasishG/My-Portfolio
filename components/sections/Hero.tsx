@@ -75,18 +75,8 @@ export function Hero() {
         },
       });
 
-      const activeTrigger = ScrollTrigger.create({
-        trigger: sectionEl,
-        start: "top 40%",
-        end: "bottom 40%",
-        onEnter: () => store.setActiveSection("hero"),
-        onEnterBack: () => store.setActiveSection("hero"),
-        onLeave: () => store.setActiveSection("about"),
-      });
-
       return () => {
         morphTrigger.kill();
-        activeTrigger.kill();
         split?.revert();
       };
     },

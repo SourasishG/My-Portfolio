@@ -13,7 +13,7 @@ import {
   SkillItem,
 } from "@/content/skills";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-import { ensureGsapRegistered, gsap, ScrollTrigger } from "@/lib/gsap";
+import { ensureGsapRegistered, gsap } from "@/lib/gsap";
 import { useSceneStore } from "@/lib/store";
 import styles from "./Toolkit.module.scss";
 
@@ -78,17 +78,6 @@ export function Toolkit() {
       const tracePath = tracePathRef.current;
       if (!sectionEl) return;
 
-      const store = useSceneStore.getState();
-
-      const activeTrigger = ScrollTrigger.create({
-        trigger: sectionEl,
-        start: "top 62%",
-        end: "bottom 42%",
-        onEnter: () => store.setActiveSection("toolkit"),
-        onEnterBack: () => store.setActiveSection("toolkit"),
-        onLeaveBack: () => store.setActiveSection("projects"),
-      });
-
       const preferReduced =
         reducedMotion ||
         (typeof window !== "undefined" &&
@@ -103,9 +92,7 @@ export function Toolkit() {
         if (revealEls.length > 0) {
           gsap.set(revealEls, { clearProps: "opacity,transform" });
         }
-        return () => {
-          activeTrigger.kill();
-        };
+        return;
       }
 
       if (tracePath) {
@@ -136,10 +123,6 @@ export function Toolkit() {
           },
         });
       }
-
-      return () => {
-        activeTrigger.kill();
-      };
     },
     { scope: sectionRef, dependencies: [reducedMotion], revertOnUpdate: true }
   );

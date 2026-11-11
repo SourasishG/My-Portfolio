@@ -100,17 +100,6 @@ export function Projects() {
       const pinEl = pinContainerRef.current;
       if (!sectionEl) return;
 
-      const store = useSceneStore.getState();
-
-      const activeTrigger = ScrollTrigger.create({
-        trigger: sectionEl,
-        start: "top 62%",
-        end: "bottom 42%",
-        onEnter: () => store.setActiveSection("projects"),
-        onEnterBack: () => store.setActiveSection("projects"),
-        onLeaveBack: () => store.setActiveSection("about"),
-      });
-
       const preferReduced =
         reducedMotion ||
         (typeof window !== "undefined" &&
@@ -126,9 +115,7 @@ export function Projects() {
         if (revealEls.length > 0) {
           gsap.set(revealEls, { clearProps: "opacity,transform" });
         }
-        return () => {
-          activeTrigger.kill();
-        };
+        return;
       }
 
       if (tracePath) {
@@ -171,6 +158,7 @@ export function Projects() {
             scrub: 0.25,
             anticipatePin: 1,
             invalidateOnRefresh: true,
+            refreshPriority: 1,
             onUpdate: (self) => {
               if (progressFillRef.current) {
                 progressFillRef.current.style.transform = `scaleX(${self.progress})`;
@@ -184,6 +172,9 @@ export function Projects() {
           });
 
           pinTriggerRef.current = pinSt;
+          // Recompute downstream Section 04+ trigger positions after desktop pin-spacer mounts
+          ScrollTrigger.sort();
+          ScrollTrigger.refresh();
           return () => {
             pinTriggerRef.current = null;
             pinSt.kill();
@@ -196,7 +187,6 @@ export function Projects() {
       return () => {
         pinTriggerRef.current = null;
         mm.revert();
-        activeTrigger.kill();
       };
     },
     {
