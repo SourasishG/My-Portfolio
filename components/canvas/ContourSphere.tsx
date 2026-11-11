@@ -60,6 +60,19 @@ function buildSplitAwareContourSphereGeometry(
 
     centroid.copy(vA).add(vB).add(vC).divideScalar(3).normalize();
     const side = centroid.dot(SPLIT_AXIS) >= 0 ? 1.0 : -1.0;
+
+    // Snap any vertex crossing the cutting equator cleanly back onto dot(v, SPLIT_AXIS) = 0
+    // so both hemispheres open with a razor-clean diagonal slice instead of sawtooth triangles.
+    const verts = [vA, vB, vC];
+    for (let k = 0; k < 3; k++) {
+      const v = verts[k];
+      const proj = v.dot(SPLIT_AXIS);
+      if (side * proj < 0) {
+        v.addScaledVector(SPLIT_AXIS, -proj).normalize().multiplyScalar(radius);
+        posAttr.setXYZ(i + k, v.x, v.y, v.z);
+      }
+    }
+
     splitSides[i] = side;
     splitSides[i + 1] = side;
     splitSides[i + 2] = side;

@@ -9,7 +9,7 @@ import React, {
   useSyncExternalStore,
 } from "react";
 import Link from "next/link";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useThree } from "@react-three/fiber";
 import { Leva, useControls } from "leva";
 import { ArrowLeft, Cpu, Eye, Layers, Sparkles } from "lucide-react";
 import { CanvasErrorBoundary } from "@/components/canvas/CanvasErrorBoundary";
@@ -81,6 +81,19 @@ export function ShaderLabClient() {
   return <ShaderLabInteractive />;
 }
 
+function LabCameraRig({ isMobilePreset }: { isMobilePreset: boolean }) {
+  const { camera, size } = useThree();
+
+  useEffect(() => {
+    const aspect = size.width / Math.max(1, size.height);
+    const targetZ = isMobilePreset || aspect < 0.85 ? 7.1 : 4.9;
+    camera.position.set(0, 0, targetZ);
+    camera.updateProjectionMatrix();
+  }, [camera, isMobilePreset, size.height, size.width]);
+
+  return null;
+}
+
 function ShaderLabInteractive() {
   const gpuProfile = useGpuTier();
   const osReducedMotion = useReducedMotion();
@@ -109,10 +122,10 @@ function ShaderLabInteractive() {
     displacementAmp: { value: 0.34, min: 0.0, max: 0.85, step: 0.01 },
     noiseFreq: { value: 1.45, min: 0.4, max: 3.2, step: 0.05 },
     curlMix: { value: 0.52, min: 0.0, max: 1.4, step: 0.02 },
-    basePointSize: { value: 1.85, min: 0.8, max: 4.5, step: 0.05 },
-    pointerStrength: { value: 0.78, min: 0.0, max: 1.8, step: 0.02 },
+    basePointSize: { value: 2.15, min: 0.8, max: 4.5, step: 0.05 },
+    pointerStrength: { value: 0.85, min: 0.0, max: 1.8, step: 0.02 },
     scrollMorph: { value: initialScrollValue, min: 0.0, max: 1.0, step: 0.01 },
-    opacity: { value: 0.54, min: 0.15, max: 1.0, step: 0.02 },
+    opacity: { value: 0.74, min: 0.15, max: 1.0, step: 0.02 },
     colorCyan: "#4DA8FF",
     colorViolet: "#B388F5",
   }));
@@ -220,9 +233,10 @@ function ShaderLabInteractive() {
     <main id="main-content" className={styles.labShell}>
       <div className={styles.levaWrapper}>
         <Leva
+          fill
           collapsed={isNarrowViewport || isMobilePreset}
           oneLineLabels={false}
-          titleBar={{ title: "SIGNAL // SHADER UNIFORMS", drag: true }}
+          titleBar={{ title: "SIGNAL // SHADER UNIFORMS", drag: false }}
           theme={{
             colors: {
               elevation1: "#07080B",
@@ -363,7 +377,7 @@ function ShaderLabInteractive() {
         {!showFallback ? (
           <CanvasErrorBoundary fallback={fallbackNode}>
             <Canvas
-              camera={{ position: [0, 0, isMobilePreset ? 5.2 : 4.2], fov: 42 }}
+              camera={{ position: [0, 0, isMobilePreset ? 6.8 : 4.9], fov: 42 }}
               dpr={isMobilePreset ? [1, 1.5] : [1, 2]}
               gl={{
                 antialias: true,
@@ -375,6 +389,7 @@ function ShaderLabInteractive() {
               }}
               aria-hidden="true"
             >
+              <LabCameraRig isMobilePreset={isMobilePreset} />
               {sceneMode === "s1" && (
                 <HeroBlob
                   tier={effectiveTier}
