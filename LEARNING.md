@@ -141,3 +141,67 @@ Provides a dedicated `/lab` verification route (excluded from SEO crawling/sitem
    **A:** `Leva` and WebGL contexts require browser globals (`window`, `document`, `WebGL2RenderingContext`). Mounting them cleanly on the client after initial hydration avoids SSR errors and keeps first HTML output lightweight.
 3. **Q:** *How is `app/lab` kept from diluting production SEO or bloating main visitor bundles?*  
    **A:** `app/lab/page.tsx` sets `robots: { index: false, follow: false }`, `/lab` is excluded from `sitemap.ts`/`robots.ts` and public navigation, and `leva` is imported strictly inside `/app/lab` so Next.js tree-shaking keeps it out of `/` and `/projects/[slug]`.
+
+
+---
+
+## Module 06 — Persistent Smooth Scroll & Scene Engine (`components/layout/SmoothScrollProvider.tsx`, `CanvasPortal.tsx`, `SceneRoot.tsx`, `GrainOverlay.tsx`)
+
+### What it does
+- `SmoothScrollProvider`: Runs one global **Lenis** smooth-scroll controller synchronized strictly to `gsap.ticker` (`lagSmoothing(0)`) and `ScrollTrigger.update()`, captures fine-pointer coords on `window`, and routes `#section` clicks cleanly without conflicting with Locomotive Scroll.
+- `CanvasPortal` + `SceneRoot`: Dynamically mounts the single persistent `<Canvas>` outside Server Components (`ssr: false`), scales WebGL `dpr` (`[1, 2]` desktop / `[1, 1.5]` mobile), enforces the max-2-shader budget (**S1** + **S8** on Hero), listens for `webglcontextlost`/`webglcontextrestored`, pauses rendering when the browser tab is hidden, and disables `<Canvas>` automatically on `/lab`, reduced motion, or tier-0 GPUs.
+- `GrainOverlay` (**S8**): Lightweight fullscreen post-pass adding subtle organic film grain (`opacity <= 0.04`) and gentle edge vignette without extra postprocessing render-target passes.
+
+### Why this architecture was chosen
+Next.js 16 Server Components forbid `next/dynamic(..., { ssr: false })` directly inside server files. Wrapping `SceneRoot` inside a tiny `"use client"` bridge (`CanvasPortal`) keeps `app/layout.tsx` a pure Server Component with fast SSR HTML and zero Three.js bytes on initial render blocking LCP, while syncing `useSceneStore.setUseStaticFallback` ensures `Hero` never shows an empty canvas void if WebGL drops.
+
+### Interview Questions & Model Answers
+1. **Q:** *Why connect Lenis specifically to `gsap.ticker` with `gsap.ticker.lagSmoothing(0)` instead of running a separate `requestAnimationFrame` loop?*  
+   **A:** Two independent animation loops drift out of phase by sub-frame milliseconds, causing pinned ScrollTriggers to jitter during fast wheel flings. Driving `lenis.raf()` directly inside `gsap.ticker` executes scroll easing and ScrollTrigger measurement in the exact same frame tick, while `lagSmoothing(0)` prevents GSAP from warping time deltas after a tab resume.
+2. **Q:** *Why put `next/dynamic({ ssr: false })` inside `CanvasPortal` instead of directly inside `app/layout.tsx`?*  
+   **A:** In Next.js App Router, `app/layout.tsx` is a Server Component, and Next 16 prohibits `ssr: false` inside Server Components. Isolating `dynamic()` in a Client Component preserves SSR benefits for layout metadata, JSON-LD, and Hero text while deferring WebGL compilation cleanly to the client.
+3. **Q:** *Why write a standalone raw GLSL `GrainOverlay` (`S8`) mesh rather than stacking `@react-three/postprocessing` `EffectComposer` + `Noise` + `Vignette` on Hero?*  
+   **A:** Full `EffectComposer` ping-pong framebuffers allocate extra offscreen render targets every frame, hurting fill-rate on integrated laptop GPUs and high-DPR phones. A single fullscreen transparent quad with zero vertex projection (`vec4(position.xy, 0.0, 1.0)`) delivers tasteful film grain at virtually zero VRAM cost.
+
+---
+
+## Module 07 — Chrome Shell: Navigation, Editorial Preloader & Reticle Cursor (`Navigation.tsx`, `Preloader.tsx`, `CustomCursor.tsx`, `MagneticButton.tsx`)
+
+### What it does
+- `Navigation`: Fixed 64px HUD bar with `[ SG ]` monogram, desktop numbered anchors (`01`–`08`), live `KOLKATA HH:MM IST` telemetry clock, crisp Resume download CTA (`>= 44px` hit target), and a **Framer Motion** slide drawer below `1024px` with focus restoration and `Esc` close support.
+- `Preloader`: First-visit `sessionStorage`-gated curtain reveal (`~1.25s`) featuring the split **S2** contour geometric mark and accessible skip `<button>` + `Esc` handler; suppressed cleanly on `/lab` and under `prefers-reduced-motion`.
+- `CustomCursor` & `MagneticButton`: Desktop fine-pointer trailing reticle via a single vanilla `rAF` transform ref, plus Framer Motion spring buttons (`useMotionValue` + `useSpring`) completely decoupled from GSAP timelines.
+
+### Library Ownership & Trade-offs
+| Concern | Owner | Reason |
+|---|---|---|
+| Mobile drawer slide + magnetic buttons | **Framer Motion** | Excels at declarative React mount/unmount (`AnimatePresence`) and pointer spring physics (`useSpring`). |
+| Preloader clip curtain + Hero scroll morph | **GSAP** | Excels at deterministic multi-step timelines and scroll-linked scrubbing without React re-renders. |
+| Trailing pointer reticle | **Vanilla `rAF` DOM ref** | Avoids per-frame React state updates or heavy spring listeners across global mousemove. |
+
+### Interview Questions & Model Answers
+1. **Q:** *Why must `Navigation`, `Preloader`, `CustomCursor`, and `SceneRoot` check `pathname.startsWith("/lab")`?*  
+   **A:** `/lab` mounts its own standalone R3F `<Canvas>` and `Leva` debugging drawer. Suppressing global portfolio chrome on `/lab` prevents dual WebGL contexts and overlapping UI bars while keeping `/` layout code clean without refactoring folders.
+2. **Q:** *Why keep KOLKATA time formatting inside a client `useEffect` rather than rendering `new Date()` directly?*  
+   **A:** Server timezones (e.g., UTC on Vercel build/edge servers) often differ from client clocks or trigger React hydration mismatches if formatted synchronously during render. Deferring updates to client effects keeps SSR deterministic.
+3. **Q:** *Why must Framer Motion (`MagneticButton`) never be targeted by GSAP transforms on the same DOM node?*  
+   **A:** Both GSAP and Framer Motion mutate inline `transform` matrices. Competing writers overwrite each other unpredictably and leak stale values on cleanup, whereas wrapper isolation gives Framer Motion its outer motion `div` while GSAP never touches CTA transforms.
+
+---
+
+## Module 08 — Section 01 Kinetic Hero & Static Fallback (`components/sections/Hero.tsx`, `Hero.module.scss`)
+
+### What it does
+Renders the immediate SSR editorial Hero (`SOURASISH GHOSH`, `"I design, develop, and build digital experiences."`, honest bio retaining `"passionate"`, open-to-roles badge, magnetic CTAs for Projects / Resume / Contact, social HUD links, and `HeroBlobFallback` SVG backdrop when WebGL is inactive).
+
+### LCP Protection & Animation Design
+- `<h1>SOURASISH GHOSH</h1>` renders synchronously at **`opacity: 1`** on SSR—GSAP `SplitText.create` only performs a subtle upward `yPercent: 22 -> 0` mask settle inside line containers (`mask: "lines"`, `aria: "auto"`) without fading from zero opacity.
+- `#hero` ScrollTrigger scrubs cleanly `0 -> 1` into `useSceneStore.getState().setHeroMorph(self.progress)` while marking active section `"hero"` / `"about"`.
+
+### Interview Questions & Model Answers
+1. **Q:** *Why animate `yPercent` inside SplitText line masks instead of starting `opacity: 0` on the Hero headline?*  
+   **A:** Waiting 1+ seconds for JavaScript hydration + font load before turning `opacity: 0 -> 1` delays Largest Contentful Paint (LCP) and risks blank above-the-fold frames if scripts load slowly on 3G. Keeping `opacity: 1` delivers instant visual content on initial HTML paint.
+2. **Q:** *How does `SplitText.create(..., { mask: "lines", aria: "auto" })` protect accessibility?*  
+   **A:** Naive character-splitting tools turn `"SOURASISH"` into 9 separate `<div>` elements that screen readers read letter by letter (`S - O - U...`). GSAP 3.15 `aria: "auto"` attaches an `aria-label` on the parent and hides split spans from screen-reader narration, and we also preserve explicit whitespace between first and last name spans.
+3. **Q:** *How does the Hero layout keep left typography readable without dimming the 3D point cloud across the entire screen?*  
+   **A:** A directional CSS scrim darkens behind the left copy (`0% -> 46%`) while decaying to transparent alpha on the right half so `S1` keeps full luminous color depth.

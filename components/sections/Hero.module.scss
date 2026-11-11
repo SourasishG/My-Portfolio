@@ -7,32 +7,36 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding-top: calc(64px + clamp(1.5rem, 4vh, 3rem));
-  padding-bottom: clamp(1.5rem, 4vh, 2.75rem);
+  padding-top: calc(64px + clamp(0.85rem, 3.2vh, 2.75rem));
+  padding-bottom: clamp(1rem, 3.2vh, 2.5rem);
   overflow-x: clip;
   background-color: transparent;
 
-  // Readability scrim over the S1 point cloud on desktop & vertical gradient on mobile
+  // Focused readability scrim over the text column without muting S1 across the open stage
   &::before {
     content: "";
     position: absolute;
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    background:
-      radial-gradient(circle at 50% 34%, rgba($black, 0.14) 0%, rgba($black, 0.72) 66%),
-      linear-gradient(180deg, rgba($black, 0.45) 0%, rgba($black, 0.74) 100%);
+    background: linear-gradient(
+      180deg,
+      rgba($black, 0.14) 0%,
+      rgba($black, 0.56) 36%,
+      rgba($black, 0.68) 72%,
+      rgba($black, 0.44) 100%
+    );
 
     @include respond-up($bp-lg) {
       background:
         linear-gradient(
           90deg,
-          rgba($black, 0.88) 0%,
-          rgba($black, 0.62) 44%,
-          rgba($black, 0.14) 76%,
+          rgba($black, 0.84) 0%,
+          rgba($black, 0.52) 40%,
+          rgba($black, 0) 64%,
           rgba($black, 0) 100%
         ),
-        linear-gradient(180deg, rgba($black, 0.35) 0%, rgba($black, 0) 24%, rgba($black, 0.5) 100%);
+        linear-gradient(180deg, rgba($black, 0.25) 0%, rgba($black, 0) 20%, rgba($black, 0.35) 100%);
     }
   }
 }
@@ -66,7 +70,11 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: $space-6;
+  gap: $space-4;
+
+  @include respond-up($bp-md) {
+    gap: $space-6;
+  }
 }
 
 .topHud {
@@ -74,9 +82,14 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: $space-3;
-  padding-bottom: $space-4;
+  gap: $space-2;
+  padding-bottom: $space-3;
   border-bottom: 1px solid $line;
+
+  @include respond-up($bp-md) {
+    gap: $space-3;
+    padding-bottom: $space-4;
+  }
 }
 
 .hudGroup {
@@ -128,9 +141,13 @@
 .mainBlock {
   max-width: 680px;
   display: grid;
-  gap: clamp(1rem, 2.2vh, 1.75rem);
+  gap: clamp(0.7rem, 1.8vh, 1.65rem);
   margin-block: auto;
-  padding-block: $space-3;
+  padding-block: $space-1;
+
+  @include respond-up($bp-md) {
+    padding-block: $space-3;
+  }
 }
 
 .roleEyebrow {
@@ -154,29 +171,42 @@
 }
 
 .manifesto {
-  font-size: clamp(1.1875rem, 2.2vw, 1.875rem);
+  font-size: clamp(1.125rem, 2.2vw, 1.875rem);
   font-weight: 500;
   line-height: 1.24;
   letter-spacing: -0.02em;
   color: $white;
-  padding-left: $space-4;
+  padding-left: $space-3;
   border-left: 2px solid $cyan;
   max-width: 28ch;
+
+  @include respond-up($bp-md) {
+    padding-left: $space-4;
+  }
 }
 
 .bio {
-  font-size: clamp(0.95rem, 1.05vw, 1.0625rem);
-  line-height: 1.65;
+  font-size: clamp(0.9rem, 1.05vw, 1.0625rem);
+  line-height: 1.54;
   color: $muted;
   max-width: 54ch;
+
+  @include respond-up($bp-md) {
+    line-height: 1.65;
+  }
 }
 
 .ctaRow {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: $space-3;
-  padding-top: $space-2;
+  gap: $space-2;
+  padding-top: $space-1;
+
+  @include respond-up($bp-md) {
+    gap: $space-3;
+    padding-top: $space-2;
+  }
 }
 
 .bottomHud {
@@ -184,9 +214,13 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: $space-4;
-  padding-top: $space-4;
+  gap: $space-2 $space-4;
+  padding-top: $space-3;
   border-top: 1px solid $line;
+
+  @include respond-up($bp-md) {
+    padding-top: $space-4;
+  }
 }
 
 .socialGroup {

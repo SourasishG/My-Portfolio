@@ -8,10 +8,10 @@
   right: 0;
   z-index: $z-nav;
   height: 64px;
-  background-color: rgba($ink, 0.78);
+  background-color: rgba($ink, 0.88);
   border-bottom: 1px solid $line;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 
 .inner {

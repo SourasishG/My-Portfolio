@@ -1,14 +1,13 @@
 "use client";
 
 import { useRef } from "react";
+import Link from "next/link";
 import { useGSAP } from "@gsap/react";
 import {
   ArrowDown,
   ArrowDownRight,
+  ArrowUpRight,
   Download,
-  Github,
-  Instagram,
-  Linkedin,
   Mail,
 } from "lucide-react";
 import { HeroBlobFallback } from "@/components/canvas/HeroBlob";
@@ -19,12 +18,6 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { ensureGsapRegistered, gsap, ScrollTrigger, SplitText } from "@/lib/gsap";
 import { useSceneStore } from "@/lib/store";
 import styles from "./Hero.module.scss";
-
-function renderSocialIcon(id: "github" | "linkedin" | "instagram") {
-  if (id === "github") return <Github size={15} aria-hidden="true" />;
-  if (id === "linkedin") return <Linkedin size={15} aria-hidden="true" />;
-  return <Instagram size={15} aria-hidden="true" />;
-}
 
 /**
  * Section 01 — Kinetic Core Hero (`#hero`).
@@ -84,6 +77,7 @@ export function Hero() {
         end: "bottom 40%",
         onEnter: () => store.setActiveSection("hero"),
         onEnterBack: () => store.setActiveSection("hero"),
+        onLeave: () => store.setActiveSection("about"),
       });
 
       return () => {
@@ -125,7 +119,7 @@ export function Hero() {
           <p className={styles.roleEyebrow}>{HERO_COPY.roleLabel}</p>
 
           <h1 ref={nameRef} className={`${styles.heroTitle} hero-name`}>
-            <span className={styles.nameLine}>{HERO_COPY.firstName}</span>
+            <span className={styles.nameLine}>{HERO_COPY.firstName}</span>{" "}
             <span className={styles.nameLine}>{HERO_COPY.lastName}</span>
           </h1>
 
@@ -177,17 +171,17 @@ export function Hero() {
                 className={`${styles.socialBtn} hero-social-btn`}
                 ariaLabel={`${social.label} profile (${social.handle})`}
               >
-                {renderSocialIcon(social.id)}
                 <span className={styles.socialLabel}>{social.label}</span>
+                <ArrowUpRight size={13} aria-hidden="true" />
               </MagneticButton>
             ))}
           </nav>
 
-          <a href="/#about" className={styles.scrollCue}>
+          <Link href="/#about" className={styles.scrollCue}>
             <span className={styles.scrollTick} aria-hidden="true" />
             <span>{HERO_COPY.scrollCue}</span>
             <ArrowDown size={14} aria-hidden="true" />
-          </a>
+          </Link>
         </div>
       </div>
     </section>

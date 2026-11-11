@@ -150,19 +150,19 @@ export function SceneRoot() {
             isMobile={!isDesktop}
             reducedMotion={reducedMotion}
             visible={showHeroBlob}
-            position={isDesktop ? [1.28, 0.02, 0] : [0, 0.28, 0]}
-            scale={isDesktop ? 1.04 : 0.88}
+            position={isDesktop ? [1.28, 0.02, 0] : [0, 0.45, 0]}
+            scale={isDesktop ? 1.06 : 0.92}
             labOverrides={{
-              basePointSize: 2.15,
-              opacity: isDesktop ? 0.72 : 0.62,
+              basePointSize: isDesktop ? 2.6 : 2.85,
+              opacity: isDesktop ? 0.94 : 0.98,
             }}
           />
 
           {/* S8 — Subtle Global Grain & Vignette (disabled on low GPU / muted on $paper) */}
           <GrainOverlay
             enabled={gpuProfile.tier === "high" || isDesktop}
-            grainOpacity={0.04}
-            vignetteStrength={0.22}
+            grainOpacity={0.036}
+            vignetteStrength={0.1}
           />
         </Canvas>
       </CanvasErrorBoundary>

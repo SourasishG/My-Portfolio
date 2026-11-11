@@ -1,67 +1,64 @@
 @use "abstracts/tokens" as *;
 @use "abstracts/mixins" as *;
 
-.stage {
-  min-height: 100dvh;
+.sentinelBand {
+  position: relative;
+  min-height: 80dvh;
+  background-color: $ink;
+  border-top: 1px solid $line;
   display: grid;
-  place-items: center;
-  padding: $space-6;
-  background-color: $black;
+  align-items: center;
+  padding-block: $space-9;
 }
 
-.panel {
-  width: min(100%, 42rem);
-  padding: $space-7;
-  background-color: $charcoal;
-  @include hairline-grid($line);
+.sentinelInner {
+  @include container;
   display: grid;
-  gap: $space-5;
+  gap: $space-4;
+  max-width: 52rem;
 }
 
-.hud {
+.hudTag {
   @include hud-label;
   color: $cyan;
 }
 
-.title {
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  line-height: 0.96;
-  letter-spacing: -0.03em;
+.heading {
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
   color: $white;
 }
 
 .copy {
   color: $muted;
-  max-width: 54ch;
-
-  strong {
-    color: $white;
-    font-weight: 500;
-  }
+  max-width: 58ch;
+  line-height: 1.65;
 }
 
-.actions {
+.metaRow {
   display: flex;
   flex-wrap: wrap;
   gap: $space-3;
+  padding-top: $space-2;
 }
 
-.primaryCta {
+.backTopLink {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  padding: $space-3 $space-5;
-  background-color: $signal;
-  color: $black;
+  padding-inline: $space-4;
+  border: 1px solid $line-strong;
   font-family: $font-mono;
   font-size: $text-hud;
-  font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  transition: transform 0.2s $ease-expo-out, background-color 0.2s ease;
+  color: $white;
+  transition: border-color 0.2s ease, color 0.2s ease;
 
   &:hover {
-    background-color: $white;
-    transform: translateY(-1px);
+    border-color: $cyan;
+    color: $cyan;
   }
 }
