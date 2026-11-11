@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Canvas, useThree } from "@react-three/fiber";
 import { CanvasErrorBoundary } from "@/components/canvas/CanvasErrorBoundary";
+import { ContourSphere } from "@/components/canvas/ContourSphere";
 import { GrainOverlay } from "@/components/canvas/GrainOverlay";
 import { HeroBlob } from "@/components/canvas/HeroBlob";
 import { useGpuTier } from "@/hooks/useGpuTier";
@@ -96,7 +97,9 @@ export function SceneRoot() {
     return null;
   }
 
-  const showHeroBlob = activeSection === "hero" || activeSection === "about";
+  const showHeroBlob = activeSection === "hero";
+  const showAboutSphere = activeSection === "about";
+  const canvasBackdrop = activeSection === "hero" ? "#000000" : "#07080B";
 
   return (
     <div
@@ -106,7 +109,8 @@ export function SceneRoot() {
         inset: 0,
         zIndex: 0,
         pointerEvents: "none",
-        backgroundColor: "#000000",
+        backgroundColor: canvasBackdrop,
+        transition: "background-color 0.45s ease",
       }}
     >
       <CanvasErrorBoundary
@@ -156,6 +160,15 @@ export function SceneRoot() {
               basePointSize: isDesktop ? 2.6 : 2.85,
               opacity: isDesktop ? 0.94 : 0.98,
             }}
+          />
+
+          {/* S2 — Procedural Topographic Contour Sphere synced to Section 02 aperture */}
+          <ContourSphere
+            tier={gpuProfile.tier}
+            isMobile={!isDesktop}
+            reducedMotion={reducedMotion}
+            visible={showAboutSphere}
+            viewportSelector="#about-s2-aperture"
           />
 
           {/* S8 — Subtle Global Grain & Vignette (disabled on low GPU / muted on $paper) */}

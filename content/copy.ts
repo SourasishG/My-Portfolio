@@ -13,3 +13,43 @@ export const HERO_COPY = {
   ctaContact: "Contact",
   scrollCue: "Scroll to explore",
 } as const;
+
+export const ABOUT_COPY = {
+  sectionIndex: "02",
+  sectionTag: "[02] // PERSONAL ARCHITECTURE",
+  subTag: "QUICK LEARNER · PATIENT PROBLEM-SOLVER",
+  heading: "Understanding the system behind the syntax.",
+  paragraphs: [
+    "My journey began in frontend development, learning how thoughtful interfaces respond to real people. Over time my curiosity pushed deeper across the stack—into Node.js and Express servers, REST APIs, relational and document databases, application architecture, and AWS cloud deployment fundamentals.",
+    "Two traits define how I build: I learn quickly when facing unfamiliar tools, and I stay patient when diagnosing tricky edge cases. I am passionate about understanding the problem behind the code and how every layer of a software system connects end-to-end.",
+    "I am also deeply interested in Artificial Intelligence, Large Language Models, and AI-assisted development workflows as complements to core engineering knowledge. In fact, building this SIGNAL portfolio with Next.js, TypeScript, Three.js, React Three Fiber, and Framer Motion is part of that ongoing exploration—turning concepts I am actively studying into working software.",
+  ],
+  portraitAlt:
+    "Studio portrait of Sourasish Ghosh wearing glasses and a dark blazer against a cool slate backdrop",
+  portraitCaption: "FIG 02.1 // SOURASISH GHOSH",
+  portraitLocation: "KOLKATA, IN · SNU CSE '27",
+  apertureTag: "S2 // PROCEDURAL TOPOGRAPHY",
+  apertureHint: "SCROLL-SCRUBBED CROSS-SECTION",
+  pillars: [
+    {
+      label: "ACADEMIC BASE",
+      value: "B.Tech CSE · SNU (2023–2027)",
+      detail: "Sister Nivedita University · Current CGPA 8.08",
+    },
+    {
+      label: "WORK STYLE",
+      value: "Quick Learner · Patient",
+      detail: "Methodical experimentation & first-principles debugging",
+    },
+    {
+      label: "ENGINEERING ARC",
+      value: "Frontend -> Full-Stack -> Cloud",
+      detail: "Connecting UI craft, REST APIs, SQL/NoSQL schemas & AWS basics",
+    },
+    {
+      label: "AI & LEARNING ETHOS",
+      value: "Tools Complement Core CS",
+      detail: "Exploring AI/LLMs & 3D web while keeping fundamentals strong",
+    },
+  ],
+} as const;

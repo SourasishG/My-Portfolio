@@ -26,6 +26,8 @@ export interface ContourSphereProps {
   position?: [number, number, number];
   scale?: number;
   visible?: boolean;
+  /** Optional DOM selector to track a scrollable container inside the fixed persistent Canvas */
+  viewportSelector?: string;
   labOverrides?: ContourSphereLabOverrides;
 }
 
@@ -132,10 +134,12 @@ export function ContourSphere({
   position = [0, 0, 0],
   scale = 1,
   visible = true,
+  viewportSelector,
   labOverrides,
 }: ContourSphereProps) {
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
+  const anchorElRef = useRef<Element | null>(null);
 
   const widthSegments = isMobile || tier === "low" ? 64 : 96;
   const halfHeightSegments = isMobile || tier === "low" ? 24 : 40;
@@ -158,9 +162,51 @@ export function ContourSphere({
     };
   }, [geometry]);
 
-  useFrame((_, delta) => {
+  useFrame((state, delta) => {
+    const mesh = meshRef.current;
     const shaderMat = materialRef.current;
-    if (!visible || !shaderMat) return;
+    if (!mesh || !shaderMat) return;
+
+    if (!visible) {
+      mesh.visible = false;
+      return;
+    }
+
+    if (viewportSelector) {
+      if (!anchorElRef.current || !anchorElRef.current.isConnected) {
+        anchorElRef.current = document.querySelector(viewportSelector);
+      }
+      const el = anchorElRef.current;
+      if (!el) {
+        mesh.visible = false;
+        return;
+      }
+
+      const rect = el.getBoundingClientRect();
+      const vw = Math.max(1, window.innerWidth);
+      const vh = Math.max(1, window.innerHeight);
+
+      if (rect.width <= 0 || rect.height <= 0 || rect.bottom <= 0 || rect.top >= vh) {
+        mesh.visible = false;
+        return;
+      }
+
+      const normX = (rect.left + rect.width * 0.5) / vw - 0.5;
+      const normY = 0.5 - (rect.top + rect.height * 0.5) / vh;
+      const worldX = normX * state.viewport.width;
+      const worldY = normY * state.viewport.height;
+      const worldBox = Math.min(
+        (rect.width / vw) * state.viewport.width,
+        (rect.height / vh) * state.viewport.height
+      );
+      const fittedScale = (worldBox * 0.78) / 2.9;
+
+      mesh.position.set(worldX, worldY, 0);
+      mesh.scale.setScalar(fittedScale);
+      mesh.visible = true;
+    } else {
+      mesh.visible = true;
+    }
 
     const clampedDelta = Math.min(delta, 0.05);
     const uniforms = shaderMat.uniforms;
@@ -176,7 +222,11 @@ export function ContourSphere({
     uniforms.uLineWidth.value = labOverrides?.lineWidth ?? 0.055;
 
     const targetSplit =
-      labOverrides?.splitProgress !== undefined ? labOverrides.splitProgress : 0;
+      labOverrides?.splitProgress !== undefined
+        ? labOverrides.splitProgress
+        : viewportSelector
+          ? storeState.aboutSplit
+          : 0;
     uniforms.uSplitProgress.value = THREE.MathUtils.lerp(
       uniforms.uSplitProgress.value as number,
       targetSplit,
@@ -194,11 +244,11 @@ export function ContourSphere({
       (uniforms.uAccentRim.value as THREE.Color).set(labOverrides.accentRim);
     }
 
-    if (meshRef.current && !reducedMotion) {
+    if (!reducedMotion) {
       const rotSpeed = labOverrides?.autoRotateSpeed ?? 0.09;
-      meshRef.current.rotation.y += clampedDelta * rotSpeed;
-      meshRef.current.rotation.x = THREE.MathUtils.lerp(
-        meshRef.current.rotation.x,
+      mesh.rotation.y += clampedDelta * rotSpeed;
+      mesh.rotation.x = THREE.MathUtils.lerp(
+        mesh.rotation.x,
         storeState.pointer.y * 0.12,
         Math.min(1, clampedDelta * 4)
       );

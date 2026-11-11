@@ -19,6 +19,7 @@ interface SceneState {
   velocity: number; // Normalized Lenis scroll velocity
   pointer: { x: number; y: number }; // Normalized -1..1 viewport coordinates
   heroMorph: number; // 0 (S1 hero point cloud) -> 1 (S2 contour morph)
+  aboutSplit: number; // 0..1 circular cross-section split inside Section 02
   activeSection: SectionId;
   gpuTier: GpuTierLevel;
   webglFailed: boolean;
@@ -28,6 +29,7 @@ interface SceneState {
   setScrollState: (scrollY: number, scrollProgress: number, velocity: number) => void;
   setPointer: (x: number, y: number) => void;
   setHeroMorph: (morph: number) => void;
+  setAboutSplit: (split: number) => void;
   setActiveSection: (section: SectionId) => void;
   setGpuTier: (tier: GpuTierLevel) => void;
   setWebglFailed: (failed: boolean) => void;
@@ -41,6 +43,7 @@ export const useSceneStore = create<SceneState>((set, get) => ({
   velocity: 0,
   pointer: { x: 0, y: 0 },
   heroMorph: 0,
+  aboutSplit: 0,
   activeSection: "hero",
   gpuTier: "mid",
   webglFailed: false,
@@ -62,6 +65,10 @@ export const useSceneStore = create<SceneState>((set, get) => ({
 
   setHeroMorph: (morph) => {
     get().heroMorph = morph;
+  },
+
+  setAboutSplit: (split) => {
+    get().aboutSplit = split;
   },
 
   setActiveSection: (activeSection) => {
