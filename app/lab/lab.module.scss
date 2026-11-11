@@ -144,6 +144,27 @@
   @include hairline-grid($line-strong);
 }
 
+.s3FallbackWrap {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: $space-6;
+}
+
+.s3FallbackFrame {
+  position: relative;
+  width: min(78%, 900px);
+  aspect-ratio: 16 / 9;
+  border: 1px solid $line-strong;
+  background-color: $ink;
+  overflow: hidden;
+}
+
+.s3FallbackImg {
+  object-fit: contain;
+}
+
 .stageCornerTL,
 .stageCornerTR,
 .stageCornerBL,

@@ -9,6 +9,7 @@ import React, {
   useSyncExternalStore,
 } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Canvas, useThree } from "@react-three/fiber";
 import { Leva, useControls } from "leva";
 import { ArrowLeft, Cpu, Eye, Layers, Sparkles } from "lucide-react";
@@ -22,13 +23,15 @@ import {
   HeroBlob,
   HeroBlobFallback,
 } from "@/components/canvas/HeroBlob";
+import { ProjectReveal } from "@/components/canvas/ProjectReveal";
+import { FEATURED_PROJECTS } from "@/content/projects";
 import { useGpuTier } from "@/hooks/useGpuTier";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { GpuTierLevel, useSceneStore } from "@/lib/store";
 import styles from "./lab.module.scss";
 
-type LabSceneMode = "s1" | "s2" | "morph";
+type LabSceneMode = "s1" | "s2" | "morph" | "s3";
 type PresetTier = "desktop" | "mid" | "mobile";
 
 const emptySubscribe = () => () => {};
@@ -39,7 +42,9 @@ function getUrlParam(name: string): string | null {
 
 function getInitialSceneMode(): LabSceneMode {
   const qScene = getUrlParam("scene");
-  if (qScene === "s1" || qScene === "s2" || qScene === "morph") return qScene;
+  if (qScene === "s1" || qScene === "s2" || qScene === "morph" || qScene === "s3") {
+    return qScene;
+  }
   return "s1";
 }
 
@@ -141,6 +146,23 @@ function ShaderLabInteractive() {
     bgColor: "#07080B",
     accentRim: "#FF5B1F",
   }));
+
+  const [s3Values] = useControls("S3 — Halftone Reveal", () => ({
+    sample: {
+      options: ["MUZO", "Office Aid"] as const,
+      value: "MUZO" as const,
+    },
+    dotDensity: { value: 78.0, min: 32.0, max: 130.0, step: 1.0 },
+    revealRadius: { value: 0.42, min: 0.0, max: 1.45, step: 0.01 },
+    bgColor: "#07080B",
+    halftoneTint: "#4DA8FF",
+    ringAccent: "#FF5B1F",
+  }));
+
+  const s3SampleScreen = useMemo(() => {
+    const projectIndex = s3Values.sample === "Office Aid" ? 1 : 0;
+    return FEATURED_PROJECTS[projectIndex].screens[0];
+  }, [s3Values.sample]);
 
   useEffect(() => {
     const canvas = canvasElementRef.current;
