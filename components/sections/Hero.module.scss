@@ -1,0 +1,233 @@
+@use "abstracts/tokens" as *;
+@use "abstracts/mixins" as *;
+
+.heroSection {
+  position: relative;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-top: calc(64px + clamp(1.5rem, 4vh, 3rem));
+  padding-bottom: clamp(1.5rem, 4vh, 2.75rem);
+  overflow-x: clip;
+  background-color: transparent;
+
+  // Readability scrim over the S1 point cloud on desktop & vertical gradient on mobile
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at 50% 34%, rgba($black, 0.14) 0%, rgba($black, 0.72) 66%),
+      linear-gradient(180deg, rgba($black, 0.45) 0%, rgba($black, 0.74) 100%);
+
+    @include respond-up($bp-lg) {
+      background:
+        linear-gradient(
+          90deg,
+          rgba($black, 0.88) 0%,
+          rgba($black, 0.62) 44%,
+          rgba($black, 0.14) 76%,
+          rgba($black, 0) 100%
+        ),
+        linear-gradient(180deg, rgba($black, 0.35) 0%, rgba($black, 0) 24%, rgba($black, 0.5) 100%);
+    }
+  }
+}
+
+.fallbackStage {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.78;
+
+  @include respond-up($bp-lg) {
+    justify-content: flex-end;
+    padding-right: clamp(2rem, 6vw, 7rem);
+
+    > div {
+      width: min(46vw, 560px) !important;
+      height: min(46vw, 560px) !important;
+    }
+  }
+}
+
+.container {
+  @include container;
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: $space-6;
+}
+
+.topHud {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-3;
+  padding-bottom: $space-4;
+  border-bottom: 1px solid $line;
+}
+
+.hudGroup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-3;
+}
+
+.hudTag {
+  @include hud-label;
+  color: $cyan;
+}
+
+.coords {
+  @include hud-label;
+  color: $muted;
+  display: none;
+
+  @include respond-up($bp-sm) {
+    display: inline-block;
+  }
+}
+
+.statusPill {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  padding: 6px 12px;
+  border: 1px solid $line-strong;
+  background-color: rgba($charcoal, 0.72);
+  backdrop-filter: blur(8px);
+  font-family: $font-mono;
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: $white;
+}
+
+.statusDot {
+  width: 7px;
+  height: 7px;
+  border-radius: $radius-pill;
+  background-color: $signal;
+  flex-shrink: 0;
+  box-shadow: 0 0 10px rgba($signal, 0.7);
+}
+
+.mainBlock {
+  max-width: 680px;
+  display: grid;
+  gap: clamp(1rem, 2.2vh, 1.75rem);
+  margin-block: auto;
+  padding-block: $space-3;
+}
+
+.roleEyebrow {
+  @include hud-label;
+  color: $cyan;
+  letter-spacing: 0.14em;
+}
+
+.heroTitle {
+  font-size: clamp(2.55rem, 8.1vw, 7.25rem);
+  font-weight: 700;
+  line-height: 0.89;
+  letter-spacing: -0.04em;
+  color: $white;
+  text-transform: uppercase;
+  word-break: keep-all;
+}
+
+.nameLine {
+  display: block;
+}
+
+.manifesto {
+  font-size: clamp(1.1875rem, 2.2vw, 1.875rem);
+  font-weight: 500;
+  line-height: 1.24;
+  letter-spacing: -0.02em;
+  color: $white;
+  padding-left: $space-4;
+  border-left: 2px solid $cyan;
+  max-width: 28ch;
+}
+
+.bio {
+  font-size: clamp(0.95rem, 1.05vw, 1.0625rem);
+  line-height: 1.65;
+  color: $muted;
+  max-width: 54ch;
+}
+
+.ctaRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-3;
+  padding-top: $space-2;
+}
+
+.bottomHud {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-4;
+  padding-top: $space-4;
+  border-top: 1px solid $line;
+}
+
+.socialGroup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-2;
+}
+
+.socialBtn {
+  gap: 8px;
+  padding-inline: $space-3;
+  color: $white;
+}
+
+.socialLabel {
+  font-size: 0.6875rem;
+}
+
+.scrollCue {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  min-height: 44px;
+  padding-inline: $space-2;
+  @include hud-label;
+  color: $muted;
+  transition: color 0.18s ease;
+
+  &:hover {
+    color: $white;
+  }
+}
+
+.scrollTick {
+  width: 24px;
+  height: 1px;
+  background-color: $cyan;
+  display: none;
+
+  @include respond-up($bp-md) {
+    display: inline-block;
+  }
+}
