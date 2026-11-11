@@ -1,21 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 
+function getServerSnapshot(): boolean {
+  return false;
+}
+
+/**
+ * SSR-safe media query subscription powered by `useSyncExternalStore`.
+ */
 export function useMediaQuery(query: string): boolean {
-  const [matches, setMatches] = useState(false);
+  const subscribe = useCallback(
+    (onStoreChange: () => void) => {
+      const mq = window.matchMedia(query);
+      mq.addEventListener("change", onStoreChange);
+      return () => mq.removeEventListener("change", onStoreChange);
+    },
+    [query]
+  );
 
-  useEffect(() => {
-    const mq = window.matchMedia(query);
-    setMatches(mq.matches);
+  const getSnapshot = useCallback(
+    () => window.matchMedia(query).matches,
+    [query]
+  );
 
-    const onChange = (event: MediaQueryListEvent) => {
-      setMatches(event.matches);
-    };
-
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
-  }, [query]);
-
-  return matches;
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }

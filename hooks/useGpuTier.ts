@@ -25,8 +25,8 @@ function checkWebGLSupport(): boolean {
 }
 
 /**
- * Classifies client GPU capability using `detect-gpu` so scenes degrade
- * cleanly from full particle density -> reduced density -> static SVG/image fallbacks.
+ * Classifies client GPU capability asynchronously via `detect-gpu` so scenes
+ * degrade gracefully from full particle density -> reduced density -> static SVG/image fallbacks.
  */
 export function useGpuTier(): GpuProfile {
   const setStoreTier = useSceneStore((s) => s.setGpuTier);
@@ -39,22 +39,26 @@ export function useGpuTier(): GpuProfile {
 
   useEffect(() => {
     let active = true;
-    const supported = checkWebGLSupport();
 
-    if (!supported) {
-      setStoreTier("low");
-      setProfile({
-        tier: "low",
-        webglSupported: false,
-        isMobile: window.innerWidth < 768,
-        ready: true,
-      });
-      return;
-    }
-
-    getGPUTier()
-      .then((result) => {
+    async function probe(): Promise<void> {
+      const supported = checkWebGLSupport();
+      if (!supported) {
+        await Promise.resolve();
         if (!active) return;
+        setStoreTier("low");
+        setProfile({
+          tier: "low",
+          webglSupported: false,
+          isMobile: window.innerWidth < 768,
+          ready: true,
+        });
+        return;
+      }
+
+      try {
+        const result = await getGPUTier();
+        if (!active) return;
+
         let mapped: GpuTierLevel = "mid";
         if (result.tier >= 3) mapped = "high";
         else if (result.tier === 2) mapped = "mid";
@@ -67,8 +71,7 @@ export function useGpuTier(): GpuProfile {
           isMobile: Boolean(result.isMobile) || window.innerWidth < 768,
           ready: true,
         });
-      })
-      .catch(() => {
+      } catch {
         if (!active) return;
         setStoreTier("mid");
         setProfile({
@@ -77,7 +80,10 @@ export function useGpuTier(): GpuProfile {
           isMobile: window.innerWidth < 768,
           ready: true,
         });
-      });
+      }
+    }
+
+    void probe();
 
     return () => {
       active = false;
