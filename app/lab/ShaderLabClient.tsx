@@ -209,9 +209,9 @@ function ShaderLabInteractive() {
     if (sceneMode === "s2") {
       return {
         code: "S2 // TOPOGRAPHIC CONTOUR SPHERE",
-        budget: `${isMobilePreset ? "5,120" : "20,480"} Split-Aware Tris · WebGL 1/2 Active`,
+        budget: `${isMobilePreset ? "6,144" : "15,360"} Dual-Cap Tris · WebGL 1/2 Active`,
         summary:
-          "Evaluates multi-octave 3D Simplex elevation in the fragment shader and traces anti-aliased monochrome isolines via fract(h * uContourCount) + screen-space fwidth(). Pre-classified non-indexed triangles avoid seam stretching on split.",
+          "Evaluates multi-octave 3D Simplex elevation in the fragment shader and traces anti-aliased monochrome isolines via fract(h * uContourCount) + screen-space fwidth(). Aligned spherical hemisphere caps preserve a laser-smooth circular split seam.",
       };
     }
     return {

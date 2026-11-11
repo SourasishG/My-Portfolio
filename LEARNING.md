@@ -104,8 +104,8 @@ Renders a sculptural dark sphere etched with razor-sharp, screen-space anti-alia
 ### How the Math & Shader Uniforms Work (Plain English)
 1. **How procedural contour lines stay razor-sharp (`fwidth` anti-aliasing):**  
    In `s2ContourSphere.frag.glsl`, multi-octave 3D Simplex noise computes an elevation height `h` (`0..1`) at every pixel on the sphere. Multiplying `h * uContourCount` (e.g., `14` bands) and taking `fract()` slices space into repeating elevation rings (`0..1`), just like lines on a hiking topographic map. Because GLSL's `fwidth(scaled)` measures how fast elevation changes across adjacent screen pixels, `smoothstep(uLineWidth - fw, uLineWidth + fw, band)` paints crisp `1px`-antialiased contour rings without blurry textures!
-2. **Preventing Stretched Polygons When the Sphere Splits (`aSplitSide`):**  
-   A naive vertex shader that moves vertices `+gap` or `-gap` on opposite sides of a plane stretches triangles crossing `dot(dir, splitAxis) == 0` like pulled taffy. `buildSplitAwareContourSphereGeometry` converts the `IcosahedronGeometry` with `.toNonIndexed()` and classifies each triangle's **centroid** once onto `+1` or `-1` via `aSplitSide`. Both halves therefore detach along an authentic faceted cleft with `DoubleSide` visibility and zero warped triangles, while `vSeamProximity` highlights the split rim cleanly with `uAccentRim` (`#FF5B1F`).
+2. **Laser-Smooth Circular Split Mechanics (`aSplitSide` + Dual Hemisphere Caps):**  
+   A naive single sphere mesh that shifts vertices across an oblique cutting plane either stretches straddling triangles or exposes jagged sawtooth steps along icosahedron edges. `buildSplitAwareContourSphereGeometry` instead builds two matching spherical hemisphere caps rotated cleanly onto `SPLIT_AXIS` so every vertex along the `theta = PI/2` equator aligns seamlessly when closed (`uSplitProgress = 0`), then parts along a razor-clean diagonal circle when `uSplitProgress > 0`. Meanwhile, checking `gl_FrontFacing` in the fragment shader shades the hollow interior shell deep matte obsidian so looking inside the split reveals real 3D sculptural depth.
 3. **Every S2 Uniform Explained:**
    - `uNoiseScale`, `uDisplacementAmp`: Controls fold frequency and mild surface silhouette wobble.
    - `uContourCount`, `uLineWidth`: Number of elevation contour rings and normalized ring thickness.
@@ -122,8 +122,8 @@ Renders a sculptural dark sphere etched with razor-sharp, screen-space anti-alia
 ### Interview Questions & Model Answers
 1. **Q:** *Why does `fwidth(scaled)` eliminate shimmering/moiré artifacts on procedural contour shaders?*  
    **A:** On silhouette edges wrapping away from the camera, surface height changes rapidly across one screen pixel. Dividing or smoothing using `fwidth()` (which computes $|\frac{\partial v}{\partial x}| + |\frac{\partial v}{\partial y}|$) widens the fade width automatically to match screen-space rate of change so lines neither vanish nor alias into dashed shimmer.
-2. **Q:** *Why convert `IcosahedronGeometry` with `.toNonIndexed()` before splitting vertices by plane in the vertex shader?*  
-   **A:** Indexed geometry shares vertices among adjacent triangles; moving one vertex shifts all neighboring triangles, stretching any polygon straddling the split plane across the gap. Un-indexing lets each triangle receive an independent `aSplitSide` classification from its centroid so triangles move cleanly with one hemisphere.
+2. **Q:** *How do you keep a spherical mesh split completely smooth along a diagonal cut without jagged triangles or seam creases when closed?*  
+   **A:** Constructing North and South spherical hemisphere caps (`theta = 0..PI/2` and `PI/2..PI`), aligning their mutual equator ring orthogonal to `SPLIT_AXIS`, and tagging each half with `aSplitSide` ensures vertices meet identically at `uSplitProgress = 0` (zero visible seam) and open cleanly along an exact geometric circle when separated.
 3. **Q:** *How is accessibility/resilience handled if a recruiter opens the site with `prefers-reduced-motion` or hardware acceleration disabled?*  
    **A:** `CanvasErrorBoundary`, `webglSupported` detection, and `useReducedMotion` share one fallback interface rendering `ContourSphereFallback`, an inline semantic SVG replicating both the closed and split states with zero GPU dependency.
 

@@ -28,6 +28,8 @@ void main() {
   float lineMask = 1.0 - smoothstep(uLineWidth - fw, uLineWidth + fw, band);
 
   // Exterior shell vs hollow sliced interior wall
+  vec3 N = normalize(vNormal);
+  vec3 V = normalize(vViewPos);
   float rim = pow(1.0 - max(0.0, dot(N, V)), 2.2);
   float interiorMask = 1.0 - float(gl_FrontFacing);
   vec3 outerCol = mix(uBgColor, uLineColor, lineMask * (0.88 + 0.12 * rim));
