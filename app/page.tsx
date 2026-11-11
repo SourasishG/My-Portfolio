@@ -2,6 +2,7 @@ import Link from "next/link";
 import { About } from "@/components/sections/About";
 import { Hero } from "@/components/sections/Hero";
 import { Projects } from "@/components/sections/Projects";
+import { Toolkit } from "@/components/sections/Toolkit";
 import styles from "./page.module.scss";
 
 export default function HomePage() {
@@ -10,30 +11,31 @@ export default function HomePage() {
       <Hero />
       <About />
       <Projects />
+      <Toolkit />
 
-      {/* Minimal staging sentinel queued for Checkpoint 4c (Section 04 Technical Toolkit) */}
+      {/* Minimal staging sentinel queued for Checkpoint 4d (Section 05 Experience, Certs & Education) */}
       <section
-        id="toolkit"
+        id="journey"
         className={styles.sentinelBand}
-        aria-label="Section 04 staging gate"
+        aria-label="Section 05 staging gate"
       >
         <div className={styles.sentinelInner}>
           <span className={styles.hudTag}>
-            [04] // CHECKPOINT 4b STAGING GATE — TECHNICAL TOOLKIT
+            [05] // CHECKPOINT 4c STAGING GATE — EXPERIENCE &amp; EDUCATION
           </span>
           <h2 className={styles.heading}>
-            Section 03 Selected Engineering Active
+            Section 04 Technical Toolkit Active
           </h2>
           <p className={styles.copy}>
-            Section 03 (MUZO, Office Aid with 5 verified workspace captures, S3
-            Halftone Optical Reveal shader, More Work repository archive, and{" "}
-            <code>/projects/[slug]</code> case studies) is integrated above. Section
-            04 (Technical Toolkit &amp; Currently Exploring Architecture) awaits
-            Checkpoint 4b verification and approval before implementation.
+            Section 04 (Grouped Core Stack, Honest Currently Exploring band,
+            interactive project-to-skill trace panel, and restrained{" "}
+            <code>ToolkitConstellation</code> background lattice) is integrated
+            above. Section 05 (AWS DevOps Intern timeline, Verified Certifications,
+            and SNU / CBSE Education) awaits Checkpoint 4c verification and approval.
           </p>
           <div className={styles.metaRow}>
-            <Link href="/#projects" className={styles.backTopLink}>
-              Back to Projects (#projects)
+            <Link href="/#toolkit" className={styles.backTopLink}>
+              Back to Toolkit (#toolkit)
             </Link>
             <Link href="/#hero" className={styles.backTopLink}>
               Return to Top (#hero)

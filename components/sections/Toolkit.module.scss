@@ -1,0 +1,545 @@
+@use "abstracts/tokens" as *;
+@use "abstracts/mixins" as *;
+
+.toolkitSection {
+  position: relative;
+  padding-block: clamp(4.5rem, 10vh, 8.5rem);
+  border-top: 1px solid $line;
+  background-color: transparent;
+  overflow-x: clip;
+  scroll-margin-top: 80px;
+}
+
+.constellationFallbackBg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.42;
+  background-image:
+    radial-gradient(rgba($cyan, 0.28) 1px, transparent 1px),
+    radial-gradient(rgba($violet, 0.22) 1px, transparent 1px);
+  background-size: 48px 48px, 72px 72px;
+  background-position: 0 0, 24px 24px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 45%, #000 35%, transparent 100%);
+}
+
+.container {
+  @include container;
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: clamp(1.75rem, 3.8vw, 3rem);
+}
+
+// ---------------------------------------------------------------------------
+// Header Band
+// ---------------------------------------------------------------------------
+
+.headerBand {
+  display: grid;
+  gap: $space-3;
+}
+
+.headerMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-2 $space-4;
+}
+
+.hudTag {
+  @include hud-label;
+  color: $cyan;
+}
+
+.subTag {
+  @include hud-label;
+  color: $muted;
+}
+
+.hudLineSvg {
+  width: 100%;
+  height: 16px;
+  display: block;
+  overflow: visible;
+}
+
+.introRow {
+  display: grid;
+  gap: $space-3;
+
+  @include respond-up($bp-lg) {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    align-items: end;
+    gap: $space-6;
+  }
+}
+
+.heading {
+  font-size: clamp(2rem, 4.4vw, 3.65rem);
+  font-weight: 700;
+  line-height: 1.03;
+  letter-spacing: -0.032em;
+  color: $white;
+  max-width: 18ch;
+}
+
+.leadCopy {
+  font-size: $text-body;
+  line-height: 1.66;
+  color: $muted;
+  max-width: 58ch;
+}
+
+// ---------------------------------------------------------------------------
+// Filter Bar & Live Skill Context Telemetry Strip
+// ---------------------------------------------------------------------------
+
+.controlPanel {
+  display: grid;
+  gap: $space-3;
+}
+
+.filterRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.filterPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 36px;
+  padding: 0 0.8rem;
+  border: 1px solid $line;
+  background-color: rgba($charcoal, 0.88);
+  color: $muted;
+  font-family: $font-mono;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition:
+    color 0.18s ease,
+    border-color 0.18s ease,
+    background-color 0.18s ease;
+
+  &:hover {
+    color: $white;
+    border-color: $line-strong;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $cyan;
+    outline-offset: 2px;
+  }
+}
+
+.filterPillActive {
+  border-color: $cyan;
+  background-color: rgba($cyan, 0.15);
+  color: $white;
+}
+
+.filterPillExploringActive {
+  border-color: $violet;
+  background-color: rgba($violet, 0.16);
+  color: $white;
+}
+
+.traceCard {
+  position: relative;
+  display: grid;
+  gap: $space-2;
+  padding: clamp(0.9rem, 2vw, 1.25rem);
+  border: 1px solid $line-strong;
+  background-color: rgba($charcoal, 0.92);
+  min-height: 92px;
+}
+
+.traceHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-2;
+}
+
+.traceBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  @include hud-label;
+  font-size: 0.6875rem;
+  color: $cyan;
+}
+
+.traceBadgeExploring {
+  color: $violet;
+}
+
+.lockDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background-color: $signal;
+}
+
+.traceResetBtn {
+  min-height: 28px;
+  padding: 0 0.6rem;
+  border: 1px solid $line;
+  background-color: rgba($ink, 0.75);
+  color: $muted;
+  font-family: $font-mono;
+  font-size: 0.6875rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+
+  &:hover {
+    color: $white;
+    border-color: $line-strong;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $cyan;
+    outline-offset: 2px;
+  }
+}
+
+.traceContent {
+  display: grid;
+  gap: 0.55rem;
+
+  @include respond-up($bp-lg) {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    align-items: center;
+    gap: $space-4;
+  }
+}
+
+.traceSummary {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: $white;
+}
+
+.traceHintText {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: $muted;
+}
+
+.traceLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  justify-content: flex-start;
+
+  @include respond-up($bp-lg) {
+    justify-content: flex-end;
+  }
+}
+
+.connectionChipLink,
+.connectionChipStatic {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.32rem 0.65rem;
+  border: 1px solid $line;
+  background-color: rgba($ink, 0.78);
+  font-family: $font-mono;
+  font-size: 0.7rem;
+  color: $white;
+  transition:
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.connectionChipLink:hover {
+  border-color: $cyan;
+  color: $cyan;
+}
+
+.connectionChipLink:focus-visible {
+  outline: 2px solid $cyan;
+  outline-offset: 2px;
+}
+
+.connectionSub {
+  color: $muted;
+  font-size: 0.66rem;
+}
+
+// ---------------------------------------------------------------------------
+// Core Foundation 6-Category Grid
+// ---------------------------------------------------------------------------
+
+.categoryGrid {
+  display: grid;
+  gap: $space-4;
+
+  @include respond-up($bp-md) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include respond-up($bp-lg) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.categoryCard {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: $space-3;
+  padding: clamp(1rem, 2.2vw, 1.4rem);
+  border: 1px solid $line;
+  background-color: rgba($charcoal, 0.88);
+  min-width: 0;
+  transition:
+    border-color 0.22s ease,
+    opacity 0.22s ease,
+    background-color 0.22s ease;
+
+  &:hover {
+    border-color: rgba($cyan, 0.45);
+    background-color: rgba($charcoal, 0.96);
+  }
+}
+
+.categoryCardDimmed {
+  opacity: 0.46;
+}
+
+.categoryCardHighlighted {
+  border-color: $cyan;
+  background-color: rgba($charcoal, 0.98);
+}
+
+.categoryHeader {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.categoryMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-2;
+}
+
+.categoryIndex {
+  @include hud-label;
+  font-size: 0.6875rem;
+  color: $cyan;
+}
+
+.categoryCount {
+  @include hud-label;
+  font-size: 0.65rem;
+  color: $muted;
+}
+
+.categoryTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: $white;
+  letter-spacing: -0.015em;
+}
+
+.categorySubtitle {
+  font-size: 0.825rem;
+  line-height: 1.45;
+  color: $muted;
+}
+
+.chipList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.skillChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 36px;
+  padding: 0 0.72rem;
+  border: 1px solid $line-strong;
+  background-color: rgba($ink, 0.84);
+  color: $white;
+  font-size: 0.84rem;
+  font-weight: 500;
+  transition:
+    border-color 0.18s ease,
+    background-color 0.18s ease,
+    color 0.18s ease;
+
+  &:focus-visible {
+    outline: 2px solid $cyan;
+    outline-offset: 2px;
+  }
+}
+
+.skillChipActive {
+  border-color: $cyan;
+  background-color: rgba($cyan, 0.18);
+  color: $white;
+}
+
+.skillQualifier {
+  font-family: $font-mono;
+  font-size: 0.68rem;
+  color: $muted;
+  font-weight: 400;
+}
+
+// ---------------------------------------------------------------------------
+// Currently Exploring Band (Strictly Separated Mastery Honesty)
+// ---------------------------------------------------------------------------
+
+.exploringBand {
+  position: relative;
+  display: grid;
+  gap: $space-4;
+  padding: clamp(1.25rem, 2.8vw, 1.85rem);
+  border: 1px solid rgba($violet, 0.38);
+  background-color: rgba($charcoal, 0.9);
+  transition:
+    opacity 0.22s ease,
+    border-color 0.22s ease;
+}
+
+.exploringBandDimmed {
+  opacity: 0.52;
+}
+
+.exploringHeader {
+  display: grid;
+  gap: $space-3;
+
+  @include respond-up($bp-lg) {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    align-items: start;
+    gap: $space-6;
+  }
+}
+
+.exploringTitleGroup {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.exploringPillBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: fit-content;
+  padding: 0.26rem 0.65rem;
+  border: 1px solid rgba($violet, 0.5);
+  background-color: rgba($violet, 0.12);
+  font-family: $font-mono;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $violet;
+}
+
+.exploringHeading {
+  font-size: clamp(1.35rem, 2.5vw, 1.85rem);
+  font-weight: 700;
+  color: $white;
+  letter-spacing: -0.02em;
+}
+
+.exploringNote {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: $muted;
+}
+
+.exploringChipGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.exploringChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 38px;
+  padding: 0 0.85rem;
+  border: 1px dashed rgba($violet, 0.5);
+  background-color: rgba($ink, 0.82);
+  color: $white;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition:
+    border-color 0.18s ease,
+    background-color 0.18s ease;
+
+  &:focus-visible {
+    outline: 2px solid $violet;
+    outline-offset: 2px;
+  }
+}
+
+.exploringChipActive {
+  border-style: solid;
+  border-color: $violet;
+  background-color: rgba($violet, 0.18);
+}
+
+.exploringMiniTag {
+  font-family: $font-mono;
+  font-size: 0.64rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: $violet;
+}
+
+.cornerTL,
+.cornerTR,
+.cornerBL,
+.cornerBR {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  pointer-events: none;
+}
+
+.cornerTL {
+  top: -1px;
+  left: -1px;
+  border-top: 1px solid $cyan;
+  border-left: 1px solid $cyan;
+}
+
+.cornerTR {
+  top: -1px;
+  right: -1px;
+  border-top: 1px solid $cyan;
+  border-right: 1px solid $cyan;
+}
+
+.cornerBL {
+  bottom: -1px;
+  left: -1px;
+  border-bottom: 1px solid $cyan;
+  border-left: 1px solid $cyan;
+}
+
+.cornerBR {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 1px solid $cyan;
+  border-right: 1px solid $cyan;
+}
+
+.cornerViolet {
+  border-color: $violet;
+}

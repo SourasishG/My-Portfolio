@@ -272,3 +272,24 @@ Serves dedicated deep-dive routes at `/projects/muzo` and `/projects/office-aid`
    **A:** All valid project slugs are pre-rendered into static HTML and RSC payloads during `next build`, and Next.js automatically responds with an HTTP 404 for unknown `/projects/<invalid>` requests instead of attempting unnecessary dynamic SSR renders.
 3. **Q:** *How do you keep a project case study honest and credible for senior engineers interviewing you?*  
    **A:** Separate **Built** capabilities (verified directly from working code, schemas, and tests) from **Planned** roadmap items, link real repositories rather than cherry-picked mockups, and document concrete engineering challenges solved along with the trade-offs (e.g., `AbortController` race-condition cancellation in MUZO or multi-model Gemini failover + Prisma context queries in Office Aid).
+
+
+---
+
+## Module 12 — Section 04 Technical Toolkit & `ToolkitConstellation` (`components/sections/Toolkit.tsx`, `components/canvas/ToolkitConstellation.tsx`, `content/skills.ts`)
+
+### What it does
+Presents technical skills cleanly grouped across 6 disciplined categories (**Programming Languages**, **Frontend**, **Backend**, **Database**, **Cloud & DevOps**, **Tools**) without misleading percentages or progress bars, followed by a visually separated **$violet (`#B388F5`) "Currently exploring" band** (`Next.js`, `TypeScript`, `AI/ML`, `Generative AI`, `Large Language Models`, `AI agents`, `Three.js`, `React Three Fiber`, `Framer Motion`) with an explicit portfolio learning statement.
+
+### Architecture & Interactive Telemetry
+1. **Live Project-to-Skill Trace Panel:** Hovering, focusing, or clicking any discipline filter or skill chip updates the trace panel (`toolkit-trace-panel` via Framer Motion `AnimatePresence`) to display verified project/internship connections (linking directly to `/projects/muzo`, `/projects/office-aid`, GitHub repositories, or Google Cloud LLM credentials). Clicking locks a chip cleanly (`lockedSkillId`), so keyboard and touch visitors get identical trace inspection.
+2. **Restrained WebGL Star-Lattice (`ToolkitConstellation`):** Mounted strictly inside the single `<Canvas>` when `activeSection === "toolkit"` (co-rendered solely with `GrainOverlay` `S8` -> max 2 shaders active). Instead of rebuilding Three.js buffers or calling React `setState`, hovering a skill transiently mutates `toolkitAccentMix` (`0` = cyan core stack <-> `1` = violet exploring) and `toolkitPulse` inside Zustand, which GLSL uniforms (`uAccentMix`, `uActivityBoost`, `uPointer`) smoothly interpolate inside `useFrame`.
+3. **Deterministic SSR & Reduced-Motion Fallbacks:** All geometry seeds (`hash01`) are pure mathematical hashes compatible with React 19 StrictMode, `.toolkit-reveal` uses `y`-only entrance settles (`opacity: 1`, `revertOnUpdate: true`), and under reduced motion or low GPU fallback a clean CSS radial dot blueprint grid replaces WebGL.
+
+### Interview Questions & Model Answers
+1. **Q:** *Why omit progress bars and numeric ratings ("React 90%", "Node 80%") from your technical skills section?*  
+   **A:** Arbitrary self-assigned percentages lack an objective rubric and often hurt credibility in technical reviews. Grouping verified skills by discipline and linking each skill directly to working repositories, case studies, or internship experience shows **how and where** a tool was actually applied.
+2. **Q:** *How do you signal honesty around learning technologies like Next.js, TypeScript, and Three.js when those exact tools power your portfolio?*  
+   **A:** Separating them cleanly into an explicit **"Currently exploring"** band—using distinct visual styling (`$violet` `#B388F5` + `EXPLORING` tags) and a short transparent engineering note—lets recruiters appreciate hands-on curiosity while keeping mastered fundamentals unmistakable.
+3. **Q:** *How does `ToolkitConstellation` shift between `$cyan` and `$violet` on chip hover without causing React re-renders across the `<Canvas>` tree?*  
+   **A:** Hover handlers invoke `useSceneStore.getState().setToolkitVisual(accentMix, pulse)`, mutating scalar fields directly on the Zustand store without triggering component subscriptions. Inside `useFrame`, Three.js `THREE.MathUtils.lerp` glides `uAccentMix` and `uActivityBoost` smoothly toward the target floats.
