@@ -1,0 +1,76 @@
+// ============================================================================
+// SIGNAL Design Tokens (Section 11.3 + WCAG AA Verified)
+// ============================================================================
+
+// Surfaces
+$black:      #000000;                  // Hero / WebGL canvas & preloader ground
+$ink:        #07080B;                  // Default page ground
+$charcoal:   #101218;                  // Raised containers & panels
+$line:       rgba(255, 255, 255, 0.12);// 1px HUD rules, borders, corner brackets
+$line-strong: rgba(255, 255, 255, 0.24);
+
+// Ink
+$white:      #F3F5F9;                  // Primary text (18.35:1 on $ink)
+$muted:      #8A90A0;                  // Secondary text (6.27:1 on $ink, 5.86:1 on $charcoal)
+
+// Accents
+$cyan:       #4DA8FF;                  // Primary cool accent (S1 & highlights)
+$violet:     #B388F5;                  // Secondary cool accent (S1 & exploring tags)
+$signal:     #FF5B1F;                  // Tertiary heat accent — SPARINGLY (max 2/viewport)
+$chrome-hi:  #E8EDF5;                  // Chrome highlights
+
+// Single Inverted Light Section (Section 06 ONLY)
+$paper:       #F4F4F2;
+$paper-ink:   #0A0A0A;                 // 17.98:1 on $paper
+$paper-muted: #555966;                 // 6.34:1 on $paper (contrast-safe replacement for $muted)
+$paper-line:  rgba(10, 10, 10, 0.14);
+
+// Typography
+$font-sans: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+$font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+
+// Type Scale (Section 11.4)
+$text-hero-name: clamp(3.5rem, 12vw, 11rem);
+$text-section:   clamp(2.25rem, 6vw, 5rem);
+$text-title:     clamp(1.5rem, 2.5vw, 2.25rem);
+$text-body:      clamp(1rem, 1.08vw, 1.125rem);
+$text-caption:   0.875rem;
+$text-hud:       0.75rem;              // 12px uppercase HUD labels
+
+// Spacing Scale
+$space-1: 0.25rem;  // 4px
+$space-2: 0.5rem;   // 8px
+$space-3: 0.75rem;  // 12px
+$space-4: 1rem;     // 16px
+$space-5: 1.5rem;   // 24px
+$space-6: 2rem;     // 32px
+$space-7: 3rem;     // 48px
+$space-8: 4.5rem;   // 72px
+$space-9: 7rem;     // 112px
+$space-10: 10rem;   // 160px
+
+// Container & Layout
+$container-max: 1440px;
+$gutter-mobile: 1.25rem;
+$gutter-tablet: 2rem;
+$gutter-desktop: clamp(2.5rem, 5vw, 5rem);
+
+// Motion Easings (Section 13.3)
+$ease-expo-out: cubic-bezier(0.16, 1, 0.3, 1);
+$ease-in-out:   cubic-bezier(0.65, 0, 0.35, 1);
+
+// Layering (z-index)
+$z-canvas:    0;
+$z-content:   10;
+$z-grain:     20;
+$z-nav:       40;
+$z-drawer:    60;
+$z-preloader: 80;
+$z-cursor:    90;
+$z-skip:      100;
+
+// Radii
+$radius-none: 0px;
+$radius-xs:   2px;
+$radius-sm:   4px;
+$radius-pill: 9999px;

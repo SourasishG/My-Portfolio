@@ -1,0 +1,53 @@
+@use "abstracts/tokens" as *;
+@use "abstracts/mixins" as *;
+@use "base/reset";
+
+:root {
+  --color-black: #{$black};
+  --color-ink: #{$ink};
+  --color-charcoal: #{$charcoal};
+  --color-line: #{$line};
+  --color-white: #{$white};
+  --color-muted: #{$muted};
+  --color-cyan: #{$cyan};
+  --color-violet: #{$violet};
+  --color-signal: #{$signal};
+  --color-paper: #{$paper};
+  --color-paper-ink: #{$paper-ink};
+  --color-paper-muted: #{$paper-muted};
+}
+
+.skip-link {
+  position: fixed;
+  top: -100%;
+  left: $space-4;
+  z-index: $z-skip;
+  padding: $space-3 $space-4;
+  background-color: $signal;
+  color: $black;
+  font-family: $font-mono;
+  font-size: $text-hud;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: top 0.15s ease;
+
+  &:focus {
+    top: $space-4;
+  }
+}
+
+main {
+  position: relative;
+  z-index: $z-content;
+}
+
+@include reduced-motion {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
