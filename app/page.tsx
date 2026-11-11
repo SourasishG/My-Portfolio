@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { About } from "@/components/sections/About";
 import { Hero } from "@/components/sections/Hero";
+import { Projects } from "@/components/sections/Projects";
 import styles from "./page.module.scss";
 
 export default function HomePage() {
@@ -8,28 +9,31 @@ export default function HomePage() {
     <main id="main-content">
       <Hero />
       <About />
+      <Projects />
 
-      {/* Minimal staging sentinel queued for Checkpoint 4 (Section 03 Selected Projects) */}
+      {/* Minimal staging sentinel queued for Checkpoint 4c (Section 04 Technical Toolkit) */}
       <section
-        id="projects"
+        id="toolkit"
         className={styles.sentinelBand}
-        aria-label="Section 03 staging gate"
+        aria-label="Section 04 staging gate"
       >
         <div className={styles.sentinelInner}>
           <span className={styles.hudTag}>
-            [03] // CHECKPOINT 4 STAGING GATE — SELECTED PROJECTS
+            [04] // CHECKPOINT 4b STAGING GATE — TECHNICAL TOOLKIT
           </span>
           <h2 className={styles.heading}>
-            Section 02 Personal Architecture Active
+            Section 03 Selected Engineering Active
           </h2>
           <p className={styles.copy}>
-            Section 02 (About, Studio Portrait &amp; S2 Procedural Topographic Aperture)
-            is integrated above. Section 03 (MUZO, Office Aid &amp; More Work Showcase)
-            awaits Checkpoint 4 verification and approval before implementation.
+            Section 03 (MUZO, Office Aid with 5 verified workspace captures, S3
+            Halftone Optical Reveal shader, More Work repository archive, and{" "}
+            <code>/projects/[slug]</code> case studies) is integrated above. Section
+            04 (Technical Toolkit &amp; Currently Exploring Architecture) awaits
+            Checkpoint 4b verification and approval before implementation.
           </p>
           <div className={styles.metaRow}>
-            <Link href="/#about" className={styles.backTopLink}>
-              Back to About (#about)
+            <Link href="/#projects" className={styles.backTopLink}>
+              Back to Projects (#projects)
             </Link>
             <Link href="/#hero" className={styles.backTopLink}>
               Return to Top (#hero)

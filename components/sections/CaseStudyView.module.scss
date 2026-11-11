@@ -1,0 +1,522 @@
+@use "abstracts/tokens" as *;
+@use "abstracts/mixins" as *;
+
+.caseStudyMain {
+  position: relative;
+  z-index: $z-content;
+  min-height: 100dvh;
+  padding-top: calc(64px + clamp(2rem, 5vh, 3.75rem));
+  padding-bottom: clamp(4.5rem, 10vh, 7.5rem);
+  background-color: transparent;
+  overflow-x: clip;
+}
+
+.container {
+  @include container;
+  display: grid;
+  gap: clamp(2rem, 4.5vw, 3.75rem);
+}
+
+.topNav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-3;
+  padding-bottom: $space-3;
+  border-bottom: 1px solid $line;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  min-height: 40px;
+  padding: 0 $space-3;
+  border: 1px solid $line;
+  background-color: rgba($charcoal, 0.86);
+  color: $white;
+  font-family: $font-mono;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
+
+  &:hover {
+    border-color: $cyan;
+    color: $cyan;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $cyan;
+    outline-offset: 2px;
+  }
+}
+
+.hudTag {
+  @include hud-label;
+  color: $cyan;
+}
+
+.heroHeader {
+  display: grid;
+  gap: $space-4;
+}
+
+.title {
+  font-size: clamp(2.35rem, 5.5vw, 4.75rem);
+  font-weight: 700;
+  line-height: 0.98;
+  letter-spacing: -0.036em;
+  color: $white;
+}
+
+.tagline {
+  font-size: clamp(1.05rem, 1.6vw, 1.35rem);
+  line-height: 1.5;
+  color: $muted;
+  max-width: 62ch;
+}
+
+.metaGrid {
+  display: grid;
+  gap: $space-3;
+
+  @include respond-up($bp-sm) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include respond-up($bp-lg) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.metaCell {
+  display: grid;
+  gap: 0.35rem;
+  padding: $space-4;
+  border: 1px solid $line;
+  background-color: rgba($charcoal, 0.88);
+  min-width: 0;
+}
+
+.metaLabel {
+  @include hud-label;
+  font-size: 0.6875rem;
+  color: $cyan;
+}
+
+.metaValue {
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  font-weight: 500;
+  color: $white;
+}
+
+.actionRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-3;
+}
+
+.primaryLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 44px;
+  padding: 0 $space-5;
+  background-color: $white;
+  color: $ink;
+  font-family: $font-mono;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s $ease-expo-out;
+
+  &:hover {
+    background-color: $cyan;
+    transform: translateY(-1px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $cyan;
+    outline-offset: 2px;
+  }
+}
+
+.secondaryLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 44px;
+  padding: 0 $space-4;
+  border: 1px solid $line-strong;
+  background-color: rgba($charcoal, 0.88);
+  color: $white;
+  font-family: $font-mono;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
+
+  &:hover {
+    border-color: $cyan;
+    color: $cyan;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $cyan;
+    outline-offset: 2px;
+  }
+}
+
+.statusBadgeNote {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 $space-4;
+  border: 1px dashed $line-strong;
+  font-family: $font-mono;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: $muted;
+}
+
+// ---------------------------------------------------------------------------
+// Gallery Stage
+// ---------------------------------------------------------------------------
+
+.gallerySection {
+  display: grid;
+  gap: $space-3;
+}
+
+.galleryFrame {
+  position: relative;
+  padding: $space-2;
+  border: 1px solid $line-strong;
+  background-color: rgba($charcoal, 0.88);
+}
+
+.galleryViewport {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: 580px;
+  background-color: $ink;
+  border: 1px solid $line;
+  overflow: hidden;
+}
+
+.galleryImgWrap {
+  position: absolute;
+  inset: 0;
+}
+
+.galleryImg {
+  object-fit: contain;
+}
+
+.screenTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+}
+
+.screenTab {
+  min-height: 36px;
+  padding: 0 0.85rem;
+  border: 1px solid $line;
+  background-color: rgba($charcoal, 0.86);
+  color: $muted;
+  font-family: $font-mono;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition:
+    color 0.18s ease,
+    border-color 0.18s ease,
+    background-color 0.18s ease;
+
+  &:hover {
+    color: $white;
+    border-color: $line-strong;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $cyan;
+    outline-offset: 2px;
+  }
+}
+
+.screenTabActive {
+  border-color: $cyan;
+  background-color: rgba($cyan, 0.16);
+  color: $white;
+}
+
+.galleryCaption {
+  padding: 0.65rem 0.9rem;
+  border-left: 2px solid rgba($cyan, 0.55);
+  background-color: rgba($charcoal, 0.78);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: $muted;
+}
+
+// ---------------------------------------------------------------------------
+// Architecture & Breakdown Sections
+// ---------------------------------------------------------------------------
+
+.twoColGrid {
+  display: grid;
+  gap: $space-4;
+
+  @include respond-up($bp-md) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.threeColGrid {
+  display: grid;
+  gap: $space-4;
+
+  @include respond-up($bp-lg) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.panelCard {
+  display: grid;
+  align-content: start;
+  gap: $space-3;
+  padding: clamp(1.25rem, 2.5vw, 1.75rem);
+  border: 1px solid $line;
+  background-color: rgba($charcoal, 0.9);
+  min-width: 0;
+}
+
+.panelHeading {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: $white;
+}
+
+.panelBody {
+  font-size: 0.95rem;
+  line-height: 1.68;
+  color: $muted;
+}
+
+.sectionBlock {
+  display: grid;
+  gap: $space-4;
+}
+
+.sectionTitle {
+  font-size: clamp(1.35rem, 2.5vw, 1.9rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: $white;
+}
+
+.itemList {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.builtItem,
+.plannedItem {
+  position: relative;
+  padding-left: 1.25rem;
+  font-size: 0.9375rem;
+  line-height: 1.58;
+  color: $white;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.58em;
+    width: 7px;
+    height: 7px;
+  }
+}
+
+.builtItem::before {
+  background-color: $cyan;
+}
+
+.plannedItem {
+  color: $muted;
+
+  &::before {
+    border: 1px solid $line-strong;
+    background-color: transparent;
+  }
+}
+
+.modulesGrid {
+  display: grid;
+  gap: $space-3;
+
+  @include respond-up($bp-sm) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include respond-up($bp-lg) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.moduleCard {
+  display: grid;
+  gap: 0.35rem;
+  padding: $space-3 $space-4;
+  border: 1px solid $line;
+  background-color: rgba($charcoal, 0.85);
+}
+
+.moduleIndex {
+  font-family: $font-mono;
+  font-size: 0.6875rem;
+  color: $cyan;
+}
+
+.moduleName {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: $white;
+}
+
+.challengeList {
+  display: grid;
+  gap: $space-3;
+}
+
+.challengeRow {
+  display: grid;
+  gap: $space-3;
+  padding: clamp(1.1rem, 2.2vw, 1.5rem);
+  border: 1px solid $line;
+  background-color: rgba($charcoal, 0.88);
+
+  @include respond-up($bp-md) {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: $space-6;
+  }
+}
+
+.challengeSubLabel {
+  @include hud-label;
+  font-size: 0.6875rem;
+  color: $cyan;
+  margin-bottom: 0.35rem;
+  display: block;
+}
+
+.challengeText {
+  font-size: 0.95rem;
+  line-height: 1.56;
+  color: $white;
+}
+
+.solutionText {
+  font-size: 0.95rem;
+  line-height: 1.62;
+  color: $muted;
+}
+
+.techWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+}
+
+.techChip {
+  padding: 0.42rem 0.85rem;
+  border: 1px solid $line-strong;
+  background-color: rgba($charcoal, 0.9);
+  font-family: $font-mono;
+  font-size: 0.78rem;
+  color: $white;
+}
+
+// ---------------------------------------------------------------------------
+// Next Case Study Switcher
+// ---------------------------------------------------------------------------
+
+.nextFooter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-4;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: 1px solid $line-strong;
+  background-color: rgba($charcoal, 0.94);
+}
+
+.nextCopy {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.nextTitle {
+  font-size: clamp(1.35rem, 2.5vw, 1.85rem);
+  font-weight: 700;
+  color: $white;
+}
+
+.nextTagline {
+  font-size: 0.9375rem;
+  color: $muted;
+  max-width: 52ch;
+}
+
+.cornerTL,
+.cornerTR,
+.cornerBL,
+.cornerBR {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  pointer-events: none;
+}
+
+.cornerTL {
+  top: -1px;
+  left: -1px;
+  border-top: 1px solid $cyan;
+  border-left: 1px solid $cyan;
+}
+
+.cornerTR {
+  top: -1px;
+  right: -1px;
+  border-top: 1px solid $cyan;
+  border-right: 1px solid $cyan;
+}
+
+.cornerBL {
+  bottom: -1px;
+  left: -1px;
+  border-bottom: 1px solid $cyan;
+  border-left: 1px solid $cyan;
+}
+
+.cornerBR {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 1px solid $cyan;
+  border-right: 1px solid $cyan;
+}

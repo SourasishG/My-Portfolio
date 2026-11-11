@@ -236,17 +236,37 @@ function ShaderLabInteractive() {
           "Evaluates multi-octave 3D Simplex elevation in the fragment shader and traces anti-aliased monochrome isolines via fract(h * uContourCount) + screen-space fwidth(). Aligned spherical hemisphere caps preserve a laser-smooth circular split seam.",
       };
     }
+    if (sceneMode === "s3") {
+      return {
+        code: "S3 // HALFTONE PROJECT REVEAL",
+        budget: `1 Textured Plane · fitContainUv (${s3SampleScreen.width}x${s3SampleScreen.height})`,
+        summary:
+          "Samples center luminance across a crisp square halftone matrix with #4DA8FF highlight tinting and opens an interactive full-color optical lens (`uRevealRadius`) around the cursor.",
+      };
+    }
     return {
       code: "S1 -> S2 // SCROLL MORPH TRANSITION",
       budget: "Co-rendered S1 + S2 Handover · Max 2 WebGL Effects Budget",
       summary:
         "Demonstrates how scrolling dampens S1 curl displacement while snapping point size along topographic elevation bands before cross-fading cleanly into S2.",
     };
-  }, [activePointCount, isMobilePreset, sceneMode]);
+  }, [activePointCount, isMobilePreset, s3SampleScreen.height, s3SampleScreen.width, sceneMode]);
 
   const fallbackNode =
     sceneMode === "s2" ? (
       <ContourSphereFallback split={s2Values.splitProgress > 0.2} />
+    ) : sceneMode === "s3" ? (
+      <div className={styles.s3FallbackWrap}>
+        <div className={styles.s3FallbackFrame}>
+          <Image
+            src={s3SampleScreen.src}
+            alt={s3SampleScreen.alt}
+            fill
+            sizes="78vw"
+            className={styles.s3FallbackImg}
+          />
+        </div>
+      </div>
     ) : (
       <HeroBlobFallback />
     );
@@ -287,7 +307,7 @@ function ShaderLabInteractive() {
           </Link>
           <div className={styles.titleBlock}>
             <span className={styles.hudTag}>PHASE 3.5 // SHADER LAB</span>
-            <h1 className={styles.title}>S1 &amp; S2 Interactive Verification</h1>
+            <h1 className={styles.title}>S1 – S3 Interactive Verification</h1>
           </div>
         </div>
 
@@ -319,6 +339,13 @@ function ShaderLabInteractive() {
               }}
             >
               S1 → S2 Morph
+            </button>
+            <button
+              type="button"
+              className={`${styles.segBtn} ${sceneMode === "s3" ? styles.active : ""}`}
+              onClick={() => setSceneMode("s3")}
+            >
+              S3 Halftone
             </button>
           </div>
 
@@ -493,6 +520,23 @@ function ShaderLabInteractive() {
                   />
                 </>
               )}
+
+              {sceneMode === "s3" && (
+                <ProjectReveal
+                  visible
+                  reducedMotion={effectiveReducedMotion}
+                  labOverrides={{
+                    src: s3SampleScreen.src,
+                    imageWidth: s3SampleScreen.width,
+                    imageHeight: s3SampleScreen.height,
+                    dotDensity: s3Values.dotDensity,
+                    revealRadius: s3Values.revealRadius,
+                    bgColor: s3Values.bgColor,
+                    halftoneTint: s3Values.halftoneTint,
+                    ringAccent: s3Values.ringAccent,
+                  }}
+                />
+              )}
             </Canvas>
           </CanvasErrorBoundary>
         ) : (
@@ -514,7 +558,7 @@ function ShaderLabInteractive() {
           <p className={styles.infoSummary}>{activeInfo.summary}</p>
           {showFallback && (
             <p className={styles.fallbackNote}>
-              Static SVG Fallback Active (
+              Static Fallback Preview Active (
               {contextLost
                 ? "WebGL context lost"
                 : !gpuProfile.webglSupported

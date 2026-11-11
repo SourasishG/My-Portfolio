@@ -1,0 +1,767 @@
+@use "abstracts/tokens" as *;
+@use "abstracts/mixins" as *;
+
+.projectsSection {
+  position: relative;
+  padding-block: clamp(4.5rem, 10vh, 8.5rem);
+  border-top: 1px solid $line;
+  background-color: transparent;
+  overflow-x: clip;
+}
+
+.container {
+  @include container;
+  display: grid;
+  gap: clamp(2rem, 4vw, 3.25rem);
+}
+
+.headerBand {
+  display: grid;
+  gap: $space-3;
+}
+
+.headerMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-2 $space-4;
+}
+
+.hudTag {
+  @include hud-label;
+  color: $cyan;
+}
+
+.subTag {
+  @include hud-label;
+  color: $muted;
+}
+
+.hudLineSvg {
+  width: 100%;
+  height: 16px;
+  display: block;
+  overflow: visible;
+}
+
+.introRow {
+  display: grid;
+  gap: $space-3;
+
+  @include respond-up($bp-lg) {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    align-items: end;
+    gap: $space-6;
+  }
+}
+
+.heading {
+  font-size: clamp(2rem, 4.4vw, 3.65rem);
+  font-weight: 700;
+  line-height: 1.03;
+  letter-spacing: -0.032em;
+  color: $white;
+  max-width: 17ch;
+}
+
+.leadCopy {
+  font-size: $text-body;
+  line-height: 1.66;
+  color: $muted;
+  max-width: 56ch;
+}
+
+// ---------------------------------------------------------------------------
+// Desktop Pinned Stage + Dual Showcase
+// ---------------------------------------------------------------------------
+
+.pinContainer {
+  position: relative;
+  display: grid;
+  gap: $space-4;
+  background-color: transparent;
+}
+
+.hudControlBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-3;
+  padding: $space-2 $space-3;
+  border: 1px solid $line;
+  background-color: rgba($charcoal, 0.92);
+}
+
+.projectTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+}
+
+.projectTab {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  min-height: 36px;
+  padding: 0 $space-3;
+  border: 1px solid $line;
+  background-color: rgba($ink, 0.65);
+  color: $muted;
+  font-family: $font-mono;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+
+  &:hover {
+    color: $white;
+    border-color: $line-strong;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $cyan;
+    outline-offset: 2px;
+  }
+}
+
+.projectTabActive {
+  color: $white;
+  border-color: $cyan;
+  background-color: rgba($cyan, 0.14);
+}
+
+.tabIndex {
+  color: $cyan;
+}
+
+.progressCluster {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  margin-left: auto;
+}
+
+.statusPill {
+  @include hud-label;
+  font-size: 0.6875rem;
+  color: $white;
+  padding: 0.28rem 0.6rem;
+  border: 1px solid $line-strong;
+  background-color: rgba($ink, 0.72);
+}
+
+.railTrack {
+  position: relative;
+  width: clamp(72px, 10vw, 130px);
+  height: 2px;
+  background-color: rgba($white, 0.14);
+  overflow: hidden;
+}
+
+.railFill {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, $cyan, $signal);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+.showcaseGrid {
+  display: grid;
+  gap: $space-4;
+  align-items: start;
+
+  @include respond-up($bp-lg) {
+    grid-template-columns: minmax(0, 1.16fr) minmax(0, 0.84fr);
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+  }
+}
+
+.stageColumn {
+  display: grid;
+  gap: $space-2;
+  min-width: 0;
+  background-color: transparent;
+}
+
+.stageFrame {
+  position: relative;
+  padding: $space-2;
+  border: 1px solid $line-strong;
+  background-color: transparent;
+  display: grid;
+  gap: $space-2;
+}
+
+.stageAperture {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: clamp(230px, 44vh, 450px);
+  overflow: hidden;
+  background-color: transparent;
+  border: 1px solid rgba($white, 0.08);
+  cursor: crosshair;
+
+  @media (hover: none) {
+    cursor: default;
+  }
+}
+
+.stageImage {
+  object-fit: contain;
+  transition: opacity 0.24s ease;
+  pointer-events: none;
+}
+
+.stageBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-2;
+  padding: $space-1 $space-1 0;
+  background-color: rgba($ink, 0.88);
+}
+
+.stageHint {
+  @include hud-label;
+  font-size: 0.625rem;
+  color: $muted;
+}
+
+.colorToggleBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: 30px;
+  padding: 0 0.65rem;
+  border: 1px solid $line;
+  background-color: rgba($charcoal, 0.9);
+  color: $white;
+  font-family: $font-mono;
+  font-size: 0.6875rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease;
+
+  &:hover {
+    border-color: $cyan;
+    color: $cyan;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $cyan;
+    outline-offset: 2px;
+  }
+}
+
+.colorToggleActive {
+  border-color: $cyan;
+  background-color: rgba($cyan, 0.16);
+  color: $cyan;
+}
+
+.screenSwitcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  padding-top: $space-1;
+}
+
+.screenBtn {
+  min-height: 32px;
+  padding: 0 0.7rem;
+  border: 1px solid $line;
+  background-color: rgba($charcoal, 0.86);
+  color: $muted;
+  font-family: $font-mono;
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition:
+    color 0.18s ease,
+    border-color 0.18s ease,
+    background-color 0.18s ease;
+
+  &:hover {
+    color: $white;
+    border-color: $line-strong;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $cyan;
+    outline-offset: 2px;
+  }
+}
+
+.screenBtnActive {
+  border-color: $cyan;
+  background-color: rgba($cyan, 0.16);
+  color: $white;
+}
+
+.screenCaptionBox {
+  min-height: 2.3rem;
+  padding: 0.45rem 0.65rem;
+  border-left: 2px solid rgba($cyan, 0.55);
+  background-color: rgba($charcoal, 0.78);
+}
+
+.screenCaption {
+  font-size: 0.8125rem;
+  line-height: 1.42;
+  color: $muted;
+}
+
+// ---------------------------------------------------------------------------
+// Details Panel
+// ---------------------------------------------------------------------------
+
+.detailCard {
+  position: relative;
+  display: grid;
+  gap: $space-3;
+  padding: clamp(1rem, 2.2vw, 1.5rem);
+  border: 1px solid $line-strong;
+  background-color: rgba($charcoal, 0.94);
+  min-width: 0;
+}
+
+.detailMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-2;
+}
+
+.detailCategory {
+  @include hud-label;
+  font-size: 0.6875rem;
+  color: $cyan;
+}
+
+.detailDate {
+  @include hud-label;
+  font-size: 0.6875rem;
+  color: $muted;
+}
+
+.projectTitle {
+  font-size: clamp(1.5rem, 2.5vw, 2.15rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  color: $white;
+}
+
+.projectTagline {
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: $white;
+  opacity: 0.9;
+}
+
+.highlightsList {
+  display: grid;
+  gap: 0.45rem;
+  padding-top: $space-1;
+}
+
+.highlightItem {
+  position: relative;
+  padding-left: 1rem;
+  font-size: 0.85rem;
+  line-height: 1.48;
+  color: $muted;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.52em;
+    width: 6px;
+    height: 1px;
+    background-color: $cyan;
+  }
+}
+
+.honestyNote {
+  padding: 0.55rem 0.75rem;
+  border: 1px solid rgba($cyan, 0.35);
+  background-color: rgba($ink, 0.72);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: $muted;
+
+  strong {
+    color: $white;
+    font-weight: 600;
+  }
+}
+
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.techChip {
+  padding: 0.25rem 0.55rem;
+  border: 1px solid $line;
+  background-color: rgba($ink, 0.76);
+  font-family: $font-mono;
+  font-size: 0.6875rem;
+  color: $white;
+}
+
+.actionRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-2;
+  padding-top: $space-1;
+  border-top: 1px solid $line;
+}
+
+.primaryBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 40px;
+  padding: 0 $space-4;
+  background-color: $white;
+  color: $ink;
+  font-family: $font-mono;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s $ease-expo-out;
+
+  &:hover {
+    background-color: $cyan;
+    transform: translateY(-1px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $cyan;
+    outline-offset: 2px;
+  }
+}
+
+.secondaryLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 40px;
+  padding: 0 $space-3;
+  border: 1px solid $line-strong;
+  background-color: rgba($ink, 0.7);
+  color: $white;
+  font-family: $font-mono;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
+
+  &:hover {
+    border-color: $cyan;
+    color: $cyan;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $cyan;
+    outline-offset: 2px;
+  }
+}
+
+.localStatusBadge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 $space-3;
+  border: 1px dashed $line;
+  font-family: $font-mono;
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: $muted;
+}
+
+// ---------------------------------------------------------------------------
+// Linear Stacked Fallback (< 1024px or prefers-reduced-motion)
+// ---------------------------------------------------------------------------
+
+.linearStack {
+  display: grid;
+  gap: clamp(2rem, 5vw, 3rem);
+}
+
+.stackedProjectCard {
+  display: grid;
+  gap: $space-4;
+
+  @include respond-up($bp-lg) {
+    grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+    align-items: start;
+    gap: $space-5;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// 03.2 More Work Archive
+// ---------------------------------------------------------------------------
+
+.moreWorkSection {
+  display: grid;
+  gap: $space-4;
+  padding-top: clamp(2rem, 5vh, 3.5rem);
+  border-top: 1px solid $line;
+}
+
+.moreWorkHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: $space-3;
+}
+
+.moreWorkHeadingGroup {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.moreWorkHeading {
+  font-size: clamp(1.35rem, 2.4vw, 1.9rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: $white;
+}
+
+.moreWorkNote {
+  font-size: 0.875rem;
+  color: $muted;
+  max-width: 54ch;
+}
+
+.hoverPreviewSlot {
+  display: none;
+
+  @include respond-up($bp-lg) {
+    display: flex;
+    align-items: center;
+    min-height: 46px;
+    padding: 0.5rem 0.9rem;
+    border: 1px solid rgba($cyan, 0.32);
+    background-color: rgba($charcoal, 0.88);
+    max-width: min(560px, 100%);
+  }
+}
+
+.hoverPreviewText {
+  font-size: 0.8125rem;
+  line-height: 1.42;
+  color: $white;
+}
+
+.hoverPreviewCategory {
+  font-family: $font-mono;
+  font-size: 0.6875rem;
+  color: $cyan;
+  margin-right: 0.5rem;
+  text-transform: uppercase;
+}
+
+.archiveList {
+  display: grid;
+  border-top: 1px solid $line;
+}
+
+.archiveItem {
+  border-bottom: 1px solid $line;
+  background-color: rgba($ink, 0.72);
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: rgba($charcoal, 0.7);
+  }
+}
+
+.archiveTrigger {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 2.2rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: $space-3;
+  padding: $space-4 $space-3;
+  text-align: left;
+  color: $white;
+
+  @include respond-up($bp-md) {
+    grid-template-columns: 2.75rem minmax(0, 1.2fr) minmax(0, 1fr) auto auto;
+    padding: $space-4;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $cyan;
+    outline-offset: -2px;
+  }
+}
+
+.archiveIndex {
+  font-family: $font-mono;
+  font-size: 0.75rem;
+  color: $cyan;
+}
+
+.archiveTitle {
+  font-size: clamp(1rem, 1.4vw, 1.2rem);
+  font-weight: 600;
+  color: $white;
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+.archiveCategory {
+  display: none;
+  font-family: $font-mono;
+  font-size: 0.72rem;
+  color: $muted;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  @include respond-up($bp-md) {
+    display: block;
+  }
+}
+
+.archiveDate {
+  display: none;
+  font-family: $font-mono;
+  font-size: 0.72rem;
+  color: $muted;
+
+  @include respond-up($bp-md) {
+    display: block;
+  }
+}
+
+.archiveChevron {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: $font-mono;
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: $cyan;
+}
+
+.archiveBodyWrap {
+  overflow: hidden;
+}
+
+.archiveBody {
+  display: grid;
+  gap: $space-3;
+  padding: 0 $space-3 $space-4 2.2rem;
+
+  @include respond-up($bp-md) {
+    padding: 0 $space-4 $space-5 3.75rem;
+  }
+}
+
+.archiveMobileMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+  font-family: $font-mono;
+  font-size: 0.6875rem;
+  color: $cyan;
+
+  @include respond-up($bp-md) {
+    display: none;
+  }
+}
+
+.archiveSummary {
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: $white;
+  max-width: 70ch;
+}
+
+.archiveArchitecture {
+  font-size: 0.875rem;
+  line-height: 1.58;
+  color: $muted;
+  max-width: 72ch;
+}
+
+.archiveActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-3;
+}
+
+.archiveLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+}
+
+.cornerTL,
+.cornerTR,
+.cornerBL,
+.cornerBR {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  pointer-events: none;
+}
+
+.cornerTL {
+  top: -1px;
+  left: -1px;
+  border-top: 1px solid $cyan;
+  border-left: 1px solid $cyan;
+}
+
+.cornerTR {
+  top: -1px;
+  right: -1px;
+  border-top: 1px solid $cyan;
+  border-right: 1px solid $cyan;
+}
+
+.cornerBL {
+  bottom: -1px;
+  left: -1px;
+  border-bottom: 1px solid $cyan;
+  border-left: 1px solid $cyan;
+}
+
+.cornerBR {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 1px solid $cyan;
+  border-right: 1px solid $cyan;
+}
