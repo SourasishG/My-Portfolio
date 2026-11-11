@@ -227,3 +227,48 @@ Integrates Section 02 (`#about`): the editorial narrative (progression from fron
    **A:** Next.js 16 introduced strict allowlists for `/_next/image` `quality` values (defaulting strictly to `[75]`) so third parties cannot hammer the optimizer with arbitrary quality query strings. Listing `[75, 90]` avoids broken requests/warnings while keeping portrait crispness intact.
 3. **Q:** *Why normalize SVG trace length with `pathLength={1}` before animating `strokeDashoffset` with GSAP?*  
    **A:** Measuring pixel `getTotalLength()` depends on SVG layout scaling across breakpoints. Setting `pathLength={1}` lets CSS/GSAP animate `strokeDasharray: 1` and `strokeDashoffset: 1 -> 0` reliably across mobile `360px` and ultrawide `1920px` displays.
+
+
+---
+
+## Module 10 — Section 03 Selected Engineering & S3 Halftone Optical Reveal (`components/sections/Projects.tsx`, `components/canvas/ProjectReveal.tsx`, `shaders/s3HalftoneReveal.frag.glsl`)
+
+### What it does
+Integrates Section 03 (`#projects`), featuring:
+1. A **desktop-only pinned showcase** (`.projects-showcase-pin` at `>= 1024px`) driven by GSAP `ScrollTrigger` that transitions smoothly between **MUZO** (live production Vercel demo + soft neumorphic audio engine) and **Office Aid** (full-stack React 19 + Express 5 + Prisma 6 + Supabase PostgreSQL + Herric Gemini AI workspace with 5 real captured screens). On viewports `< 1024px` or when `prefers-reduced-motion: reduce` is active, GSAP disables pinning and renders both featured systems linearly so nothing hides behind scroll mechanics.
+2. **Shader S3 (`ProjectReveal`):** Renders inside `#projects-s3-stage` on desktop when WebGL is ready—starting as a crisp cyan-tinted halftone dot matrix that blooms into full-color UI under the visitor's cursor (`uRevealRadius`) or when locking full-color inspection via the accessible button toggle.
+3. **03.2 More Work Repository Archive:** Four verified secondary repositories (`Pokémon Atlas 3D`, `Support Ticket Dashboard`, `Face Recognition System`, `Gradient Descent Visualizer`) with Framer Motion hover preview updates and keyboard-accessible accordion inspection (`aria-expanded`).
+
+### S3 Fragment Shader & `fitContainUv` Math in Plain English
+1. **Why `fitContainUv` is essential:** Screenshots have different aspect ratios—MUZO is `917×670` (`1.37:1`) while Office Aid captures are `1024×479` (`2.14:1`) inside a fixed `16:9` (`1.78:1`) `#projects-s3-stage`. Naive `texture2D(uTexture, vUv)` stretches `2.14:1` dashboards vertically or crops navigation bars off the left/right edges. `fitContainUv` compares `planeAspect` (`uPlaneSize.x / uPlaneSize.y`) with `imageAspect` (`uImageSize.x / uImageSize.y`) and scales only one axis so the full application frame fits intact with architectural grid letterbox margins (`inBounds`).
+2. **Halftone Matrix:** Dividing `pixelPos = vUv * uPlaneSize` by a square cell size (`cellPx`) snaps sampling coordinates cleanly to each dot's center (`cellCenterPx`), extracts luminance (`dot(sample, vec3(0.2126, 0.7152, 0.0722))`), and draws clean `smoothstep` circles whose radius scales with brightness.
+3. **Optical Lens Reveal:** Measuring aspect-corrected pointer offset `delta = (vUv - uMouse) * vec2(aspect, 1.0)` creates a circular lens (`uRevealRadius`) regardless of widescreen aspect distortion, accented by a subtle wave ripple and `$cyan`/`$signal` boundary halo during active inspection.
+4. **Zero Blank-Frame Flash During Texture Swaps:** When switching between Office Aid screenshots, `THREE.TextureLoader` marks `projectShaderReady = false` momentarily until the new texture uploads to GPU memory. Meanwhile, the DOM `<Image />` underneath drops `opacity: 0` ONLY while `projectShaderReady` is `true`, keeping transitions crisp and uninterrupted.
+
+### Interview Questions & Model Answers
+1. **Q:** *Why flip the DOM pointer `Y` coordinate (`1 - (clientY - top) / height`) before passing UVs to GLSL?*  
+   **A:** Browser DOM `getBoundingClientRect()` puts `Y = 0` at the top edge and grows downward, whereas OpenGL/WebGL UV coordinates put `vUv.y = 0` at the bottom edge and grow upward. Flipping `Y` once in JavaScript guarantees the optical reveal lens follows the exact cursor pixel vertically.
+2. **Q:** *How did you prevent GSAP ScrollTrigger pinning and Framer Motion from fighting each other in Section 03?*  
+   **A:** GSAP `ScrollTrigger` exclusively owns the outer `.projects-showcase-pin` container (`pin`, scrub progress, and direct DOM `scaleX` mutation on `.railFill`), while Framer Motion (`AnimatePresence`) is strictly isolated to `.project-screen-caption`, `.more-work-hover-preview`, and `.more-work-accordion` child panels—never targeting the pinned wrapper itself.
+3. **Q:** *Why avoid per-frame React `setState` when animating `uRevealRadius` and `uMouse` inside `#projects-s3-stage`?*  
+   **A:** `mousemove` can fire 60–120+ times per second. Mutating `useSceneStore.getState().setProjectPointer(u, v, hover)` stores floats without calling Zustand's React `set()` dispatcher, and `ProjectReveal` lerps `uRevealRadius` inside R3F's `useFrame` loop—eliminating React reconciliation overhead during hover scrubbing.
+
+---
+
+## Module 11 — Static Dynamic Case Studies (`app/projects/[slug]/page.tsx`, `components/sections/CaseStudyView.tsx`)
+
+### What it does
+Serves dedicated deep-dive routes at `/projects/muzo` and `/projects/office-aid` containing interactive full-color interface galleries, problem/architecture breakdowns, verified technical challenges & solutions, technology stacks, GitHub/live demo links, and a strict **Built vs Planned** audit section for Office Aid.
+
+### Next.js 16 Architecture & Fact-Verification Choices
+1. **Next.js 16 Asynchronous `params`:** In Next.js 16 App Router, route `params` is a `Promise<{ slug: string }>`. Both `generateMetadata` and `ProjectCaseStudyPage` `await params`, validate via `getFeaturedProjectBySlug`, and invoke `notFound()` if absent.
+2. **Pre-rendered Static Dynamic Routes:** Exporting `generateStaticParams` alongside `export const dynamicParams = false` compiles `/projects/muzo` and `/projects/office-aid` completely at build time (`○` / `●` SSG HTML), delivering instant page transitions without runtime server latency and clean `404` responses for invalid slugs.
+3. **Factual Codebase Honesty:** Rather than copying vague feature summaries or unverified tool claims, every technology chip and Built/Planned item in `content/projects.ts` was verified against each repository's actual `package.json` and source files (noting for example that Office Aid uses native `fetch` `ApiClient` and controlled state instead of Axios, and documenting cloud deployment / Playwright automation honestly as planned).
+
+### Interview Questions & Model Answers
+1. **Q:** *What breaks in Next.js 16 if you read `params.slug` synchronously instead of `await params`?*  
+   **A:** In Next.js 16 App Router, dynamic route `params` was migrated to a `Promise`. Reading properties synchronously throws runtime errors or fails TypeScript compilation, whereas awaiting `params` inside both Server Components and `generateMetadata` guarantees type safety and forwards compatibility.
+2. **Q:** *What is the advantage of combining `generateStaticParams` with `export const dynamicParams = false`?*  
+   **A:** All valid project slugs are pre-rendered into static HTML and RSC payloads during `next build`, and Next.js automatically responds with an HTTP 404 for unknown `/projects/<invalid>` requests instead of attempting unnecessary dynamic SSR renders.
+3. **Q:** *How do you keep a project case study honest and credible for senior engineers interviewing you?*  
+   **A:** Separate **Built** capabilities (verified directly from working code, schemas, and tests) from **Planned** roadmap items, link real repositories rather than cherry-picked mockups, and document concrete engineering challenges solved along with the trade-offs (e.g., `AbortController` race-condition cancellation in MUZO or multi-model Gemini failover + Prisma context queries in Office Aid).
