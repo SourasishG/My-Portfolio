@@ -27,17 +27,17 @@ void main() {
   float fw = fwidth(scaled);
   float lineMask = 1.0 - smoothstep(uLineWidth - fw, uLineWidth + fw, band);
 
-  // Fresnel edge subtle falloff so contour lines wrap cleanly around sphere silhouette
-  vec3 N = normalize(vNormal);
-  vec3 V = normalize(vViewPos);
-  float fresnel = pow(1.0 - max(0.0, dot(N, V)), 2.2);
+  // Exterior shell vs hollow sliced interior wall
+  float rim = pow(1.0 - max(0.0, dot(N, V)), 2.2);
+  float interiorMask = 1.0 - float(gl_FrontFacing);
+  vec3 outerCol = mix(uBgColor, uLineColor, lineMask * (0.88 + 0.12 * rim));
+  vec3 innerCol = mix(vec3(0.02, 0.025, 0.032), uLineColor, lineMask * 0.14);
+  vec3 col = mix(outerCol, innerCol, interiorMask);
 
-  // Crisp razor cut-seam highlight when split open (uSplitProgress > 0)
-  float seamLine = smoothstep(0.35, 0.95, vSeamProximity) * uSplitProgress;
-  vec3 seamColor = mix(uLineColor, uAccentRim, 0.65);
-
-  vec3 col = mix(uBgColor, uLineColor, lineMask * (0.88 + 0.12 * fresnel));
-  col = mix(col, seamColor, seamLine * 0.9);
+  // Tight razor lip accent when split open (uSplitProgress > 0)
+  float seamLine = smoothstep(0.45, 0.98, vSeamProximity) * uSplitProgress;
+  vec3 seamColor = mix(uLineColor, uAccentRim, 0.55);
+  col = mix(col, seamColor, seamLine * 0.92);
 
   gl_FragColor = vec4(col, 1.0);
 }

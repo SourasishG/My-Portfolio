@@ -29,59 +29,80 @@ export interface ContourSphereProps {
   labOverrides?: ContourSphereLabOverrides;
 }
 
+const UP_AXIS = new THREE.Vector3(0, 1, 0);
 const SPLIT_AXIS = new THREE.Vector3(0.32, 0.92, 0.18).normalize();
 
 /**
- * Builds an un-indexed icosahedron whose triangles are pre-classified onto either side of
- * `SPLIT_AXIS`. Pre-classifying per triangle guarantees zero stretched polygons across
- * the split seam when `uSplitProgress > 0`.
+ * Builds a single BufferGeometry containing two matching spherical hemispheres
+ * whose mutual equator lies cleanly along `SPLIT_AXIS`.
+ * - Closed (`uSplitProgress == 0`): vertices meet identically -> zero crease or seam.
+ * - Split (`uSplitProgress > 0`): each hemisphere slides along `SPLIT_AXIS` cleanly
+ *   with a razor-smooth circular cut silhouette (no sawtooth triangles).
  */
 function buildSplitAwareContourSphereGeometry(
   radius: number,
-  detail: number
+  widthSegments: number,
+  heightSegmentsPerHalf: number
 ): THREE.BufferGeometry {
-  const indexed = new THREE.IcosahedronGeometry(radius, detail);
-  const nonIndexed = indexed.toNonIndexed();
-  indexed.dispose();
+  const north = new THREE.SphereGeometry(
+    radius,
+    widthSegments,
+    heightSegmentsPerHalf,
+    0,
+    Math.PI * 2,
+    0,
+    Math.PI * 0.5
+  );
+  const south = new THREE.SphereGeometry(
+    radius,
+    widthSegments,
+    heightSegmentsPerHalf,
+    0,
+    Math.PI * 2,
+    Math.PI * 0.5,
+    Math.PI * 0.5
+  );
 
-  const posAttr = nonIndexed.getAttribute("position");
-  const vertexCount = posAttr.count;
-  const splitSides = new Float32Array(vertexCount);
+  // Align the exact theta = PI/2 split equator orthogonal to SPLIT_AXIS
+  const alignQuat = new THREE.Quaternion().setFromUnitVectors(UP_AXIS, SPLIT_AXIS);
+  north.applyQuaternion(alignQuat);
+  south.applyQuaternion(alignQuat);
 
-  const vA = new THREE.Vector3();
-  const vB = new THREE.Vector3();
-  const vC = new THREE.Vector3();
-  const centroid = new THREE.Vector3();
+  const northNonIdx = north.toNonIndexed();
+  const southNonIdx = south.toNonIndexed();
+  north.dispose();
+  south.dispose();
 
-  for (let i = 0; i < vertexCount; i += 3) {
-    vA.fromBufferAttribute(posAttr, i);
-    vB.fromBufferAttribute(posAttr, i + 1);
-    vC.fromBufferAttribute(posAttr, i + 2);
+  const nPos = northNonIdx.getAttribute("position").array as Float32Array;
+  const sPos = southNonIdx.getAttribute("position").array as Float32Array;
+  const nNorm = northNonIdx.getAttribute("normal").array as Float32Array;
+  const sNorm = southNonIdx.getAttribute("normal").array as Float32Array;
 
-    centroid.copy(vA).add(vB).add(vC).divideScalar(3).normalize();
-    const side = centroid.dot(SPLIT_AXIS) >= 0 ? 1.0 : -1.0;
+  const nCount = nPos.length / 3;
+  const sCount = sPos.length / 3;
+  const totalCount = nCount + sCount;
 
-    // Snap any vertex crossing the cutting equator cleanly back onto dot(v, SPLIT_AXIS) = 0
-    // so both hemispheres open with a razor-clean diagonal slice instead of sawtooth triangles.
-    const verts = [vA, vB, vC];
-    for (let k = 0; k < 3; k++) {
-      const v = verts[k];
-      const proj = v.dot(SPLIT_AXIS);
-      if (side * proj < 0) {
-        v.addScaledVector(SPLIT_AXIS, -proj).normalize().multiplyScalar(radius);
-        posAttr.setXYZ(i + k, v.x, v.y, v.z);
-      }
-    }
+  const positions = new Float32Array(totalCount * 3);
+  const normals = new Float32Array(totalCount * 3);
+  const splitSides = new Float32Array(totalCount);
 
-    splitSides[i] = side;
-    splitSides[i + 1] = side;
-    splitSides[i + 2] = side;
-  }
+  positions.set(nPos, 0);
+  positions.set(sPos, nPos.length);
+  normals.set(nNorm, 0);
+  normals.set(sNorm, nNorm.length);
 
-  nonIndexed.setAttribute("aSplitSide", new THREE.BufferAttribute(splitSides, 1));
-  nonIndexed.computeVertexNormals();
-  nonIndexed.computeBoundingSphere();
-  return nonIndexed;
+  splitSides.fill(1.0, 0, nCount);
+  splitSides.fill(-1.0, nCount, totalCount);
+
+  northNonIdx.dispose();
+  southNonIdx.dispose();
+
+  const merged = new THREE.BufferGeometry();
+  merged.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  merged.setAttribute("normal", new THREE.BufferAttribute(normals, 3));
+  merged.setAttribute("aSplitSide", new THREE.BufferAttribute(splitSides, 1));
+  merged.computeBoundingSphere();
+  return merged;
 }
 
 function createContourInitialUniforms() {
@@ -102,7 +123,7 @@ function createContourInitialUniforms() {
 /**
  * Shader S2 — Topographic Contour Sphere.
  * Procedural monochrome contour isolines computed in the fragment shader via `fwidth()`
- * so edges remain razor sharp at any DPI, plus clean diagonal split separation.
+ * so edges remain razor sharp at any DPI, plus precision circular diagonal split separation.
  */
 export function ContourSphere({
   tier = "high",
@@ -115,11 +136,18 @@ export function ContourSphere({
 }: ContourSphereProps) {
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
-  const detail = isMobile || tier === "low" ? 4 : 5;
+
+  const widthSegments = isMobile || tier === "low" ? 64 : 96;
+  const halfHeightSegments = isMobile || tier === "low" ? 24 : 40;
 
   const geometry = useMemo(
-    () => buildSplitAwareContourSphereGeometry(1.45, detail),
-    [detail]
+    () =>
+      buildSplitAwareContourSphereGeometry(
+        1.45,
+        widthSegments,
+        halfHeightSegments
+      ),
+    [widthSegments, halfHeightSegments]
   );
 
   const initialUniforms = useMemo(() => createContourInitialUniforms(), []);

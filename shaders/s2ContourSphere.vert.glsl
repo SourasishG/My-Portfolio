@@ -39,5 +39,5 @@ void main() {
   vNormal = normalize(normalMatrix * normal);
   vViewPos = -mvPos.xyz;
   vSplitSide = side;
-  vSeamProximity = 1.0 - smoothstep(0.0, 0.022, abs(sideDist));
+  vSeamProximity = 1.0 - smoothstep(0.0, 0.015, abs(sideDist));
 }

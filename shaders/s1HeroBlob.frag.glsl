@@ -20,8 +20,8 @@ void main() {
   float alpha = smoothstep(0.5, 0.04, dist);
   float coreBoost = smoothstep(0.28, 0.0, dist) * 0.45;
 
-  // Mix $cyan (#4DA8FF) -> $violet (#B388F5) across displacement waves + Fresnel rim
-  float gradientMix = smoothstep(0.16, 0.88, vDisplacement * 0.52 + vRim * 0.48);
+  // Mix $cyan (#4DA8FF) front core waves -> $violet (#B388F5) swirling outer rims
+  float gradientMix = smoothstep(0.30, 0.90, vDisplacement * 0.36 + vRim * 0.64);
   vec3 baseColor = mix(uColorCyan, uColorViolet, gradientMix);
 
   // Luminous cyan-white glint on displaced outer wave crests
