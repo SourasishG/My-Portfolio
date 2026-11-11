@@ -205,3 +205,24 @@ Renders the immediate SSR editorial Hero (`SOURASISH GHOSH`, `"I design, develop
    **A:** Naive character-splitting tools turn `"SOURASISH"` into 9 separate `<div>` elements that screen readers read letter by letter (`S - O - U...`). GSAP 3.15 `aria: "auto"` attaches an `aria-label` on the parent and hides split spans from screen-reader narration, and we also preserve explicit whitespace between first and last name spans.
 3. **Q:** *How does the Hero layout keep left typography readable without dimming the 3D point cloud across the entire screen?*  
    **A:** A directional CSS scrim darkens behind the left copy (`0% -> 46%`) while decaying to transparent alpha on the right half so `S1` keeps full luminous color depth.
+
+
+---
+
+## Module 09 — Section 02 Personal Architecture & S2 Viewport-Tracked Aperture (`components/sections/About.tsx`, `ContourSphere.tsx`, `SceneRoot.tsx`)
+
+### What it does
+Integrates Section 02 (`#about`): the editorial narrative (progression from frontend -> full-stack -> cloud, quick-learner/patient problem-solver philosophy, honest exploration story of **Next.js / TypeScript / Three.js / R3F / Framer Motion**, and SNU B.Tech CSE CGPA `8.08`), four structured engineering pillar cards, the optimized studio portrait (`portrait-main.jpg` via `next/image`), an SVG hairline stroke trace drawn on scroll, and `#about-s2-aperture` showcasing the live **S2 Topographic Contour Sphere**.
+
+### How DOM-to-WebGL Sync Works Without Re-Renders
+1. `#about-s2-aperture` sits in standard scrolling HTML layout with a transparent interior background (`background: transparent`) and CSS corner brackets.
+2. When `activeSection === "about"`, `HeroBlob` (**S1**) turns off and `ContourSphere` (**S2**) wakes up cleanly inside the single persistent `<Canvas>` (**strictly <= 2 WebGL shaders active**: S2 + S8).
+3. Inside R3F `useFrame`, `ContourSphere` checks `#about-s2-aperture.getBoundingClientRect()` and projects screen center & width directly into Three.js world space using `state.viewport.width` and `state.viewport.height`, scaling diameter smoothly (`worldBox * 0.78 / 2.9`). Scroll-linked `ScrollTrigger` writes `aboutSplit` (`0..0.92`) directly into Zustand without React `setState`.
+
+### Interview Questions & Model Answers
+1. **Q:** *Why align an R3F mesh inside a fixed full-screen `<Canvas>` to a scrolling DOM element via `getBoundingClientRect()` instead of rendering a second `<Canvas>` directly inside Section 02?*  
+   **A:** Mounting one `<Canvas>` per section exhausts WebGL context limits cleanly around 8–16 contexts across mobile Safari/Chrome, multiplies GPU memory per shader program, and causes flicker during rapid scroll transitions. One fixed persistent `<Canvas>` driven by `state.viewport` gives pixel-exact layout alignment inside any scrolling grid at single-context cost.
+2. **Q:** *Why configure `images.qualities: [75, 90]` in Next.js 16 `next.config.ts` when using `quality={90}` on `<Image />`?*  
+   **A:** Next.js 16 introduced strict allowlists for `/_next/image` `quality` values (defaulting strictly to `[75]`) so third parties cannot hammer the optimizer with arbitrary quality query strings. Listing `[75, 90]` avoids broken requests/warnings while keeping portrait crispness intact.
+3. **Q:** *Why normalize SVG trace length with `pathLength={1}` before animating `strokeDashoffset` with GSAP?*  
+   **A:** Measuring pixel `getTotalLength()` depends on SVG layout scaling across breakpoints. Setting `pathLength={1}` lets CSS/GSAP animate `strokeDasharray: 1` and `strokeDashoffset: 1 -> 0` reliably across mobile `360px` and ultrawide `1920px` displays.
