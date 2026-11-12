@@ -6,6 +6,7 @@ import { Canvas, useThree } from "@react-three/fiber";
 import { CanvasErrorBoundary } from "@/components/canvas/CanvasErrorBoundary";
 import { ChromeArches } from "@/components/canvas/ChromeArches";
 import { ContourSphere } from "@/components/canvas/ContourSphere";
+import { GlassObject } from "@/components/canvas/GlassObject";
 import { GrainOverlay } from "@/components/canvas/GrainOverlay";
 import { HeroBlob } from "@/components/canvas/HeroBlob";
 import { ProjectReveal } from "@/components/canvas/ProjectReveal";
@@ -108,6 +109,7 @@ export function SceneRoot() {
   const showToolkitConstellation = isHomeRoute && activeSection === "toolkit";
   const showVelocityPlane = isHomeRoute && activeSection === "beyond";
   const showChromeArches = isHomeRoute && activeSection === "aspirations";
+  const showGlassObject = isHomeRoute && activeSection === "contact";
   const canvasBackdrop = isHomeRoute && activeSection === "hero" ? "#000000" : "#07080B";
 
   return (
@@ -209,6 +211,15 @@ export function SceneRoot() {
             reducedMotion={reducedMotion}
             visible={showChromeArches}
             viewportSelector="#aspirations-s5-stage"
+          />
+
+          {/* S4 — Chromatic Glass Crystal synced to Section 08 Contact aperture */}
+          <GlassObject
+            tier={gpuProfile.tier}
+            isMobile={!isDesktop}
+            reducedMotion={reducedMotion}
+            visible={showGlassObject}
+            viewportSelector="#contact-s4-stage"
           />
 
           {/* S8 — Subtle Global Grain & Vignette (disabled on low GPU / muted on $paper) */}
