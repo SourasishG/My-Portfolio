@@ -69,7 +69,12 @@ export function Aspirations() {
         if (copyEls.length > 0) {
           gsap.set(copyEls, { clearProps: "opacity,transform" });
         }
-        useSceneStore.getState().setAspirationsProgress(0.35);
+        const state = useSceneStore.getState();
+        if (typeof state.setAspirationsProgress === "function") {
+          state.setAspirationsProgress(0.35);
+        } else {
+          state.aspirationsProgress = 0.35;
+        }
         return;
       }
 
@@ -108,7 +113,12 @@ export function Aspirations() {
         end: "bottom top",
         scrub: true,
         onUpdate: (self) => {
-          useSceneStore.getState().setAspirationsProgress(self.progress);
+          const state = useSceneStore.getState();
+          if (typeof state.setAspirationsProgress === "function") {
+            state.setAspirationsProgress(self.progress);
+          } else {
+            state.aspirationsProgress = self.progress;
+          }
         },
       });
     },

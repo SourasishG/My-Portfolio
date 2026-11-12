@@ -27,6 +27,7 @@ interface SceneState {
   projectShaderReady: boolean;
   velocityShaderReady: boolean;
   chromeArchesReady: boolean;
+  glassObjectReady: boolean;
   aspirationsProgress: number; // 0..1 across Section 07 Aspirations scroll arc
   toolkitAccentMix: number; // 0 ($cyan Core Stack) -> 1 ($violet Currently Exploring)
   toolkitPulse: number; // 0..1 gentle interactive glow boost
@@ -45,6 +46,7 @@ interface SceneState {
   setProjectShaderReady: (ready: boolean) => void;
   setVelocityShaderReady: (ready: boolean) => void;
   setChromeArchesReady: (ready: boolean) => void;
+  setGlassObjectReady: (ready: boolean) => void;
   setAspirationsProgress: (progress: number) => void;
   setToolkitVisual: (accentMix: number, pulse: number) => void;
   setActiveSection: (section: SectionId) => void;
@@ -68,6 +70,7 @@ export const useSceneStore = create<SceneState>((set, get) => ({
   projectShaderReady: false,
   velocityShaderReady: false,
   chromeArchesReady: false,
+  glassObjectReady: false,
   aspirationsProgress: 0,
   toolkitAccentMix: 0,
   toolkitPulse: 0,
@@ -127,6 +130,12 @@ export const useSceneStore = create<SceneState>((set, get) => ({
   setChromeArchesReady: (chromeArchesReady) => {
     if (get().chromeArchesReady !== chromeArchesReady) {
       set({ chromeArchesReady });
+    }
+  },
+
+  setGlassObjectReady: (glassObjectReady) => {
+    if (get().glassObjectReady !== glassObjectReady) {
+      set({ glassObjectReady });
     }
   },
 
