@@ -23,6 +23,10 @@ import {
   ContourSphereFallback,
 } from "@/components/canvas/ContourSphere";
 import {
+  GlassObject,
+  GlassObjectFallback,
+} from "@/components/canvas/GlassObject";
+import {
   getRecommendedHeroPointCount,
   HeroBlob,
   HeroBlobFallback,
@@ -36,7 +40,7 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { GpuTierLevel, useSceneStore } from "@/lib/store";
 import styles from "./lab.module.scss";
 
-type LabSceneMode = "s1" | "s2" | "morph" | "s3" | "s5" | "s7";
+type LabSceneMode = "s1" | "s2" | "morph" | "s3" | "s4" | "s5" | "s7";
 type PresetTier = "desktop" | "mid" | "mobile";
 
 const emptySubscribe = () => () => {};
@@ -52,6 +56,7 @@ function getInitialSceneMode(): LabSceneMode {
     qScene === "s2" ||
     qScene === "morph" ||
     qScene === "s3" ||
+    qScene === "s4" ||
     qScene === "s5" ||
     qScene === "s7"
   ) {
@@ -188,6 +193,18 @@ function ShaderLabInteractive() {
     chromeTint: "#E8EDF5",
   }));
 
+  const [s4Values] = useControls("S4 — Chromatic Glass", () => ({
+    chromaticAberration: { value: 0.16, min: 0.0, max: 0.65, step: 0.01 },
+    thickness: { value: 0.72, min: 0.05, max: 2.4, step: 0.02 },
+    roughness: { value: 0.06, min: 0.0, max: 0.35, step: 0.01 },
+    ior: { value: 1.45, min: 1.1, max: 2.2, step: 0.02 },
+    distortion: { value: 0.18, min: 0.0, max: 0.85, step: 0.01 },
+    anisotropy: { value: 0.14, min: 0.0, max: 0.8, step: 0.02 },
+    envIntensity: { value: 1.55, min: 0.5, max: 2.8, step: 0.05 },
+    tumbleSpeed: { value: 0.34, min: 0.0, max: 1.2, step: 0.02 },
+    tintColor: "#F3F7FF",
+  }));
+
   const s3SampleScreen = useMemo(() => {
     const projectIndex = s3Values.sample === "Office Aid" ? 1 : 0;
     return FEATURED_PROJECTS[projectIndex].screens[0];
@@ -289,13 +306,21 @@ function ShaderLabInteractive() {
           "Reflective brushed-chrome MeshPhysicalMaterial arches (metalness 1.0, roughness 0.08) with GPU harmonic vertex ripple pivoting smoothly along a scroll-driven camera arc.",
       };
     }
+    if (sceneMode === "s4") {
+      return {
+        code: "S4 // CHROMATIC GLASS OBJECT",
+        budget: `Drei MeshTransmissionMaterial (${presetTier === "desktop" ? "6" : "3"} FBO Samples) · IOR ${s4Values.ior.toFixed(2)}`,
+        summary:
+          "Refractive faceted crystal with chromatic aberration splitting transmitted cyan/violet optical filaments across bevels inside a procedural PMREM studio radiance cage.",
+      };
+    }
     return {
       code: "S1 -> S2 // SCROLL MORPH TRANSITION",
       budget: "Co-rendered S1 + S2 Handover · Max 2 WebGL Effects Budget",
       summary:
         "Demonstrates how scrolling dampens S1 curl displacement while snapping point size along topographic elevation bands before cross-fading cleanly into S2.",
     };
-  }, [activePointCount, isMobilePreset, s3SampleScreen.height, s3SampleScreen.width, sceneMode]);
+  }, [activePointCount, isMobilePreset, presetTier, s3SampleScreen.height, s3SampleScreen.width, s4Values.ior, sceneMode]);
 
   const fallbackNode =
     sceneMode === "s2" ? (
@@ -327,6 +352,10 @@ function ShaderLabInteractive() {
     ) : sceneMode === "s5" ? (
       <div style={{ width: "min(76vw, 680px)", aspectRatio: "4 / 3" }}>
         <ChromeArchesFallback />
+      </div>
+    ) : sceneMode === "s4" ? (
+      <div style={{ width: "min(72vw, 480px)", aspectRatio: "1 / 1" }}>
+        <GlassObjectFallback />
       </div>
     ) : (
       <HeroBlobFallback />
@@ -368,7 +397,7 @@ function ShaderLabInteractive() {
           </Link>
           <div className={styles.titleBlock}>
             <span className={styles.hudTag}>PHASE 3.5 / 4 // SHADER LAB</span>
-            <h1 className={styles.title}>S1 – S7 Interactive Verification</h1>
+            <h1 className={styles.title}>S1 – S8 Interactive Verification</h1>
           </div>
         </div>
 
@@ -421,6 +450,13 @@ function ShaderLabInteractive() {
               onClick={() => setSceneMode("s5")}
             >
               S5 Arches
+            </button>
+            <button
+              type="button"
+              className={`${styles.segBtn} ${sceneMode === "s4" ? styles.active : ""}`}
+              onClick={() => setSceneMode("s4")}
+            >
+              S4 Glass
             </button>
           </div>
 
@@ -640,6 +676,26 @@ function ShaderLabInteractive() {
                     rippleAmp: s5Values.rippleAmp,
                     envIntensity: s5Values.envIntensity,
                     chromeTint: s5Values.chromeTint,
+                  }}
+                />
+              )}
+
+              {sceneMode === "s4" && (
+                <GlassObject
+                  tier={effectiveTier}
+                  isMobile={isMobilePreset}
+                  visible
+                  reducedMotion={effectiveReducedMotion}
+                  labOverrides={{
+                    chromaticAberration: s4Values.chromaticAberration,
+                    thickness: s4Values.thickness,
+                    roughness: s4Values.roughness,
+                    ior: s4Values.ior,
+                    distortion: s4Values.distortion,
+                    anisotropy: s4Values.anisotropy,
+                    envIntensity: s4Values.envIntensity,
+                    tumbleSpeed: s4Values.tumbleSpeed,
+                    tintColor: s4Values.tintColor,
                   }}
                 />
               )}
