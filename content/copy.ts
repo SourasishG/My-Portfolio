@@ -158,3 +158,88 @@ export const BEYOND_INTERESTS: BeyondInterest[] = [
       "Studying composition, contrast, and scene transitions that inspire clean visual storytelling and restrained motion.",
   },
 ];
+
+export interface AspirationPillar {
+  id: "ownership" | "architecture" | "ai-multiplier";
+  index: string;
+  tag: string;
+  title: string;
+  description: string;
+}
+
+export interface HorizonTrack {
+  id: string;
+  phase: string;
+  focus: string;
+  note: string;
+}
+
+export const ASPIRATIONS_COPY = {
+  sectionIndex: "07",
+  sectionTag: "[07] // ENGINEERING ASPIRATIONS & FUTURE VISION",
+  subTag: "FULL-STACK DEPTH · AI COLLABORATION · LONG-TERM CRAFT",
+  heading: "Becoming a full-stack engineer who owns the whole system.",
+  manifesto:
+    "My ultimate ambition is to grow into a highly capable Full-Stack Engineer who can design, develop, integrate, and ship complete websites and software applications from first principles.",
+  supportingCopy:
+    "I never want to limit myself to writing isolated lines of syntax. Understanding the problem behind the code, the architecture behind the application, and the people who rely on it is what turns working software into dependable engineering.",
+  stageTag: "S5 // CHROME FLUID ARCHES",
+  stageTelemetryLabel: "SCROLL-DRIVEN CAMERA ARC · BRUSHED CHROME PBR",
+  stageStaticLabel: "S5 // MONOCHROME ARCH STUDY (REDUCED MOTION / STATIC VIEW)",
+  ctaLabel: "Start a Conversation",
+  ctaHref: "/#contact",
+} as const;
+
+export const ASPIRATIONS_PILLARS: AspirationPillar[] = [
+  {
+    id: "ownership",
+    index: "01",
+    tag: "END-TO-END OWNERSHIP",
+    title: "Design, integrate, and ship complete systems.",
+    description:
+      "Bridging responsive frontend craft, reliable Node.js and REST API design, relational and document persistence, and cloud deployment readiness inside cohesive products.",
+  },
+  {
+    id: "architecture",
+    index: "02",
+    tag: "FIRST-PRINCIPLES PROBLEM SOLVING",
+    title: "Understand the reasoning behind every layer.",
+    description:
+      "Pairing patience and quick learning with deliberate debugging—measuring trade-offs, state ownership, and failure modes instead of treating abstractions as black boxes.",
+  },
+  {
+    id: "ai-multiplier",
+    index: "03",
+    tag: "HUMAN + AI WORKFLOWS",
+    title: "Pair LLMs and AI tools with strong CS fundamentals.",
+    description:
+      "Applying Generative AI and AI-assisted development workflows as engineering multipliers that accelerate iteration while keeping human architectural judgement at the center.",
+  },
+];
+
+export const ASPIRATIONS_HORIZONS: HorizonTrack[] = [
+  {
+    id: "horizon-fullstack",
+    phase: "ONGOING PRACTICE",
+    focus: "Full-Stack TypeScript & Next.js",
+    note: "Advancing from foundational JavaScript/React builds into typed full-stack App Router architectures and clean validation boundaries.",
+  },
+  {
+    id: "horizon-ai",
+    phase: "ACTIVE STUDY",
+    focus: "Applied LLMs & AI Agents",
+    note: "Exploring grounded prompt pipelines, structured tool calling, and practical AI integration patterns for real web workflows.",
+  },
+  {
+    id: "horizon-cloud",
+    phase: "CLOUD FOUNDATION",
+    focus: "Production Deployment & DevOps",
+    note: "Building on AWS EC2/S3 and CI/CD fundamentals toward repeatable testing, observability, and resilient service delivery.",
+  },
+  {
+    id: "horizon-craft",
+    phase: "CREATIVE WEB",
+    focus: "Real-Time 3D & Restrained Motion",
+    note: "Continuing to explore Three.js, React Three Fiber, and Framer Motion to make technical interfaces legible, tactile, and memorable.",
+  },
+];

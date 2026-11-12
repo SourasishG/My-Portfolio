@@ -26,6 +26,8 @@ interface SceneState {
   projectHover: number; // 0 resting halftone -> 1 interactive lens -> 2 full-color lock
   projectShaderReady: boolean;
   velocityShaderReady: boolean;
+  chromeArchesReady: boolean;
+  aspirationsProgress: number; // 0..1 across Section 07 Aspirations scroll arc
   toolkitAccentMix: number; // 0 ($cyan Core Stack) -> 1 ($violet Currently Exploring)
   toolkitPulse: number; // 0..1 gentle interactive glow boost
   activeSection: SectionId;
@@ -42,6 +44,8 @@ interface SceneState {
   setProjectPointer: (x: number, y: number, hover: number) => void;
   setProjectShaderReady: (ready: boolean) => void;
   setVelocityShaderReady: (ready: boolean) => void;
+  setChromeArchesReady: (ready: boolean) => void;
+  setAspirationsProgress: (progress: number) => void;
   setToolkitVisual: (accentMix: number, pulse: number) => void;
   setActiveSection: (section: SectionId) => void;
   setGpuTier: (tier: GpuTierLevel) => void;
