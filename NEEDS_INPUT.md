@@ -1,6 +1,6 @@
 # NEEDS INPUT — Missing Assets, Links & Confirmations
 
-Updated through **Phase 3.5 (Shader Lab `/lab` — Checkpoint 2)**. Remaining items below apply before or during **Phase 4 (Sections 02–08)**.
+Updated through **Phase 7 (Final Review & Handoff)**. All core portfolio routes (`/` Sections `01–08`, `/projects/muzo`, `/projects/office-aid`, `/lab`, `404`, `/api/contact`) and user-supplied media are complete; only the environment configuration for production go-live and optional supplemental items remain below.
 
 ---
 
@@ -27,12 +27,12 @@ Updated through **Phase 3.5 (Shader Lab `/lab` — Checkpoint 2)**. Remaining it
 
 ---
 
-## Remaining Inputs Needed Before Relevant Phase 4 Sections
+## Remaining Optional & Go-Live Items
 
+- [ ] **Formspree Form Endpoint (`NEEDS INPUT` — required before Vercel go-live):** Set `FORMSPREE_ENDPOINT` and `NEXT_PUBLIC_SITE_URL` inside your local `.env.local` and Vercel Project Environment Variables (never committed to git; `/api/contact` returns an honest `503` relay-pending notice until set).
+- [ ] **Live Vercel Deployment Verification (Checkpoint 6 skipped locally):** Push latest commits to `SourasishG/My-Portfolio` and verify live HTTPS URL, OG card (`/opengraph-image`), `/sitemap.xml`, and end-to-end Formspree email delivery on production.
 - [ ] **Office Aid Live Deployment URL (`NEEDS INPUT` — optional):** No public live demo URL currently exists (repo is configured as a local monorepo + Postman suite); Section 03 displays `Local Full-Stack Monorepo` badge alongside the verified GitHub URL until deployed.
-- [ ] **Café Photo Permission (`media_1794416385551_9e8e161f.jpg` in `assets-source/`):** Photo shows bystanders in a public café; kept out of `/public` unless you explicitly confirm you want it cropped/used.
-- [ ] **Solo Night Street Photo Placement (`media_1794416385553_4f6fb081.jpg` in `assets-source/`):** Confirm whether to use this in **Section 06 ("Beyond the screen")** or keep it unused/backup.
-- [ ] **4th Certificate Image (`NEEDS INPUT` — optional before Section 05):** Image file for **Introduction to Large Language Models (`7QAB657M7FS4`)** if desired alongside the verified Coursera URL.
-- [ ] **Employability.life Direct Verification URL (`NEEDS INPUT` — optional before Section 05):** URL embedded inside the QR code on `XPro27566969` (currently shows certificate image directly).
-- [ ] **Formspree Form Endpoint (`NEEDS INPUT` — needed before final Vercel go-live):** Set `FORMSPREE_ENDPOINT` inside your local `.env.local` and Vercel Project Environment Variables (never committed to git; `/api/contact` currently returns an honest `503` relay-pending notice until set).
-- [ ] **Analytics Preference:** Keep analytics off (default) or add Vercel Web Analytics?
+- [ ] **4th Certificate Image (`NEEDS INPUT` — optional):** Certificate scan image for **Introduction to Large Language Models (`7QAB657M7FS4`)** alongside the verified Coursera URL (`https://coursera.org/verify/7QAB657M7FS4`).
+- [ ] **Employability.life Direct Verification URL (`NEEDS INPUT` — optional):** URL embedded inside the QR code on `XPro27566969` (currently shows the high-res certificate scan directly).
+- [ ] **Optional Extra Photos in `assets-source/` (`media_1794416385551_9e8e161f.jpg`, `media_1794416385553_4f6fb081.jpg`):** Kept outside `/public/` cleanly. Note that `assets-source/` currently contains raw original files (including unmodified CV upload `media_1794415523169_c2f228e7.pdf`); confirm whether to keep or add `/assets-source/` to `.gitignore` if preferred.
+- [ ] **Analytics Preference:** Kept off by default (no cookies/tracking script); enable Vercel Web Analytics later only if desired.

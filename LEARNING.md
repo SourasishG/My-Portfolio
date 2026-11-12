@@ -397,3 +397,19 @@ Pairs the architectural S4 glass aperture and direct channel controls (one-click
    **A:** Returning `400` signals to a bot script that its spam was detected so it can adapt and strip fields; returning a benign `200` acknowledgement while skipping the email relay wastes zero relay quota and reveals nothing.
 3. **Q:** *What happens if `FORMSPREE_ENDPOINT` is missing or still set to a placeholder in `.env.local` or staging?*  
    **A:** The route explicitly rejects missing or placeholder (`your_form_id`) values with `503 Service Unavailable` and a helpful fallback message directing visitors to the copyable email (`sourasishghosh062@gmail.com`)—never falsely showing "Message delivered".
+
+---
+
+## Module 18 — Code-Split WebGL Hydration & Technical SEO Routes (`CanvasPortal.tsx`, `SceneRoot.tsx`, `not-found.tsx`, `sitemap.ts`, `robots.ts`, `opengraph-image.tsx`)
+
+### What it does
+1. **Idle-Deferred, Section-Split WebGL (`CanvasPortal` + `SceneRoot`):** Delays mounting the `<Canvas>` subtree via `requestIdleCallback` (with fallback timer) so Hero typography, CSS tokens, and primary paint finish before Three.js initializes, and wraps every shader stage (`HeroBlob`, `ContourSphere`, `ProjectReveal`, `ToolkitConstellation`, `VelocityPlane`, `ChromeArches`, `GlassObject`) in separate `next/dynamic(..., { ssr: false })` boundaries so scrolling down lazy-fetches shader chunks by demand.
+2. **Production Utility Routes:** Adds an editorial 404 recovery page (`not-found.tsx`), automatic XML sitemap (`sitemap.ts` covering `/` + `/projects/*`), crawler rules (`robots.ts` blocking `/lab` and `/api`), vector monogram icon (`icon.svg`), and generated Open Graph preview banner (`opengraph-image.tsx` via `next/og`).
+
+### Interview Questions & Model Answers
+1. **Q:** *Why defer `<Canvas>` mounting with `requestIdleCallback` instead of mounting immediately on Hero hydration?*  
+   **A:** Synchronous WebGL shader compilation blocks the browser main thread on initial load, inflating Total Blocking Time (TBT) in Lighthouse. Deferring canvas initialization until the browser reports an idle slice lets critical HTML, fonts, and interactive navigation finish first, dropping desktop TBT dramatically without removing Hero interactivity.
+2. **Q:** *Why wrap each section shader inside `SceneRoot` with its own `next/dynamic` import when the whole `<Canvas>` is already dynamically loaded?*  
+   **A:** Loading all 8 shaders, Drei `MeshTransmissionMaterial`, and PBR curve builders inside a single JavaScript chunk forces initial visitors who only see the Hero to download, parse, and compile Three.js code for Sections 03–08. Per-shader `next/dynamic` splits them into small async chunks fetched only near or when needed.
+3. **Q:** *Why export `robots.ts` and `sitemap.ts` using environment-aware URL resolution (`NEXT_PUBLIC_SITE_URL` -> `VERCEL_URL` -> localhost)?*  
+   **A:** Hardcoding `http://localhost:3000` in metadata or sitemaps breaks social preview cards and search indexing once deployed, while deriving from `NEXT_PUBLIC_SITE_URL` with a Vercel preview fallback (`https://${process.env.VERCEL_URL}`) works automatically across preview branches and custom domains.
