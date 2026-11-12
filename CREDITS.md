@@ -26,5 +26,5 @@ All external fonts, HDRI environments, textures, and libraries used in **SIGNAL*
 ## Personal Media & Documents
 - Portraits, MUZO UI screenshot, Resume PDF, and Certificates — User-supplied personal files by **Sourasish Ghosh** (originals preserved in `/assets-source/`, served from `/public/`).
 
-## HDRIs / Textures (Phase 4)
-- *(S4 Chromatic Glass HDRI — CC0 asset from Poly Haven will be recorded here with exact filename & URL when added in Phase 4.)*
+## HDRIs / Environments
+- **S4 Procedural Glass Studio Environment** (`components/canvas/GlassObject.tsx`) — Self-contained procedural equirectangular specular + spectral light card map baked into a Three.js `PMREMGenerator` environment texture (`0` external HDRI network dependencies, `0` third-party attribution required).

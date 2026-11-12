@@ -357,3 +357,43 @@ Transitions cleanly back from Section 06's light `$paper` band to obsidian **`$i
    **A:** Rewriting PBR clearcoat, Fresnel reflectance, microfacet GGX specular, and PMREM mipmap sampling from scratch in GLSL is complex and error-prone. Injecting a small vertex ripple snippet into `onBeforeCompile` keeps Three's battle-tested lighting pipeline intact while adding custom scroll-driven motion.
 3. **Q:** *Why render `ChromeArchesFallback` SVG inside `#aspirations-s5-stage` whenever `activeSection !== "aspirations"` even on high-tier GPUs?*  
    **A:** `SceneRoot` activates `ChromeArches` (`S5`) only when `#aspirations` reaches the active section probe so Section 06 (`S7 + S8`) and Section 08 (`S4 + S8`) never exceed 2 concurrent WebGL shaders. Showing the crisp SVG fallback while scrolling across boundary pixels ensures `#aspirations-s5-stage` never shows an empty cutout.
+
+---
+
+## Module 16 — Shader S4 Chromatic Glass (`components/canvas/GlassObject.tsx`)
+
+### What it does
+Renders a tumbling, pointer-responsive faceted crystal in `#contact-s4-stage` powered by Drei's **`MeshTransmissionMaterial`** (`ior: 1.45`, `chromaticAberration: 0.16`, `thickness: 0.72`), splitting light from internal cyan (`#4DA8FF`) and violet (`#B388F5`) orbital filaments into crisp prismatic color fringes over an obsidian `#07080B` stage.
+
+### How Transmission & Chromatic Dispersion Work
+1. **Back-Buffer Refraction Pass (`useFBO`):** Unlike ordinary transparent materials (`opacity < 1`) that only alpha-blend colors, `MeshTransmissionMaterial` temporarily hides the crystal mesh, renders everything behind it into an offscreen Frame Buffer Object (FBO texture), and then draws the crystal using that FBO texture warped along surface normals by Snell's law (`ior: 1.45`).
+2. **RGB Chromatic Splitting:** Real glass bends shorter wavelengths (blue/violet) more strongly than longer wavelengths (red/orange). `chromaticAberration` offsets the R, G, and B UV lookups inside the FBO refraction sample so crystal facet edges shimmer with realistic dispersion.
+3. **Internal Filament Rig & Performance Gating:** Because `#contact` sits on a dark `#07080B` ground, internal glowing orbital rings + wireframe octahedral core placed behind/inside the crystal give the FBO pass bright lines to refract. Setting `mat.visible = false` whenever `!visible || reducedMotion || offscreen` stops `MeshTransmissionMaterial`'s internal `useFrame` FBO render passes outside Section 08, preserving a `<= 2` active WebGL budget (`S4 + S8`).
+
+### Interview Questions & Model Answers
+1. **Q:** *Why is setting `group.visible = false` alone NOT enough to pause Drei's `MeshTransmissionMaterial` overhead in a multi-section `<Canvas>`?*  
+   **A:** Inside Drei's implementation, the expensive FBO scene re-render triggers inside `useFrame` whenever `parent && material.visible && material.uniforms._transmission.value !== 0`. Explicitly toggling `mat.visible = false` alongside `group.visible = false` prevents hidden sections from paying extra scene render passes on every frame.
+2. **Q:** *Why use flat-faceted `toNonIndexed()` + `computeVertexNormals()` on the crystal icosahedron instead of an indexed smooth sphere?*  
+   **A:** Smooth vertex normals interpolate curvature gradually across triangles, whereas unshared non-indexed triangles produce crisp flat plane normals per face—creating distinct angular refraction jumps across every facet edge.
+3. **Q:** *How do you scale glass transmission cost for mobile and mid-tier GPUs?*  
+   **A:** `samples` and FBO `resolution` scale down from `6` samples at `512px` on high-tier desktop to `3` samples at `256px` on mobile/mid-tier, while low-GPU / `prefers-reduced-motion` switches seamlessly to the static `GlassObjectFallback` SVG + CSS `conic-gradient` prism.
+
+---
+
+## Module 17 — Section 08 Contact, Server Validation API & Footer (`Contact.tsx`, `app/api/contact/route.ts`, `Footer.tsx`)
+
+### What it does
+Pairs the architectural S4 glass aperture and direct channel controls (one-click Email copy, GitHub, LinkedIn, Instagram, Resume PDF download—strictly excluding private phone numbers) with a typed `react-hook-form` + `zod` form backed by `/api/contact/route.ts`, followed by the global persistent `Footer` featuring an S2-inspired split contour mark.
+
+### Defense-in-Depth Validation & Proxy Architecture
+1. **Shared Schema Validation (`lib/contact-schema.ts`):** Both the browser form (`contactZodResolver`) and Next.js Route Handler validate `name`, `email`, optional `subject`, and `message` against the exact same `zod` rules, keeping error messages identical across instant client feedback and server `400` responses without extra third-party resolver packages.
+2. **Honeypot + Sliding-Window Rate Limit + Secret Isolation:** An off-screen `company` input (`tabIndex={-1}`, `aria-hidden="true"`) catches automated bots silently (`200` no-op without calling Formspree). Legitimate requests pass an in-memory IP sliding-window limiter (`429 Too Many Requests` with `Retry-After`) before reaching `process.env.FORMSPREE_ENDPOINT`, which stays strictly server-side (`503` honest notice when unconfigured instead of faking delivery).
+3. **Animated Feedback Isolation (`ANIMATION_MAP.md`):** GSAP draws `.contact-line-art`, `.contact-hud-line`, `.footer-wordmark`, and `.footer-contour-split`, while Framer Motion handles `.contact-submit-btn` and `.contact-form-feedback` (`AnimatePresence`), ensuring no single DOM element ever shares CSS transform ownership between libraries.
+
+### Interview Questions & Model Answers
+1. **Q:** *Why proxy Formspree submissions through `/api/contact/route.ts` instead of posting directly from the browser `<form action="https://formspree.io/...">`?*  
+   **A:** A server Route Handler keeps the Formspree endpoint private, lets us enforce identical `zod` schema validation, apply IP-based sliding-window rate limiting (`429`), trap bots with a server-checked honeypot, and return structured per-field errors cleanly without redirecting away from the portfolio.
+2. **Q:** *If a hidden honeypot field is filled in, why return HTTP `200 OK` instead of `400 Bad Request`?*  
+   **A:** Returning `400` signals to a bot script that its spam was detected so it can adapt and strip fields; returning a benign `200` acknowledgement while skipping the email relay wastes zero relay quota and reveals nothing.
+3. **Q:** *What happens if `FORMSPREE_ENDPOINT` is missing or still set to a placeholder in `.env.local` or staging?*  
+   **A:** The route explicitly rejects missing or placeholder (`your_form_id`) values with `503 Service Unavailable` and a helpful fallback message directing visitors to the copyable email (`sourasishghosh062@gmail.com`)—never falsely showing "Message delivered".

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { CanvasPortal } from "@/components/canvas/CanvasPortal";
 import { CustomCursor } from "@/components/layout/CustomCursor";
+import { Footer } from "@/components/layout/Footer";
 import { Navigation } from "@/components/layout/Navigation";
 import { Preloader } from "@/components/layout/Preloader";
 import { SmoothScrollProvider } from "@/components/layout/SmoothScrollProvider";
@@ -127,6 +128,7 @@ export default function RootLayout({
           <Preloader />
           <Navigation />
           {children}
+          <Footer />
           <CustomCursor />
         </SmoothScrollProvider>
       </body>

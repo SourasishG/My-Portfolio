@@ -34,5 +34,5 @@ Updated through **Phase 3.5 (Shader Lab `/lab` — Checkpoint 2)**. Remaining it
 - [ ] **Solo Night Street Photo Placement (`media_1794416385553_4f6fb081.jpg` in `assets-source/`):** Confirm whether to use this in **Section 06 ("Beyond the screen")** or keep it unused/backup.
 - [ ] **4th Certificate Image (`NEEDS INPUT` — optional before Section 05):** Image file for **Introduction to Large Language Models (`7QAB657M7FS4`)** if desired alongside the verified Coursera URL.
 - [ ] **Employability.life Direct Verification URL (`NEEDS INPUT` — optional before Section 05):** URL embedded inside the QR code on `XPro27566969` (currently shows certificate image directly).
-- [ ] **Formspree Form Endpoint (`NEEDS INPUT` — needed at Section 08 / Checkpoint 5):** `FORMSPREE_ENDPOINT` value inside your local `.env.local` (never committed).
+- [ ] **Formspree Form Endpoint (`NEEDS INPUT` — needed before final Vercel go-live):** Set `FORMSPREE_ENDPOINT` inside your local `.env.local` and Vercel Project Environment Variables (never committed to git; `/api/contact` currently returns an honest `503` relay-pending notice until set).
 - [ ] **Analytics Preference:** Keep analytics off (default) or add Vercel Web Analytics?
