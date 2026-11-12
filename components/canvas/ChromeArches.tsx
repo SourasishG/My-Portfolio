@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useFrame, useThree } from "@react-three/fiber";
 import { GpuTierLevel, useSceneStore } from "@/lib/store";
@@ -222,6 +222,8 @@ export function ChromeArches({
 }: ChromeArchesProps) {
   const rootGroupRef = useRef<THREE.Group>(null);
   const archRefs = useRef<Array<THREE.Mesh | null>>([]);
+  const matRefs = useRef<Array<THREE.MeshPhysicalMaterial | null>>([]);
+  const envTargetRef = useRef<THREE.WebGLRenderTarget | null>(null);
   const anchorElRef = useRef<Element | null>(null);
   const smoothedScrollRef = useRef<number>(0);
 
@@ -235,68 +237,60 @@ export function ChromeArches({
   const isLowDetail = isMobile || tier !== "high";
   const arches = useMemo(() => buildArchGeometries(isLowDetail), [isLowDetail]);
 
-  const material = useMemo(() => {
-    const mat = new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color("#E8EDF5"),
-      metalness: 1.0,
-      roughness: 0.08,
-      clearcoat: 1.0,
-      clearcoatRoughness: 0.05,
-      envMapIntensity: 1.45,
-      reflectivity: 1.0,
-    });
+  const handleBeforeCompile = useCallback((shader: THREE.WebGLProgramParametersWithUniforms) => {
+    shader.uniforms.uTime = shaderUniformsRef.current.uTime;
+    shader.uniforms.uRippleAmp = shaderUniformsRef.current.uRippleAmp;
+    shader.uniforms.uScrollArc = shaderUniformsRef.current.uScrollArc;
 
-    mat.customProgramCacheKey = () => "signal-s5-chrome-arches-v1";
-    mat.onBeforeCompile = (shader) => {
-      shader.uniforms.uTime = shaderUniformsRef.current.uTime;
-      shader.uniforms.uRippleAmp = shaderUniformsRef.current.uRippleAmp;
-      shader.uniforms.uScrollArc = shaderUniformsRef.current.uScrollArc;
+    shader.vertexShader =
+      `
+      uniform float uTime;
+      uniform float uRippleAmp;
+      uniform float uScrollArc;
+      ` + shader.vertexShader;
 
-      shader.vertexShader =
-        `
-        uniform float uTime;
-        uniform float uRippleAmp;
-        uniform float uScrollArc;
-        ` + shader.vertexShader;
-
-      shader.vertexShader = shader.vertexShader.replace(
-        "#include <begin_vertex>",
-        `
-        #include <begin_vertex>
-        float s5WavePhase = transformed.x * 1.9 + transformed.z * 1.35 + uTime * 1.2 + uScrollArc * 2.5;
-        transformed.y += sin(s5WavePhase) * uRippleAmp;
-        transformed.z += cos(s5WavePhase * 0.8 + 0.9) * (uRippleAmp * 0.65);
-        `
-      );
-    };
-
-    return mat;
+    shader.vertexShader = shader.vertexShader.replace(
+      "#include <begin_vertex>",
+      `
+      #include <begin_vertex>
+      float s5WavePhase = transformed.x * 1.9 + transformed.z * 1.35 + uTime * 1.2 + uScrollArc * 2.5;
+      transformed.y += sin(s5WavePhase) * uRippleAmp;
+      transformed.z += cos(s5WavePhase * 0.8 + 0.9) * (uRippleAmp * 0.65);
+      `
+    );
   }, []);
 
-  // Build procedural studio PMREM environment once & dispose cleanly on unmount
+  const cacheKeyFn = useCallback(() => "signal-s5-chrome-arches-v1", []);
+
+  // Build procedural studio PMREM environment once & bind to arch materials
   useEffect(() => {
     const envTarget = createChromeStudioEnv(gl);
-    material.envMap = envTarget.texture;
-    material.needsUpdate = true;
+    envTargetRef.current = envTarget;
 
+    matRefs.current.forEach((mat) => {
+      if (!mat) return;
+      mat.envMap = envTarget.texture;
+      mat.needsUpdate = true;
+    });
+
+    const materialsSnapshot = matRefs.current;
     return () => {
+      materialsSnapshot.forEach((mat) => {
+        if (!mat) return;
+        mat.envMap = null;
+        mat.dispose();
+      });
       envTarget.dispose();
-      material.envMap = null;
+      envTargetRef.current = null;
       useSceneStore.getState().setChromeArchesReady(false);
     };
-  }, [gl, material]);
+  }, [gl]);
 
   useEffect(() => {
     return () => {
       arches.forEach((arch) => arch.geometry.dispose());
     };
   }, [arches]);
-
-  useEffect(() => {
-    return () => {
-      material.dispose();
-    };
-  }, [material]);
 
   useFrame((state, delta) => {
     const group = rootGroupRef.current;
@@ -312,7 +306,13 @@ export function ChromeArches({
       return;
     }
 
-    if (!store.chromeArchesReady && material.envMap) {
+    const envTex = envTargetRef.current?.texture ?? null;
+    if (!envTex) {
+      group.visible = false;
+      return;
+    }
+
+    if (!store.chromeArchesReady) {
       store.setChromeArchesReady(true);
     }
 
@@ -349,7 +349,7 @@ export function ChromeArches({
       group.scale.setScalar(isMobile ? 0.82 : 1.05);
     }
 
-    group.visible = Boolean(material.envMap);
+    group.visible = true;
 
     const clampedDelta = Math.min(delta, 0.05);
     const targetScroll =
@@ -368,14 +368,22 @@ export function ChromeArches({
     shaderUniformsRef.current.uRippleAmp.value = labOverrides?.rippleAmp ?? 0.048;
     shaderUniformsRef.current.uScrollArc.value = smoothedScrollRef.current;
 
-    // Synchronize live material overrides if supplied in Shader Lab
-    material.roughness = labOverrides?.roughness ?? 0.08;
-    material.metalness = labOverrides?.metalness ?? 1.0;
-    material.envMapIntensity = labOverrides?.envIntensity ?? 1.45;
-    if (labOverrides?.chromeTint) {
-      material.color.set(labOverrides.chromeTint);
-    } else {
-      material.color.set("#E8EDF5");
+    const targetRoughness = labOverrides?.roughness ?? 0.08;
+    const targetMetalness = labOverrides?.metalness ?? 1.0;
+    const targetEnvIntensity = labOverrides?.envIntensity ?? 1.45;
+    const targetTint = labOverrides?.chromeTint ?? "#E8EDF5";
+
+    for (let i = 0; i < matRefs.current.length; i++) {
+      const mat = matRefs.current[i];
+      if (!mat) continue;
+      if (mat.envMap !== envTex) {
+        mat.envMap = envTex;
+        mat.needsUpdate = true;
+      }
+      mat.roughness = targetRoughness;
+      mat.metalness = targetMetalness;
+      mat.envMapIntensity = targetEnvIntensity;
+      mat.color.set(targetTint);
     }
 
     // Camera-like scroll arc rotation + subtle fine pointer parallax
@@ -431,10 +439,24 @@ export function ChromeArches({
             archRefs.current[index] = el;
           }}
           geometry={spec.geometry}
-          material={material}
           rotation={spec.baseRotation}
           frustumCulled={false}
-        />
+        >
+          <meshPhysicalMaterial
+            ref={(mat) => {
+              matRefs.current[index] = mat;
+            }}
+            color="#E8EDF5"
+            metalness={1.0}
+            roughness={0.08}
+            clearcoat={1.0}
+            clearcoatRoughness={0.05}
+            envMapIntensity={1.45}
+            reflectivity={1.0}
+            onBeforeCompile={handleBeforeCompile}
+            customProgramCacheKey={cacheKeyFn}
+          />
+        </mesh>
       ))}
     </group>
   );
