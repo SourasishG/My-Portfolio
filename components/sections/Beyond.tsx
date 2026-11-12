@@ -170,6 +170,7 @@ export function Beyond() {
                   src="/images/profile/portrait-alt.jpg"
                   alt={BEYOND_COPY.portraitAlt}
                   fill
+                  loading="eager"
                   sizes="(max-width: 1023px) 92vw, 420px"
                   quality={90}
                   className={styles.stageImage}

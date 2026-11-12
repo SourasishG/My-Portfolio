@@ -23,10 +23,10 @@ const geistMono = Geist_Mono({
 
 const rawSiteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ??
-  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined);
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
 
 export const metadata: Metadata = {
-  ...(rawSiteUrl ? { metadataBase: new URL(rawSiteUrl) } : {}),
+  metadataBase: new URL(rawSiteUrl),
   title: {
     default: "Sourasish Ghosh — Full-Stack Developer | SIGNAL",
     template: "%s | Sourasish Ghosh — SIGNAL",

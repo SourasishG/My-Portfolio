@@ -195,6 +195,7 @@ export function About() {
                   src="/images/profile/portrait-main.jpg"
                   alt={ABOUT_COPY.portraitAlt}
                   fill
+                  loading="eager"
                   sizes="(max-width: 1023px) 92vw, 460px"
                   quality={90}
                   className={styles.portraitImg}
