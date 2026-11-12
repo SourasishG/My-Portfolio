@@ -67,6 +67,8 @@ export const useSceneStore = create<SceneState>((set, get) => ({
   projectHover: 0,
   projectShaderReady: false,
   velocityShaderReady: false,
+  chromeArchesReady: false,
+  aspirationsProgress: 0,
   toolkitAccentMix: 0,
   toolkitPulse: 0,
   activeSection: "hero",
@@ -120,6 +122,16 @@ export const useSceneStore = create<SceneState>((set, get) => ({
     if (get().velocityShaderReady !== velocityShaderReady) {
       set({ velocityShaderReady });
     }
+  },
+
+  setChromeArchesReady: (chromeArchesReady) => {
+    if (get().chromeArchesReady !== chromeArchesReady) {
+      set({ chromeArchesReady });
+    }
+  },
+
+  setAspirationsProgress: (progress) => {
+    get().aspirationsProgress = progress;
   },
 
   setToolkitVisual: (accentMix, pulse) => {

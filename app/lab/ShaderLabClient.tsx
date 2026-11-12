@@ -15,6 +15,10 @@ import { Leva, useControls } from "leva";
 import { ArrowLeft, Cpu, Eye, Layers, Sparkles } from "lucide-react";
 import { CanvasErrorBoundary } from "@/components/canvas/CanvasErrorBoundary";
 import {
+  ChromeArches,
+  ChromeArchesFallback,
+} from "@/components/canvas/ChromeArches";
+import {
   ContourSphere,
   ContourSphereFallback,
 } from "@/components/canvas/ContourSphere";
@@ -32,7 +36,7 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { GpuTierLevel, useSceneStore } from "@/lib/store";
 import styles from "./lab.module.scss";
 
-type LabSceneMode = "s1" | "s2" | "morph" | "s3" | "s7";
+type LabSceneMode = "s1" | "s2" | "morph" | "s3" | "s5" | "s7";
 type PresetTier = "desktop" | "mid" | "mobile";
 
 const emptySubscribe = () => () => {};
@@ -48,6 +52,7 @@ function getInitialSceneMode(): LabSceneMode {
     qScene === "s2" ||
     qScene === "morph" ||
     qScene === "s3" ||
+    qScene === "s5" ||
     qScene === "s7"
   ) {
     return qScene;
@@ -174,6 +179,15 @@ function ShaderLabInteractive() {
     accentColor: "#FF5B1F",
   }));
 
+  const [s5Values] = useControls("S5 — Chrome Fluid Arches", () => ({
+    scrollSection: { value: 0.38, min: 0.0, max: 1.0, step: 0.02 },
+    roughness: { value: 0.08, min: 0.02, max: 0.45, step: 0.01 },
+    metalness: { value: 1.0, min: 0.5, max: 1.0, step: 0.02 },
+    rippleAmp: { value: 0.048, min: 0.0, max: 0.14, step: 0.004 },
+    envIntensity: { value: 1.45, min: 0.4, max: 2.5, step: 0.05 },
+    chromeTint: "#E8EDF5",
+  }));
+
   const s3SampleScreen = useMemo(() => {
     const projectIndex = s3Values.sample === "Office Aid" ? 1 : 0;
     return FEATURED_PROJECTS[projectIndex].screens[0];
@@ -267,6 +281,14 @@ function ShaderLabInteractive() {
           "Drives vertex scroll shear, wave displacement, and directional RGB channel split + Swiss orange rim streaks on Section 06 ($paper) proportional to damped Lenis velocity.",
       };
     }
+    if (sceneMode === "s5") {
+      return {
+        code: "S5 // CHROME FLUID ARCHES",
+        budget: "4 Catmull-Rom Tube Arches · Procedural PMREM Studio Env",
+        summary:
+          "Reflective brushed-chrome MeshPhysicalMaterial arches (metalness 1.0, roughness 0.08) with GPU harmonic vertex ripple pivoting smoothly along a scroll-driven camera arc.",
+      };
+    }
     return {
       code: "S1 -> S2 // SCROLL MORPH TRANSITION",
       budget: "Co-rendered S1 + S2 Handover · Max 2 WebGL Effects Budget",
@@ -301,6 +323,10 @@ function ShaderLabInteractive() {
             className={styles.s7FallbackImg}
           />
         </div>
+      </div>
+    ) : sceneMode === "s5" ? (
+      <div style={{ width: "min(76vw, 680px)", aspectRatio: "4 / 3" }}>
+        <ChromeArchesFallback />
       </div>
     ) : (
       <HeroBlobFallback />
@@ -388,6 +414,13 @@ function ShaderLabInteractive() {
               onClick={() => setSceneMode("s7")}
             >
               S7 Velocity
+            </button>
+            <button
+              type="button"
+              className={`${styles.segBtn} ${sceneMode === "s5" ? styles.active : ""}`}
+              onClick={() => setSceneMode("s5")}
+            >
+              S5 Arches
             </button>
           </div>
 
@@ -590,6 +623,23 @@ function ShaderLabInteractive() {
                     streakDir: s7Values.streakDir,
                     paperColor: s7Values.paperColor,
                     accentColor: s7Values.accentColor,
+                  }}
+                />
+              )}
+
+              {sceneMode === "s5" && (
+                <ChromeArches
+                  tier={effectiveTier}
+                  isMobile={isMobilePreset}
+                  visible
+                  reducedMotion={effectiveReducedMotion}
+                  labOverrides={{
+                    scrollSection: s5Values.scrollSection,
+                    roughness: s5Values.roughness,
+                    metalness: s5Values.metalness,
+                    rippleAmp: s5Values.rippleAmp,
+                    envIntensity: s5Values.envIntensity,
+                    chromeTint: s5Values.chromeTint,
                   }}
                 />
               )}

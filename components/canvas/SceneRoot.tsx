@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Canvas, useThree } from "@react-three/fiber";
 import { CanvasErrorBoundary } from "@/components/canvas/CanvasErrorBoundary";
+import { ChromeArches } from "@/components/canvas/ChromeArches";
 import { ContourSphere } from "@/components/canvas/ContourSphere";
 import { GrainOverlay } from "@/components/canvas/GrainOverlay";
 import { HeroBlob } from "@/components/canvas/HeroBlob";
@@ -106,6 +107,7 @@ export function SceneRoot() {
   const showProjectReveal = isHomeRoute && activeSection === "projects" && isDesktop;
   const showToolkitConstellation = isHomeRoute && activeSection === "toolkit";
   const showVelocityPlane = isHomeRoute && activeSection === "beyond";
+  const showChromeArches = isHomeRoute && activeSection === "aspirations";
   const canvasBackdrop = isHomeRoute && activeSection === "hero" ? "#000000" : "#07080B";
 
   return (
@@ -198,6 +200,15 @@ export function SceneRoot() {
             visible={showVelocityPlane}
             reducedMotion={reducedMotion}
             viewportSelector="#beyond-s7-stage"
+          />
+
+          {/* S5 — Chrome Fluid Arches synced to Section 07 Aspirations aperture */}
+          <ChromeArches
+            tier={gpuProfile.tier}
+            isMobile={!isDesktop}
+            reducedMotion={reducedMotion}
+            visible={showChromeArches}
+            viewportSelector="#aspirations-s5-stage"
           />
 
           {/* S8 — Subtle Global Grain & Vignette (disabled on low GPU / muted on $paper) */}
