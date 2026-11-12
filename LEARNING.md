@@ -337,3 +337,23 @@ Creates the single light **`$paper` (`#F4F4F2`)** Swiss editorial interruption i
    **A:** Contrast is relative to luminance rather than constant per hue. `#8A90A0` (`$muted`) and small `#FF5B1F` (`$signal`) text look crisp on obsidian `#07080B` but fail WCAG 4.5:1 on off-white `#F4F4F2`, so switching small text tokens to `$paper-muted` (`#555966`) while keeping `#FF5B1F` strictly for geometric non-text rules preserves both visual punch and accessibility.
 3. **Q:** *Why apply exponential damping (`1 - Math.exp(-10 * dt)`) to Lenis velocity inside `useFrame` before passing `uVelocity` to GLSL?*  
    **A:** Frame deltas (`dt`) vary across 60Hz, 120Hz, and jittery frames; `1 - Math.exp(-k * dt)` provides frame-rate-independent smoothing, avoiding abrupt tearing when wheel scrolling starts or stops suddenly.
+
+---
+
+## Module 15 — Section 07 Aspirations & Future Vision (`components/sections/Aspirations.tsx`, `components/canvas/ChromeArches.tsx`, Shader `S5`)
+
+### What it does
+Transitions cleanly back from Section 06's light `$paper` band to obsidian **`$ink` (`#07080B`)**, presenting Sourasish's engineering philosophy, long-term full-stack ambition, honest approach to AI-assisted development tools, and active exploration horizons paired with **Shader S5 (`ChromeArches`)**.
+
+### Architecture, PBR Reflections & Scroll Arc
+1. **Self-Contained Procedural PMREM Studio Environment:** Pure chrome materials (`MeshPhysicalMaterial` with `metalness: 1.0`, `roughness: 0.08`, `clearcoat: 1.0`) look almost black without an environment reflection map because metals reflect their surroundings rather than scattering diffuse light. Instead of fetching an external `.hdr` asset over the network, `ChromeArches` synthesizes a softbox studio equirectangular `DataTexture` on mount and converts it via Three.js `PMREMGenerator.fromEquirectangular(...)`—delivering gleaming brushed-chrome softbox highlights and obsidian shadow cavities on frame 1 with deterministic cleanup (`dispose()`).
+2. **GPU Harmonic Ripple via `onBeforeCompile`:** Four interlocking `CatmullRomCurve3` `TubeGeometry` arches receive subtle vertex modulation (`uTime`, `uRippleAmp`, `uScrollArc`) patched cleanly into Three's standard PBR shader at `#include <begin_vertex>`, preserving full physically-based clearcoat reflections while avoiding CPU vertex-buffer re-uploads every frame.
+3. **Budget-Safe Scroll Synchronization:** GSAP ScrollTrigger scrubs `useSceneStore.aspirationsProgress` (`0..1`) without triggering React state updates, pivoting `ChromeArches` along a smooth spatial arc while `#aspirations-s5-stage` renders `ChromeArchesFallback` SVG automatically outside Section 07, on low-tier GPUs, or under `prefers-reduced-motion`—strictly keeping active WebGL scenes `<= 2` per viewport (`S5 + S8`).
+
+### Interview Questions & Model Answers
+1. **Q:** *Why does a `metalness: 1.0, roughness: 0.08` Three.js material look flat black if you only add point or directional lights without an `envMap`?*  
+   **A:** Physically based metals have near-zero diffuse albedo; nearly all visible brightness comes from specular reflections of surrounding light emitters. Generating or loading a prefiltered `PMREM` environment map gives metallic surfaces grazing softbox reflections and realistic depth.
+2. **Q:** *Why modify Three.js's built-in `MeshPhysicalMaterial` via `onBeforeCompile` instead of writing a completely custom `ShaderMaterial` for S5?*  
+   **A:** Rewriting PBR clearcoat, Fresnel reflectance, microfacet GGX specular, and PMREM mipmap sampling from scratch in GLSL is complex and error-prone. Injecting a small vertex ripple snippet into `onBeforeCompile` keeps Three's battle-tested lighting pipeline intact while adding custom scroll-driven motion.
+3. **Q:** *Why render `ChromeArchesFallback` SVG inside `#aspirations-s5-stage` whenever `activeSection !== "aspirations"` even on high-tier GPUs?*  
+   **A:** `SceneRoot` activates `ChromeArches` (`S5`) only when `#aspirations` reaches the active section probe so Section 06 (`S7 + S8`) and Section 08 (`S4 + S8`) never exceed 2 concurrent WebGL shaders. Showing the crisp SVG fallback while scrolling across boundary pixels ensures `#aspirations-s5-stage` never shows an empty cutout.

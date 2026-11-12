@@ -21,6 +21,7 @@ All external fonts, HDRI environments, textures, and libraries used in **SIGNAL*
 
 ## Shaders & Procedural Geometry
 - **S1–S8 Shaders** (`/shaders/*.glsl`) — Original GLSL implementations authored for SIGNAL (simplex noise adapted from Ashima/Stefan Gustavson MIT-licensed 3D simplex noise pattern, credited in shader headers).
+- **S5 Procedural Studio Radiance Environment** (`components/canvas/ChromeArches.tsx`) — Self-contained procedural equirectangular softbox light map baked into a Three.js `PMREMGenerator` environment texture at runtime (`0` external `.hdr` downloads, `0` third-party attribution required).
 
 ## Personal Media & Documents
 - Portraits, MUZO UI screenshot, Resume PDF, and Certificates — User-supplied personal files by **Sourasish Ghosh** (originals preserved in `/assets-source/`, served from `/public/`).
