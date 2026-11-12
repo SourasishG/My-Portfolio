@@ -24,6 +24,7 @@ import {
   HeroBlobFallback,
 } from "@/components/canvas/HeroBlob";
 import { ProjectReveal } from "@/components/canvas/ProjectReveal";
+import { VelocityPlane } from "@/components/canvas/VelocityPlane";
 import { FEATURED_PROJECTS } from "@/content/projects";
 import { useGpuTier } from "@/hooks/useGpuTier";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
@@ -31,7 +32,7 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { GpuTierLevel, useSceneStore } from "@/lib/store";
 import styles from "./lab.module.scss";
 
-type LabSceneMode = "s1" | "s2" | "morph" | "s3";
+type LabSceneMode = "s1" | "s2" | "morph" | "s3" | "s7";
 type PresetTier = "desktop" | "mid" | "mobile";
 
 const emptySubscribe = () => () => {};
@@ -42,7 +43,13 @@ function getUrlParam(name: string): string | null {
 
 function getInitialSceneMode(): LabSceneMode {
   const qScene = getUrlParam("scene");
-  if (qScene === "s1" || qScene === "s2" || qScene === "morph" || qScene === "s3") {
+  if (
+    qScene === "s1" ||
+    qScene === "s2" ||
+    qScene === "morph" ||
+    qScene === "s3" ||
+    qScene === "s7"
+  ) {
     return qScene;
   }
   return "s1";
@@ -159,6 +166,14 @@ function ShaderLabInteractive() {
     ringAccent: "#FF5B1F",
   }));
 
+  const [s7Values] = useControls("S7 — Velocity Distortion", () => ({
+    velocity: { value: 0.85, min: -1.5, max: 1.5, step: 0.05 },
+    rgbShift: { value: 0.014, min: 0.0, max: 0.04, step: 0.001 },
+    streakDir: { value: 1.0, min: -1.0, max: 1.0, step: 0.1 },
+    paperColor: "#F4F4F2",
+    accentColor: "#FF5B1F",
+  }));
+
   const s3SampleScreen = useMemo(() => {
     const projectIndex = s3Values.sample === "Office Aid" ? 1 : 0;
     return FEATURED_PROJECTS[projectIndex].screens[0];
@@ -244,6 +259,14 @@ function ShaderLabInteractive() {
           "Samples center luminance across a crisp square halftone matrix with #4DA8FF highlight tinting and opens an interactive full-color optical lens (`uRevealRadius`) around the cursor.",
       };
     }
+    if (sceneMode === "s7") {
+      return {
+        code: "S7 // SCROLL-VELOCITY DISTORTION",
+        budget: "1 Subdivided Quad (12x18) · WebGL 1/2 Active",
+        summary:
+          "Drives vertex scroll shear, wave displacement, and directional RGB channel split + Swiss orange rim streaks on Section 06 ($paper) proportional to damped Lenis velocity.",
+      };
+    }
     return {
       code: "S1 -> S2 // SCROLL MORPH TRANSITION",
       budget: "Co-rendered S1 + S2 Handover · Max 2 WebGL Effects Budget",
@@ -264,6 +287,18 @@ function ShaderLabInteractive() {
             fill
             sizes="78vw"
             className={styles.s3FallbackImg}
+          />
+        </div>
+      </div>
+    ) : sceneMode === "s7" ? (
+      <div className={styles.s7FallbackWrap}>
+        <div className={styles.s7FallbackFrame}>
+          <Image
+            src="/images/profile/portrait-alt.jpg"
+            alt="Monochrome portrait preview for S7 static fallback"
+            fill
+            sizes="420px"
+            className={styles.s7FallbackImg}
           />
         </div>
       </div>
@@ -306,8 +341,8 @@ function ShaderLabInteractive() {
             <span>Back</span>
           </Link>
           <div className={styles.titleBlock}>
-            <span className={styles.hudTag}>PHASE 3.5 // SHADER LAB</span>
-            <h1 className={styles.title}>S1 – S3 Interactive Verification</h1>
+            <span className={styles.hudTag}>PHASE 3.5 / 4 // SHADER LAB</span>
+            <h1 className={styles.title}>S1 – S7 Interactive Verification</h1>
           </div>
         </div>
 
@@ -346,6 +381,13 @@ function ShaderLabInteractive() {
               onClick={() => setSceneMode("s3")}
             >
               S3 Halftone
+            </button>
+            <button
+              type="button"
+              className={`${styles.segBtn} ${sceneMode === "s7" ? styles.active : ""}`}
+              onClick={() => setSceneMode("s7")}
+            >
+              S7 Velocity
             </button>
           </div>
 
@@ -534,6 +576,20 @@ function ShaderLabInteractive() {
                     bgColor: s3Values.bgColor,
                     halftoneTint: s3Values.halftoneTint,
                     ringAccent: s3Values.ringAccent,
+                  }}
+                />
+              )}
+
+              {sceneMode === "s7" && (
+                <VelocityPlane
+                  visible
+                  reducedMotion={effectiveReducedMotion}
+                  labOverrides={{
+                    velocity: s7Values.velocity,
+                    rgbShift: s7Values.rgbShift,
+                    streakDir: s7Values.streakDir,
+                    paperColor: s7Values.paperColor,
+                    accentColor: s7Values.accentColor,
                   }}
                 />
               )}

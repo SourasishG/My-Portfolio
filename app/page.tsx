@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { About } from "@/components/sections/About";
+import { Beyond } from "@/components/sections/Beyond";
 import { Hero } from "@/components/sections/Hero";
 import { Journey } from "@/components/sections/Journey";
 import { Projects } from "@/components/sections/Projects";
@@ -14,32 +15,32 @@ export default function HomePage() {
       <Projects />
       <Toolkit />
       <Journey />
+      <Beyond />
 
-      {/* Minimal staging sentinel queued for Checkpoint 4e (Section 06 Beyond Technology $paper band) */}
+      {/* Minimal staging sentinel queued for Checkpoint 4f (Section 07 Aspirations & S5 Chrome Arches) */}
       <section
-        id="beyond"
+        id="aspirations"
         data-staging-sentinel="true"
         className={styles.sentinelBand}
-        aria-label="Section 06 staging gate"
+        aria-label="Section 07 staging gate"
       >
         <div className={styles.sentinelInner}>
           <span className={styles.hudTag}>
-            [06] // CHECKPOINT 4d STAGING GATE — BEYOND TECHNOLOGY ($PAPER)
+            [07] // CHECKPOINT 4e STAGING GATE — ENGINEERING ASPIRATIONS
           </span>
           <h2 className={styles.heading}>
-            Section 05 Journey, Credentials &amp; Education Active
+            Section 06 Beyond Technology ($paper) &amp; S7 Active
           </h2>
           <p className={styles.copy}>
-            Section 05 (Employability.life AWS DevOps Internship spotlight,
-            scroll-scrubbed milestone spine, 4 expandable certifications with
-            real scans/Coursera verification, and SNU/CBSE Education) is
-            integrated above. Section 06 (&ldquo;Beyond the screen&rdquo; on
-            the single inverted <code>$paper</code> band + S7 velocity
-            distortion) awaits Checkpoint 4d verification and approval.
+            Section 06 (the single inverted <code>#F4F4F2</code> Swiss light
+            editorial band covering Football, Video Games, Music &amp; Movies
+            with scroll-velocity distortion shader S7) is integrated above.
+            Section 07 (Engineering Aspirations &amp; S5 Chrome Fluid Arches)
+            awaits Checkpoint 4e verification and approval.
           </p>
           <div className={styles.metaRow}>
-            <Link href="/#journey" className={styles.backTopLink}>
-              Back to Journey (#journey)
+            <Link href="/#beyond" className={styles.backTopLink}>
+              Back to Beyond (#beyond)
             </Link>
             <Link href="/#hero" className={styles.backTopLink}>
               Return to Top (#hero)

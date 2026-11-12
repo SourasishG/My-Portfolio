@@ -1,0 +1,325 @@
+@use "abstracts/tokens" as *;
+@use "abstracts/mixins" as *;
+
+.beyondSection {
+  position: relative;
+  padding-block: clamp(5rem, 11vh, 9rem);
+  background-color: $paper;
+  color: $paper-ink;
+  border-top: 1px solid $paper-line;
+  border-bottom: 1px solid $paper-line;
+  overflow: clip;
+  scroll-margin-top: 80px;
+}
+
+.beyondShaderWindow {
+  background-color: transparent;
+}
+
+.container {
+  @include container;
+  position: relative;
+  display: grid;
+  gap: clamp(2.25rem, 4.5vw, 3.75rem);
+}
+
+// ---------------------------------------------------------------------------
+// Header Band (Sits above #beyond-s7-stage outline surround)
+// ---------------------------------------------------------------------------
+
+.headerBand {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: $space-3;
+}
+
+.headerMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-2 $space-4;
+}
+
+.hudTag {
+  @include hud-label;
+  color: $paper-ink;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.signalSquare {
+  width: 8px;
+  height: 8px;
+  background-color: $signal;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.subTag {
+  @include hud-label;
+  color: $paper-muted;
+}
+
+.hudLineSvg {
+  width: 100%;
+  height: 16px;
+  display: block;
+  overflow: visible;
+}
+
+.introRow {
+  display: grid;
+  gap: $space-4;
+  padding-top: $space-2;
+
+  @include respond-up($bp-lg) {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    align-items: end;
+    gap: $space-6;
+  }
+}
+
+.heading {
+  font-size: clamp(2.5rem, 6.2vw, 5.15rem);
+  font-weight: 700;
+  line-height: 0.94;
+  letter-spacing: -0.042em;
+  color: $paper-ink;
+  max-width: 14ch;
+}
+
+.leadCopy {
+  font-size: 0.96rem;
+  line-height: 1.58;
+  color: $paper-muted;
+  max-width: 34ch;
+
+  @include respond-up($bp-lg) {
+    justify-self: end;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Split Editorial Grid
+// ---------------------------------------------------------------------------
+
+.splitGrid {
+  display: grid;
+  gap: clamp(2rem, 4vw, 3.75rem);
+  align-items: start;
+
+  @include respond-up($bp-lg) {
+    grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+  }
+}
+
+// Left Media Stage
+.stageCol {
+  margin: 0;
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: $space-3;
+  max-width: 440px;
+  width: 100%;
+}
+
+.stageFrame {
+  position: relative;
+  border: 1px solid $paper-line;
+  padding: 0.5rem;
+  background-color: transparent;
+}
+
+.signalCornerBar {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 24px;
+  height: 24px;
+  border-top: 2px solid $signal;
+  border-left: 2px solid $signal;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.cornerTR,
+.cornerBL,
+.cornerBR {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.cornerTR {
+  top: -1px;
+  right: -1px;
+  border-top: 1px solid $paper-ink;
+  border-right: 1px solid $paper-ink;
+}
+
+.cornerBL {
+  bottom: -1px;
+  left: -1px;
+  border-bottom: 1px solid $paper-ink;
+  border-left: 1px solid $paper-ink;
+}
+
+.cornerBR {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 1px solid $paper-ink;
+  border-right: 1px solid $paper-ink;
+}
+
+.stageAperture {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 575 / 780;
+  overflow: hidden;
+  background-color: $paper;
+}
+
+.stageApertureShaderActive {
+  background-color: transparent;
+  // Paints crisp #F4F4F2 ground across the entire #beyond section outside this exact hole
+  outline: 4000px solid $paper;
+}
+
+.stageImage {
+  object-fit: cover;
+  object-position: 50% 18%;
+  transition: opacity 0.22s ease;
+}
+
+.stageCaption {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  font-family: $font-mono;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  color: $paper-muted;
+  max-width: 34ch;
+}
+
+.captionMarker {
+  width: 12px;
+  height: 2px;
+  margin-top: 0.55em;
+  background-color: $signal;
+  flex-shrink: 0;
+}
+
+// Right Editorial Column
+.editorialCol {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 2.25rem);
+  min-width: 0;
+}
+
+.philosophyBox {
+  border-left: 2px solid $signal;
+  padding-left: clamp(1rem, 2vw, 1.5rem);
+  display: grid;
+  gap: 0.5rem;
+}
+
+.editorialEyebrow {
+  @include hud-label;
+  font-size: 0.68rem;
+  color: $paper-muted;
+}
+
+.philosophyText {
+  font-size: clamp(1.05rem, 1.45vw, 1.28rem);
+  font-weight: 500;
+  line-height: 1.52;
+  letter-spacing: -0.014em;
+  color: $paper-ink;
+  max-width: 48ch;
+}
+
+.interestsGrid {
+  display: grid;
+  gap: 1px;
+  background-color: $paper-line;
+  border: 1px solid $paper-line;
+
+  @include respond-up($bp-md) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.interestCard {
+  position: relative;
+  background-color: $paper;
+  padding: clamp(1.2rem, 2.4vw, 1.75rem);
+  display: grid;
+  gap: 0.65rem;
+  align-content: start;
+  min-width: 0;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #ffffff;
+
+    .cardRule {
+      transform: scaleX(1);
+    }
+  }
+}
+
+.cardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.cardIndex {
+  @include hud-label;
+  font-size: 0.68rem;
+  color: $paper-muted;
+}
+
+.cardIcon {
+  color: $paper-ink;
+  display: inline-flex;
+  align-items: center;
+}
+
+.cardTitle {
+  font-size: clamp(1.25rem, 2vw, 1.55rem);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  color: $paper-ink;
+}
+
+.cardCaption {
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: $paper-muted;
+  max-width: 32ch;
+}
+
+.cardRule {
+  height: 2px;
+  width: 36px;
+  background-color: $signal;
+  transform-origin: left center;
+  transform: scaleX(0.38);
+  transition: transform 0.28s $ease-expo-out;
+  margin-top: 0.25rem;
+}

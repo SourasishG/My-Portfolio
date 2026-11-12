@@ -317,3 +317,23 @@ Structured career & academic record uniting:
    **A:** Giving the SVG `<path>` `vectorEffect="non-scaling-stroke"`, `preserveAspectRatio="none"`, and `pathLength={1}` allows CSS/container height to scale dynamically to match the 6 timeline items while keeping the stroke width exactly `2px` and animating `strokeDashoffset` cleanly from `1` to `0`.
 3. **Q:** *Why separate `Employability.life`'s certificate scan preview from live Coursera verification links instead of auto-linking or omitting the 4th cert?*  
    **A:** Every link and scan must be verifiable. Three certifications have working Coursera registry URLs (`coursera.org/verify/...`), two also have supplied scans, the XPro scan is inspectable locally while its QR target URL stays labeled `NEEDS INPUT`, and the 4th LLM credential links to Coursera while marking its optional image as `NEEDS INPUT`—keeping every claim transparent.
+
+---
+
+## Module 14 — Section 06 Beyond the Screen (`components/sections/Beyond.tsx`, `components/canvas/VelocityPlane.tsx`, Shader `S7`)
+
+### What it does
+Creates the single light **`$paper` (`#F4F4F2`)** Swiss editorial interruption in SIGNAL, presenting Sourasish's four non-programming interests (**Football**, **Video Games**, **Music**, **Movies**) strictly accurately alongside an editorial monochrome portrait plate ([portrait-alt.jpg](file:///d:/My%20Portfolio/public/images/profile/portrait-alt.jpg)) driven by **Shader S7 (`VelocityPlane`)**.
+
+### Architecture, Color Contrast & Shader S7 Math
+1. **Paper-Surface Windowing (`overflow: clip` + `outline: 4000px solid $paper`):** Because SIGNAL uses a single fixed WebGL `<Canvas>` at `z-index: 0`, making `#beyond-s7-stage` transparent when `velocityShaderReady` is `true` while wrapping it in a `4000px` `#F4F4F2` CSS `outline` clipped cleanly by `#beyond`'s `overflow: clip` boundary fills the entire section with luminous paper while carving a pixel-exact aperture for `VelocityPlane` underneath. Before GPU texture upload completes—or under reduced motion—the DOM `next/image` keeps `opacity: 1` over solid `#F4F4F2`, preventing any dark flicker.
+2. **WCAG AA Compliance on Light Paper:** Standard muted gray (`#8A90A0`) fails contrast on `#F4F4F2`, and bright orange (`#FF5B1F`) only hits `2.82:1` for small text. Accordingly, all body copy uses `$paper-ink` (`#0A0A0A`, `17.98:1`) and `$paper-muted` (`#555966`, `6.34:1`), confining `$signal` (`#FF5B1F`) strictly to crisp non-text Swiss rules, square ticks, and hover accents.
+3. **Shader S7 Uniform Flow:** Lenis writes clamped normalized scroll momentum directly to `useSceneStore.velocity`. Inside `useFrame`, `VelocityPlane` exponentially damps velocity (`1 - Math.exp(-10 * dt)`), drives subtle vertical vertex shear in `s7VelocityDistortion.vert.glsl`, and computes directional R/G/B channel dispersion plus faint Swiss orange kinetic streaks in the fragment shader—while `GrainOverlay` (`S8`) automatically removes dark vignetting on `activeSection === "beyond"`.
+
+### Interview Questions & Model Answers
+1. **Q:** *How do you keep a fixed full-viewport `<Canvas>` visible inside one light-colored section without flashing light paper into surrounding dark sections?*  
+   **A:** Use a single transparent DOM aperture (`#beyond-s7-stage`) framed by `outline: 4000px solid #F4F4F2` clipped by the section's `overflow: clip`. Content columns sit at higher `z-index` in front of the outline, while the `<Canvas>` renders only inside the transparent window—eliminating cross-section background flashes cleanly without extra renderers.
+2. **Q:** *Why check text color contrast again when switching from `$ink` (`#07080B`) to `$paper` (`#F4F4F2`), especially for muted labels and `$signal` orange?*  
+   **A:** Contrast is relative to luminance rather than constant per hue. `#8A90A0` (`$muted`) and small `#FF5B1F` (`$signal`) text look crisp on obsidian `#07080B` but fail WCAG 4.5:1 on off-white `#F4F4F2`, so switching small text tokens to `$paper-muted` (`#555966`) while keeping `#FF5B1F` strictly for geometric non-text rules preserves both visual punch and accessibility.
+3. **Q:** *Why apply exponential damping (`1 - Math.exp(-10 * dt)`) to Lenis velocity inside `useFrame` before passing `uVelocity` to GLSL?*  
+   **A:** Frame deltas (`dt`) vary across 60Hz, 120Hz, and jittery frames; `1 - Math.exp(-k * dt)` provides frame-rate-independent smoothing, avoiding abrupt tearing when wheel scrolling starts or stops suddenly.

@@ -17,9 +17,9 @@ vec2 fitCoverUv(vec2 uv, vec2 planeSize, vec2 imageSize) {
 
   vec2 coverUv = uv;
   if (planeAspect > imageAspect) {
-    // Stage is wider than portrait image: keep full width, crop vertically toward upper frame
+    // Stage is wider than portrait image: keep full width, bias upward toward head/glasses
     float scaleY = imageAspect / planeAspect;
-    coverUv.y = (uv.y - 0.5) * scaleY + 0.56;
+    coverUv.y = (uv.y - 0.5) * scaleY + 0.59;
   } else {
     float scaleX = planeAspect / imageAspect;
     coverUv.x = (uv.x - 0.5) * scaleX + 0.5;
