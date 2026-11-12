@@ -88,7 +88,7 @@ export function Navigation() {
     <>
       <header className={styles.header}>
         <div className={styles.inner}>
-          <Link href="/#hero" className={styles.brand} aria-label="Sourasish Ghosh — Home">
+          <Link href="/#hero" className={styles.brand} aria-label="SG SIGNAL — Sourasish Ghosh Home">
             <span className={styles.brandBrackets} aria-hidden="true">
               [
             </span>
