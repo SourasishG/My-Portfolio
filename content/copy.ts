@@ -243,3 +243,31 @@ export const ASPIRATIONS_HORIZONS: HorizonTrack[] = [
     note: "Continuing to explore Three.js, React Three Fiber, and Framer Motion to make technical interfaces legible, tactile, and memorable.",
   },
 ];
+
+export const CONTACT_COPY = {
+  sectionTag: "[08] // CONTACT & COLLABORATION",
+  subTag: "KOLKATA, IN · OPEN TO INTERNSHIPS & ROLES",
+  heading: "Let's build something dependable.",
+  lead: "Open to Software Engineering / Full-Stack internships, early-career engineering roles, and thoughtful product collaborations.",
+  availabilityNote:
+    "Based in Kolkata, India (IST · UTC+5:30). Usually responds within 24 hours by email.",
+  stageTag: "S4 // CHROMATIC GLASS",
+  stageTelemetryLabel: "REFRACTIVE PRISM · IOR 1.45",
+  stageStaticLabel: "STATIC DISPERSION PLATE",
+  directChannelTag: "DIRECT CHANNELS",
+  formTag: "DIRECT TRANSMISSION // SERVER-VALIDATED",
+  formTitle: "Send a message",
+  formSubmitIdle: "Send Message",
+  formSubmitPending: "Transmitting...",
+  formPrivacyNote:
+    "Validated via Zod on the server and routed securely without exposing client credentials.",
+} as const;
+
+export const FOOTER_COPY = {
+  wordmark: "SIGNAL",
+  tagline: "Sourasish Ghosh · Full-Stack Developer",
+  colophon:
+    "Engineered with Next.js App Router, TypeScript, SCSS Modules, Three.js / React Three Fiber, GSAP ScrollTrigger & Lenis.",
+  locationLine: "Kolkata, West Bengal, India · B.Tech CSE (2023–2027)",
+  copyrightName: "Sourasish Ghosh",
+} as const;
