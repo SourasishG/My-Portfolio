@@ -9,6 +9,7 @@ import { GrainOverlay } from "@/components/canvas/GrainOverlay";
 import { HeroBlob } from "@/components/canvas/HeroBlob";
 import { ProjectReveal } from "@/components/canvas/ProjectReveal";
 import { ToolkitConstellation } from "@/components/canvas/ToolkitConstellation";
+import { VelocityPlane } from "@/components/canvas/VelocityPlane";
 import { useGpuTier } from "@/hooks/useGpuTier";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
@@ -104,6 +105,7 @@ export function SceneRoot() {
   const showAboutSphere = isHomeRoute && activeSection === "about";
   const showProjectReveal = isHomeRoute && activeSection === "projects" && isDesktop;
   const showToolkitConstellation = isHomeRoute && activeSection === "toolkit";
+  const showVelocityPlane = isHomeRoute && activeSection === "beyond";
   const canvasBackdrop = isHomeRoute && activeSection === "hero" ? "#000000" : "#07080B";
 
   return (
@@ -189,6 +191,13 @@ export function SceneRoot() {
             isMobile={!isDesktop}
             reducedMotion={reducedMotion}
             visible={showToolkitConstellation}
+          />
+
+          {/* S7 — Scroll-Velocity Distortion synced to Section 06 $paper aperture */}
+          <VelocityPlane
+            visible={showVelocityPlane}
+            reducedMotion={reducedMotion}
+            viewportSelector="#beyond-s7-stage"
           />
 
           {/* S8 — Subtle Global Grain & Vignette (disabled on low GPU / muted on $paper) */}

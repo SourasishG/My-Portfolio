@@ -7,6 +7,8 @@ import s3HalftoneRevealVertRaw from "@/shaders/s3HalftoneReveal.vert.glsl";
 import s3HalftoneRevealFragRaw from "@/shaders/s3HalftoneReveal.frag.glsl";
 import s8GrainVignetteVertRaw from "@/shaders/s8GrainVignette.vert.glsl";
 import s8GrainVignetteFragRaw from "@/shaders/s8GrainVignette.frag.glsl";
+import s7VelocityDistortionVertRaw from "@/shaders/s7VelocityDistortion.vert.glsl";
+import s7VelocityDistortionFragRaw from "@/shaders/s7VelocityDistortion.frag.glsl";
 import toolkitConstellationVertRaw from "@/shaders/toolkitConstellation.vert.glsl";
 import toolkitConstellationFragRaw from "@/shaders/toolkitConstellation.frag.glsl";
 
@@ -41,6 +43,11 @@ export const S3_HALFTONE_REVEAL_SHADERS = {
 export const S8_GRAIN_VIGNETTE_SHADERS = {
   vertexShader: resolveShaderChunks(s8GrainVignetteVertRaw),
   fragmentShader: resolveShaderChunks(s8GrainVignetteFragRaw),
+} as const;
+
+export const S7_VELOCITY_DISTORTION_SHADERS = {
+  vertexShader: resolveShaderChunks(s7VelocityDistortionVertRaw),
+  fragmentShader: resolveShaderChunks(s7VelocityDistortionFragRaw),
 } as const;
 
 export const TOOLKIT_CONSTELLATION_SHADERS = {

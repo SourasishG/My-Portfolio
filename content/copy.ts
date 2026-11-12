@@ -98,3 +98,63 @@ export const JOURNEY_COPY = {
   educationTag: "05.3 // ACADEMIC FOUNDATIONS",
   educationHeading: "Education",
 } as const;
+
+export interface BeyondInterest {
+  id: "football" | "video-games" | "music" | "movies";
+  index: string;
+  title: string;
+  lens: string;
+  caption: string;
+}
+
+export const BEYOND_COPY = {
+  sectionIndex: "06",
+  sectionTag: "[06] // BEYOND THE SCREEN",
+  subTag: "OFF-CLOCK OBSERVATION · KOLKATA",
+  headline: "Beyond the screen.",
+  leadCopy:
+    "Patience, timing, and perspective outside engineering shape how I think about interfaces and software systems inside it.",
+  portraitAlt:
+    "Monochrome portrait of Sourasish Ghosh wearing glasses and a dark jacket outdoors at night",
+  portraitCaption:
+    "FIG 06.1 // SOURASISH GHOSH — S7 SCROLL-VELOCITY PLANE RESPONDS TO PAGE MOMENTUM.",
+  portraitStaticCaption:
+    "FIG 06.1 // SOURASISH GHOSH — MONOCHROME EDITORIAL FRAME.",
+  philosophyNote:
+    "Good engineering is unhurried observation paired with steady execution—stepping away from code keeps attention sharp for how people actually experience timing, rhythm, and clarity.",
+} as const;
+
+export const BEYOND_INTERESTS: BeyondInterest[] = [
+  {
+    id: "football",
+    index: "01",
+    title: "Football",
+    lens: "SPATIAL TEMPO & TEAMWORK",
+    caption:
+      "Reading movement before a pass happens builds patience, anticipation, and awareness of how individual roles serve the wider shape.",
+  },
+  {
+    id: "video-games",
+    index: "02",
+    title: "Video Games",
+    lens: "INTERACTIVE SYSTEMS & FEEL",
+    caption:
+      "Appreciating feedback loops, tactile controls, visual state clarity, and how tight frame budgets keep complex worlds responsive.",
+  },
+  {
+    id: "music",
+    index: "03",
+    title: "Music",
+    lens: "RHYTHM & AUDITORY PACING",
+    caption:
+      "Attention to texture, pacing, and transition dynamics—curiosity that directly motivated engineering MUZO's browser audio engine.",
+  },
+  {
+    id: "movies",
+    index: "04",
+    title: "Movies",
+    lens: "FRAMING, LIGHT & CADENCE",
+    caption:
+      "Studying composition, contrast, and scene transitions that inspire clean visual storytelling and restrained motion.",
+  },
+];

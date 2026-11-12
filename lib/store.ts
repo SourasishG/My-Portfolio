@@ -25,6 +25,7 @@ interface SceneState {
   projectUV: { x: number; y: number }; // Normalized [0..1] pointer inside #projects-s3-stage
   projectHover: number; // 0 resting halftone -> 1 interactive lens -> 2 full-color lock
   projectShaderReady: boolean;
+  velocityShaderReady: boolean;
   toolkitAccentMix: number; // 0 ($cyan Core Stack) -> 1 ($violet Currently Exploring)
   toolkitPulse: number; // 0..1 gentle interactive glow boost
   activeSection: SectionId;
@@ -40,6 +41,7 @@ interface SceneState {
   setProjectVisual: (src: string, width: number, height: number) => void;
   setProjectPointer: (x: number, y: number, hover: number) => void;
   setProjectShaderReady: (ready: boolean) => void;
+  setVelocityShaderReady: (ready: boolean) => void;
   setToolkitVisual: (accentMix: number, pulse: number) => void;
   setActiveSection: (section: SectionId) => void;
   setGpuTier: (tier: GpuTierLevel) => void;
@@ -60,6 +62,7 @@ export const useSceneStore = create<SceneState>((set, get) => ({
   projectUV: { x: 0.5, y: 0.5 },
   projectHover: 0,
   projectShaderReady: false,
+  velocityShaderReady: false,
   toolkitAccentMix: 0,
   toolkitPulse: 0,
   activeSection: "hero",
@@ -106,6 +109,12 @@ export const useSceneStore = create<SceneState>((set, get) => ({
   setProjectShaderReady: (projectShaderReady) => {
     if (get().projectShaderReady !== projectShaderReady) {
       set({ projectShaderReady });
+    }
+  },
+
+  setVelocityShaderReady: (velocityShaderReady) => {
+    if (get().velocityShaderReady !== velocityShaderReady) {
+      set({ velocityShaderReady });
     }
   },
 
