@@ -374,7 +374,9 @@ export function GlassObject({
       <group ref={crystalGroupRef}>
         <mesh geometry={geometries.outer} frustumCulled={false}>
           <MeshTransmissionMaterial
-            ref={transMatRef}
+            ref={(node) => {
+              transMatRef.current = node as unknown as TransmissionMatHandle | null;
+            }}
             visible={false}
             samples={transmissionSamples}
             resolution={transmissionResolution}
