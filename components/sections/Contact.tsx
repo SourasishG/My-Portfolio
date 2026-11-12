@@ -14,7 +14,7 @@ import {
   MapPin,
   Send,
 } from "lucide-react";
-import { FieldErrors, Resolver, useForm } from "react-hook-form";
+import { FieldErrors, Resolver, useForm, useWatch } from "react-hook-form";
 import { GlassObjectFallback } from "@/components/canvas/GlassObject";
 import { CONTACT_COPY } from "@/content/copy";
 import { SITE_IDENTITY, SOCIAL_LINKS } from "@/content/links";
@@ -91,9 +91,9 @@ export function Contact() {
     glassObjectReady;
 
   const {
+    control,
     register,
     handleSubmit,
-    watch,
     reset,
     setError,
     formState: { errors, isSubmitting },
@@ -109,7 +109,12 @@ export function Contact() {
     },
   });
 
-  const messageValue = watch("message") ?? "";
+  const messageValue =
+    useWatch({
+      control,
+      name: "message",
+      defaultValue: "",
+    }) ?? "";
 
   useEffect(() => {
     return () => {
