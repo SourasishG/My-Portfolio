@@ -138,6 +138,48 @@ export const CORE_SKILL_GROUPS: SkillCategoryGroup[] = [
           },
         ],
       },
+      {
+        id: "scss",
+        name: "SCSS",
+        qualifier: "Sass Modules",
+        group: "frontend",
+        summary: "Modular stylesheet architecture, design tokens, nested selectors, responsive mixins, and zero-runtime CSS footprint.",
+        connections: [
+          { label: "SIGNAL Portfolio", context: "Full SCSS Modules token & layout architecture" },
+          { label: "Design Token Layer", context: "Hand-authored mixins, breakpoints & color systems" },
+        ],
+      },
+      {
+        id: "gsap",
+        name: "GSAP",
+        qualifier: "ScrollTrigger",
+        group: "frontend",
+        summary: "High-performance scroll-driven timelines, pinned section scrubbing, and micro-interaction orchestration.",
+        connections: [
+          { label: "SIGNAL Portfolio", context: "GSAP ScrollTrigger timelines, pinning & text reveals" },
+          { label: "Animation Architecture", context: "Dedicated ticker sync with Lenis smooth scroll" },
+        ],
+      },
+      {
+        id: "lenis",
+        name: "Lenis",
+        qualifier: "Smooth Scroll",
+        group: "frontend",
+        summary: "Lightweight momentum smooth scrolling engine synchronized with requestAnimationFrame and GSAP ticker.",
+        connections: [
+          { label: "SIGNAL Portfolio", context: "Lenis smooth scroll synced with GSAP ScrollTrigger" },
+          { label: "Scroll Telemetry", context: "Real-time scroll progress & velocity tracking" },
+        ],
+      },
+      {
+        id: "locomotive",
+        name: "Locomotive Scroll",
+        group: "frontend",
+        summary: "Virtual smooth scroll physics, viewport-based parallax triggers, and smooth element transformations.",
+        connections: [
+          { label: "Scroll Architecture", context: "Virtual scroll physics and viewport triggers" },
+        ],
+      },
     ],
   },
   {
@@ -370,6 +412,17 @@ export const CURRENTLY_EXPLORING_SKILLS: SkillItem[] = [
     connections: [
       { label: "SIGNAL Portfolio", context: "Single persistent <Canvas> architecture" },
       { label: "Pokémon Atlas 3D", context: "SafeCanvas R3F explorer", href: "https://github.com/SourasishG/Pokemon-Atlas-3D" },
+    ],
+  },
+  {
+    id: "glsl",
+    name: "GLSL",
+    qualifier: "Shaders",
+    group: "exploring",
+    summary: "Authoring custom GPU vertex and fragment shaders, procedural noise math, and screen-space distortion matrices.",
+    connections: [
+      { label: "SIGNAL Portfolio", context: "Custom S1–S8 GLSL vertex and fragment shaders" },
+      { label: "Shader Lab (/lab)", context: "Interactive real-time uniform testing and shader development" },
     ],
   },
   {
