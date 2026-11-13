@@ -313,6 +313,76 @@ export function SkillIcon({ id, size = 15, className }: SkillIconProps) {
         </svg>
       );
 
+    case "scss":
+    case "sass":
+      return (
+        <svg viewBox="0 0 24 24" width={size} height={size} fill="none" aria-hidden="true" className={className}>
+          <rect x="2" y="2" width="20" height="20" rx="4" fill="#CF649A" fillOpacity="0.14" stroke="#CF649A" strokeWidth="1.2" />
+          <path
+            d="M17.5 7.5c-.5-.6-1.3-1-2.1-1-1.6 0-2.6 1.1-2.6 2.4 0 2.5 3.5 1.9 3.5 4.3 0 1.4-1.1 2.3-2.6 2.3-1.1 0-2-.5-2.5-1.3m-.9-6.9c.4.6.8 1.4.8 2.4 0 2.3-3.2 2-3.2 4.1 0 1.1.9 2 2.2 2 .9 0 1.6-.5 2.1-1.1"
+            stroke="#CF649A"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      );
+
+    case "gsap":
+      return (
+        <svg viewBox="0 0 24 24" width={size} height={size} fill="none" aria-hidden="true" className={className}>
+          <rect x="2" y="2" width="20" height="20" rx="4.5" fill="#08140B" stroke="#0AE448" strokeWidth="1.2" />
+          <path
+            d="M15.2 8.2c-.8-.8-2-1.2-3.4-1.2-2.7 0-4.6 1.8-4.6 4.8s1.9 4.8 4.6 4.8c2.3 0 3.7-1.1 4.1-2.9h-3.7v-1.7h5.6v.4c0 3.2-2.1 5.8-6 5.8-3.7 0-6.4-2.6-6.4-6.4s2.7-6.4 6.4-6.4c2 0 3.7.7 4.9 1.9l-1.5 1.7z"
+            fill="#0AE448"
+          />
+        </svg>
+      );
+
+    case "lenis":
+      return (
+        <svg viewBox="0 0 24 24" width={size} height={size} fill="none" aria-hidden="true" className={className}>
+          <rect x="2" y="2" width="20" height="20" rx="4" fill="#0E1015" stroke="rgba(255, 91, 31, 0.45)" strokeWidth="1.2" />
+          <path
+            d="M5.5 15.5c3.2 0 3.2-7 6.5-7s3.2 7 6.5 7"
+            stroke="#FF5B1F"
+            strokeWidth="2.1"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <circle cx="5.5" cy="15.5" r="1.5" fill="#FFFFFF" />
+          <circle cx="18.5" cy="15.5" r="1.5" fill="#00E5FF" />
+        </svg>
+      );
+
+    case "locomotive":
+      return (
+        <svg viewBox="0 0 24 24" width={size} height={size} fill="none" aria-hidden="true" className={className}>
+          <rect x="2" y="2" width="20" height="20" rx="4" fill="#141414" stroke="rgba(255,255,255,0.22)" strokeWidth="1.2" />
+          <path
+            d="M8.5 6.5v9.2a1.3 1.3 0 001.3 1.3h5.7"
+            stroke="#FFFFFF"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <circle cx="15.5" cy="8" r="1.4" fill="#D4B27C" />
+        </svg>
+      );
+
+    case "glsl":
+    case "gsls":
+      return (
+        <svg viewBox="0 0 24 24" width={size} height={size} fill="none" aria-hidden="true" className={className}>
+          <polygon points="12 2 22 7.8 22 16.2 12 22 2 16.2 2 7.8" fill="#5586A4" fillOpacity="0.16" stroke="#5586A4" strokeWidth="1.3" />
+          <polygon points="12 2 22 7.8 12 12 2 7.8" fill="#5586A4" fillOpacity="0.32" />
+          <line x1="12" y1="12" x2="12" y2="22" stroke="#00E5FF" strokeWidth="1.4" />
+          <line x1="22" y1="7.8" x2="12" y2="12" stroke="#5586A4" strokeWidth="1.2" />
+          <line x1="2" y1="7.8" x2="12" y2="12" stroke="#5586A4" strokeWidth="1.2" />
+          <circle cx="12" cy="12" r="2" fill="#FF5B1F" />
+        </svg>
+      );
+
     default:
       return (
         <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={className}>
