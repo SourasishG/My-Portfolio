@@ -582,3 +582,60 @@ Implements the core visual identity of **SIGNAL V2** inspired by Lorenzo Lottici
 
 3. **Q:** *How does the About section maintain full accessibility (WCAG AA) when complex WebGL 3D elements and scroll-linked animations are present?*  
    **A:** All biographical copy, section headings, and telemetry pillars are rendered as semantic HTML elements (`<section>`, `<article>`, `<h3>`, `<p>`) in the native DOM, ensuring full indexing by search engine crawlers and seamless navigation with screen readers. The Three.js canvas is marked `aria-hidden="true"`. Furthermore, when reduced motion is detected or toggled off via `MOTION [ON / OFF]`, ScrollTrigger animations clear their transforms immediately and the procedural aperture switches to `<ContourSphereFallback />`, a lightweight static vector SVG.
+
+---
+
+## Module 22 — Section 03 Selected Engineering: Pinned Work Stages, S3 Halftone Optical Reveal & Case Studies (`Projects.tsx`, `Projects.module.scss`, `CaseStudyView.tsx`)
+
+### What it does
+1. **Dual Architectural Deep-Dives:** Instead of surface-level screenshots, Section 03 anchors Sourasish's work around two distinct systems:
+   - **MUZO (Web Audio Engine & UI Systems):** Client-side audio platform with singleton audio controller outside React, debounced search with `AbortController` cancellation, and soft 3D neumorphic styling.
+   - **Office Aid (Full-Stack Monorepo & Applied AI):** Enterprise workplace platform pairing Express 5 + Prisma ORM + Supabase PostgreSQL (10 relational models) with the Herric Gemini AI copilot.
+2. **Strict Factual Preservation & Honesty:**
+   - Office Aid is explicitly presented as an **Active Local Full-Stack Monorepo**: zero fabricated live demo link, clear separation between Built functionality (10 models, 8 modules, JWT auth, AI routing) and Planned functionality (public cloud hosting, automated Vitest/Playwright suites).
+3. **Desktop Pinned Showcase with S3 Halftone Optical Reveal:**
+   - On desktop viewports ($\ge 1024\text{px}$), GSAP pins the showcase container while a progress rail tracks navigation. Moving the cursor over the optical aperture scrubs a procedural GLSL halftone shader (S3) that reveals the full-color application UI underneath an interactive lens.
+4. **03.2 Additional Repositories Archive:**
+   - An expandable accordion featuring additional verified repositories (e.g. *Pokémon Atlas 3D*, *Support Ticket Dashboard*) with real GitHub links, tech chips, and live hover preview summaries.
+
+### Key Architecture & Data Flow
+
+```
+[Pointer Move over #projects-s3-stage]
+                 │
+  u = (clientX - rect.left) / rect.width
+  v = 1.0 - (clientY - rect.top) / rect.height
+                 │
+     store.setProjectPointer(u, v, active)   <── (Zustand transient store, 0 re-renders)
+                 │
+        useFrame() in ProjectReveal (S3)
+                 │
+     uPointer = lerp(uPointer, target, 0.12)
+                 │
+       GLSL Fragment Shader:
+       dist = distance(vUv, uPointer)
+       radius = mix(0.18, 2.0, uFullColor)
+       reveal = smoothstep(radius, radius - 0.05, dist)
+       finalColor = mix(halftoneColor, fullColor, reveal)
+```
+
+### Trade-offs vs Alternatives
+
+| Option | Trade-off | Decision |
+|---|---|---|
+| **Pinned Stage on Desktop + Linear Stack on Mobile** | Desktop users get a high-craft pinned showcase with seamless tab switching; mobile users get a frictionless linear vertical scroll with zero touch-jacking or pin traps. | **Chosen** |
+| Infinite Horizontal Scroll Slider | Visually flashy, but breaks mobile swipe navigation, hijacks trackpads, and hides critical project metrics off-screen. | Rejected |
+| Fabricated Live Demo for Monorepos | Gives the illusion of a finished hosted app, but violates core engineering honesty since full-stack monorepos with PostgreSQL require real cloud infrastructure that may incur recurring costs. | Strictly rejected (Accurate "Local Full-Stack Build" badge) |
+| Video Demos inside the Showcase | Demonstrates interactions, but adds heavy bandwidth cost (10–30MB), slows initial page render, and prevents real-time shader inspection lenses. | Static high-res captures + S3 procedural halftone lens |
+
+### Interview Questions & Model Answers
+
+1. **Q:** *Why is it critical for an engineering portfolio to honestly label a project as an "Active Local Full-Stack Monorepo" rather than fabricating a non-functional live demo link?*  
+   **A:** Technical hiring managers and senior engineers routinely inspect portfolios specifically to gauge engineering integrity. If a project claims to be live but links to a broken URL or a static mock, it immediately destroys trust. In contrast, honestly documenting a full-stack monorepo as local—detailing its verified 10-model Prisma schema, Supabase PostgreSQL persistence, Express 5 REST API, and clearly separating Built vs Planned features—proves architectural maturity, self-awareness, and authentic engineering craft.
+
+2. **Q:** *Why decouple HTML5 `<audio>` playback state into an isolated singleton controller rather than managing audio state directly inside React view components?*  
+   **A:** Binding the HTML5 `Audio` element lifecycle to React components binds playback to component mount/unmount lifecycles. When users navigate between routes, sort playlist queues, or re-render parent components, native audio streams can stutter or reset. Decoupling the engine into a singleton audio controller (outside the React render tree) and synchronizing with an external Zustand store guarantees that audio playback remains continuous and glitch-free across all UI transitions.
+
+3. **Q:** *How does paired debouncing (400ms) and `AbortController` request cancellation prevent race conditions in fast search interfaces?*  
+   **A:** When a user types quickly (e.g. typing "Radiohead"), multiple network requests are dispatched in rapid succession. Due to network latency variations, the response for an earlier keystroke ("Rad") may arrive after the response for the full query ("Radiohead"), overwriting the correct results with stale data. Debouncing delays the API call until the user pauses typing (400ms), and initializing an `AbortController` cancels any in-flight fetch before dispatching a new request, guaranteeing that only the most recent search query is processed and rendered.
+

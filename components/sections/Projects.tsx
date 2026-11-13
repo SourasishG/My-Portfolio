@@ -281,7 +281,8 @@ export function Projects() {
 
           <div className={styles.introRow}>
             <h2 id="projects-heading" className={`${styles.heading} projects-reveal`}>
-              {PROJECTS_COPY.heading}
+              Systems engineered from{" "}
+              <span className={styles.serifHeading}>architecture</span> to UI.
             </h2>
             <p className={`${styles.leadCopy} projects-reveal`}>{PROJECTS_COPY.leadCopy}</p>
           </div>
