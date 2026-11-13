@@ -8,6 +8,17 @@ import React, {
   useState,
   useSyncExternalStore,
 } from "react";
+
+// Silence known upstream Three.js deprecation warning emitted inside @react-three/fiber's internal store
+if (typeof window !== "undefined") {
+  const origWarn = console.warn;
+  console.warn = (...args: unknown[]) => {
+    if (typeof args[0] === "string" && args[0].includes("THREE.Clock: This module has been deprecated")) {
+      return;
+    }
+    origWarn.apply(console, args);
+  };
+}
 import Link from "next/link";
 import Image from "next/image";
 import { Canvas, useThree } from "@react-three/fiber";
