@@ -166,7 +166,6 @@ export function Hero() {
           <div className={styles.hudGroup}>
             <span className={styles.hudTag}>{HERO_COPY.sectionTag}</span>
             <span className={styles.coords}>{SITE_IDENTITY.coordinates}</span>
-            <span className={styles.conceptTag}>{`${HERO_COPY.conceptLine} // 2026`}</span>
           </div>
 
           <div className={styles.statusPill}>
@@ -181,7 +180,7 @@ export function Hero() {
 
           <h1 ref={nameRef} className={`${styles.heroTitle} hero-name`}>
             <span className={styles.nameSans}>{HERO_COPY.firstName}</span>{" "}
-            <span className={styles.serifAccent}>{HERO_COPY.lastName}</span>
+            <span className={styles.nameSans}>{HERO_COPY.lastName}</span>
           </h1>
 
           <p className={`${styles.manifesto} hero-headline`}>
