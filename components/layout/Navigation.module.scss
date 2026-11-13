@@ -159,7 +159,7 @@
 }
 
 .motionToggle {
-  display: inline-flex;
+  display: none;
   align-items: center;
   gap: 6px;
   background: transparent;
@@ -173,6 +173,10 @@
   cursor: pointer;
   transition: all 0.2s ease;
   user-select: none;
+
+  @include respond-up($bp-md) {
+    display: inline-flex;
+  }
 
   &:hover {
     border-color: rgba(255, 255, 255, 0.25);
@@ -287,7 +291,7 @@
 }
 
 .resumeLink {
-  display: inline-flex;
+  display: none;
   align-items: center;
   gap: 6px;
   min-height: 44px;
@@ -305,6 +309,10 @@
     border-color 0.2s ease,
     color 0.2s ease,
     background-color 0.2s ease;
+
+  @include respond-up($bp-md) {
+    display: inline-flex;
+  }
 
   &:hover {
     border-color: $cyan;
