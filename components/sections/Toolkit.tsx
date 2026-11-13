@@ -16,6 +16,7 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { ensureGsapRegistered, gsap } from "@/lib/gsap";
 import { playMechanicalClick, playRotaryTick } from "@/lib/sound";
 import { useSceneStore } from "@/lib/store";
+import { SkillIcon } from "@/components/ui/SkillIcon";
 import styles from "./Toolkit.module.scss";
 
 const FILTER_OPTIONS: Array<{ id: SkillCategoryFilter; label: string }> = [
