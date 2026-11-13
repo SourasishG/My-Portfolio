@@ -158,14 +158,21 @@ export function About() {
         <div className={styles.grid}>
           <div className={styles.proseColumn}>
             <h2 id="about-heading" className={`${styles.heading} about-reveal`}>
-              {ABOUT_COPY.heading}
+              Understanding the{" "}
+              <span className={styles.serifHeading}>system</span> behind the
+              syntax.
             </h2>
 
-            <div className={styles.paragraphs}>
-              {ABOUT_COPY.paragraphs.map((text, idx) => (
-                <p key={idx} className={`${styles.paragraph} about-reveal`}>
-                  {text}
-                </p>
+            <div className={`${styles.narrativeTimeline} about-reveal`}>
+              {ABOUT_COPY.narrativeBeats.map((beat) => (
+                <article key={beat.index} className={styles.beatCard}>
+                  <div className={styles.beatHeader}>
+                    <span className={styles.beatIndex}>[{beat.index}]</span>
+                    <span className={styles.beatTag}>{`// ${beat.tag}`}</span>
+                  </div>
+                  <h3 className={styles.beatTitle}>{beat.title}</h3>
+                  <p className={styles.beatBody}>{beat.body}</p>
+                </article>
               ))}
             </div>
 
