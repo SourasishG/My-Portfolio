@@ -1,9 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import { CanvasPortal } from "@/components/canvas/CanvasPortal";
 import { CustomCursor } from "@/components/layout/CustomCursor";
 import { Footer } from "@/components/layout/Footer";
 import { Navigation } from "@/components/layout/Navigation";
+import { PersistentFrame } from "@/components/layout/PersistentFrame";
 import { Preloader } from "@/components/layout/Preloader";
 import { SmoothScrollProvider } from "@/components/layout/SmoothScrollProvider";
 import { SITE_IDENTITY, SOCIAL_LINKS } from "@/content/links";
@@ -18,6 +19,14 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-geist-mono",
+  display: "swap",
+});
+
+const instrumentSerif = Instrument_Serif({
+  weight: "400",
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  variable: "--font-serif",
   display: "swap",
 });
 
@@ -109,7 +118,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable}`}
+      className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable}`}
       suppressHydrationWarning
     >
       <body>
@@ -124,6 +133,7 @@ export default function RootLayout({
         </a>
 
         <SmoothScrollProvider>
+          <PersistentFrame />
           <CanvasPortal />
           <Preloader />
           <Navigation />
