@@ -690,4 +690,59 @@ Implements the core visual identity of **SIGNAL V2** inspired by Lorenzo Lottici
 3. **Q:** *How does the Toolkit's live stack trace HUD improve user experience compared to a static list of tags?*  
    **A:** In a static list, tags appear detached from the engineer's actual body of work. The interactive stack trace HUD transforms passive reading into an active exploration tool: clicking any skill dynamically highlights its discipline, filters related technologies, and renders immediate architectural context with direct hyperlinks to case studies and GitHub repositories, reinforcing cross-stack synergy in a single click.
 
+---
+
+## Module 24 — Section 05 Journey & Credentials: Factual Experience, Chronological Spine & Certificate Verification (`Journey.tsx`, `Journey.module.scss`, `timeline.ts`, `certifications.ts`)
+
+### What it does
+1. **Unembellished Work Experience Spotlight:**
+   - Highlights Sourasish's **AWS & DevOps Internship at Employability.life** (XPro Project: AWS DevOps Initiative, Credential ID: `XPro27566969`).
+   - Features strictly honest, uninflated responsibilities: CI/CD workflow understanding, cloud deployment fundamentals, AWS EC2/S3 service exploration, and DevOps best practices—avoiding any fabricated production-ownership claims.
+2. **Interactive Chronological Timeline Spine:**
+   - Employs a vertical SVG spine line scrubbed by GSAP ScrollTrigger (`strokeDashoffset: 1 -> 0`) connecting academic and project milestones from 2021 through 2026.
+3. **Verified Credential Accordion with Real Scans:**
+   - Exposes 4 verified credentials (Google Cloud LLMs, IBM Software Engineering, HackerRank Problem Solving, HackerRank Python) with real Coursera verification hyperlinks and high-fidelity scanned certificates.
+4. **Academic Base Grounding:**
+   - Documents Sister Nivedita University B.Tech CSE (2023–2027, Current CGPA 8.08) and Aditya Academy Senior Secondary (CBSE Class XII 80%, Class X 86%) with verified metrics and coursework areas.
+
+### Key Architecture & Data Flow
+
+```
+[User Scrolls Section 05] ──> [ScrollTrigger: .timelineWrap]
+                                      │
+                         scrub: 0.35 on .journey-spine-line
+                                      │
+                         gsap.to(spinePath, { strokeDashoffset: 0 })
+                                      │
+[User Clicks Credential: "[01] AWS DevOps Initiative"]
+                                      │
+                         setExpandedCertId(cert.id)
+                                      │
+                         AnimatePresence (Framer Motion):
+                         height: "auto", opacity: 1 (240ms cubic-bezier)
+                                      │
+                         Renders real certificate image + Coursera/QR link
+```
+
+### Trade-offs vs Alternatives
+
+| Option | Trade-off | Decision |
+|---|---|---|
+| **Sticky Spotlight + Scrubbed Spine Rail** | Keeps the key internship highlight in view while allowing readers to scroll through chronological history. | **Chosen** |
+| Infinite Horizontal Milestone Slider | Hard to navigate on mobile, hides older foundational education, and frustrates recruiters looking for dates. | Rejected |
+| Text-Only Credential Mentions | Easy to claim, but anyone can write "Certified in LLMs". Embedding real credential IDs, verification links, and actual certificate scans provides proof. | **Chosen (Evidence-based verification)** |
+| Exaggerated Internship Claims | Tempting for junior engineers, but immediately exposes a candidate to disqualification during deep technical interviews. | Strictly rejected (100% truthful duties) |
+
+### Interview Questions & Model Answers
+
+1. **Q:** *Why is it critical to describe internship experience with strict factual accuracy rather than exaggerating responsibilities?*  
+   **A:** Interviewers can easily distinguish between genuine exposure and exaggerated claims. Claiming you "architected production cloud infrastructure" during a one-month internship raises immediate red flags. In contrast, stating truthfully that you "completed the XPro Project, explored AWS EC2/S3, and developed an understanding of CI/CD workflows" demonstrates honesty, eagerness to learn, and realistic self-awareness—qualities engineering managers value highly in prospective team members.
+
+2. **Q:** *How does the dual animation ownership rule (GSAP for scroll-scrubbing vs Framer Motion for UI accordions) prevent layout bugs in Section 05?*  
+   **A:** GSAP ScrollTrigger monitors element positions relative to the viewport. If GSAP also animated accordion panel heights, or if Framer Motion animated the scroll position, both engines would fight over the DOM's layout metrics and inline styles, causing layout jitter and broken trigger calculations. By having GSAP strictly own the vertical timeline spine line and entry reveals, while Framer Motion strictly owns expanding the credential card's height inside an independent container, the animations remain isolated and never conflict.
+
+3. **Q:** *How do embedded verification links and certificate scans provide high signal to recruiters?*  
+   **A:** Many resumes list certifications that are unverified or based on passive course completion. Providing direct verification URLs (e.g. `coursera.org/verify/...`) and scanned certificates with authentic student credential IDs enables technical recruiters to verify qualifications with a single click, establishing credibility before the initial interview even begins.
+
+
 
