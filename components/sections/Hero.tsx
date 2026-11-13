@@ -243,11 +243,6 @@ export function Hero() {
             <div id="hero-portrait-stage" className={styles.portraitStageAnchor}>
               {showFallbackInDom && <PortraitFallback priority />}
             </div>
-
-            <div className={styles.stageApertureBadge}>
-              <span>[ FIG 01.1 // T1/T2 EDITORIAL RELIEF ]</span>
-              <span>MiDaS v2.1 MONOCULAR DEPTH</span>
-            </div>
           </div>
         </div>
 

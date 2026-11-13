@@ -24,7 +24,6 @@ export function About() {
   const sectionRef = useRef<HTMLElement>(null);
   const tracePathRef = useRef<SVGPathElement>(null);
   const apertureRef = useRef<HTMLDivElement>(null);
-  const captionRef = useRef<HTMLDivElement>(null);
 
   const reducedMotion = useReducedMotion();
   const useStaticFallback = useSceneStore((s) => s.useStaticFallback);
@@ -97,23 +96,6 @@ export function About() {
             once: true,
           },
         });
-      }
-
-      if (captionRef.current) {
-        gsap.fromTo(
-          captionRef.current,
-          { y: 6 },
-          {
-            y: -6,
-            ease: "none",
-            scrollTrigger: {
-              trigger: sectionEl,
-              start: "top bottom",
-              end: "bottom top",
-              scrub: true,
-            },
-          }
-        );
       }
 
       return () => {
@@ -199,7 +181,7 @@ export function About() {
 
               <div className={styles.portraitFrame}>
                 <Image
-                  src="/images/profile/portrait-main.jpg"
+                  src="/images/profile/portrait-about.jpg"
                   alt={ABOUT_COPY.portraitAlt}
                   fill
                   loading="eager"
@@ -208,18 +190,6 @@ export function About() {
                   className={styles.portraitImg}
                 />
               </div>
-
-              <figcaption
-                ref={captionRef}
-                className={`${styles.captionBar} about-caption`}
-              >
-                <span className={styles.captionPrimary}>
-                  {ABOUT_COPY.portraitCaption}
-                </span>
-                <span className={styles.captionMeta}>
-                  {ABOUT_COPY.portraitLocation}
-                </span>
-              </figcaption>
             </figure>
 
             <div className={`${styles.apertureBox} about-reveal`}>

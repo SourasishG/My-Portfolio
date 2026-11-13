@@ -205,15 +205,15 @@
 .portraitFrame {
   position: relative;
   width: 100%;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 4 / 5;
   overflow: hidden;
   background-color: $ink;
 }
 
 .portraitImg {
   object-fit: cover;
-  object-position: 50% 18%;
-  filter: grayscale(16%) contrast(1.04);
+  object-position: center 58%;
+  filter: grayscale(12%) contrast(1.04);
   transition:
     filter 0.45s $ease-expo-out,
     transform 0.65s $ease-expo-out;
