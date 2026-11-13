@@ -7,7 +7,7 @@ import { S7_VELOCITY_DISTORTION_SHADERS } from "@/lib/shaders";
 import { useSceneStore } from "@/lib/store";
 
 const DEFAULT_PORTRAIT_SRC = "/images/profile/portrait-alt.jpg";
-const DEFAULT_PORTRAIT_W = 575;
+const DEFAULT_PORTRAIT_W = 768;
 const DEFAULT_PORTRAIT_H = 1024;
 
 export interface VelocityPlaneLabOverrides {
