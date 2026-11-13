@@ -137,11 +137,53 @@ export function SceneRoot() {
     };
   }, []);
 
-  if (!shouldRenderCanvas) {
-    return null;
-  }
-
   const isHomeRoute = pathname === "/";
+  const cosmicBackdropRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isHomeRoute) return;
+    const el = cosmicBackdropRef.current;
+    if (!el) return;
+
+    let ticking = false;
+    const updateScrollParallax = () => {
+      ticking = false;
+      const scrollY = window.scrollY || window.pageYOffset || 0;
+      const vh = window.innerHeight || 800;
+
+      if (scrollY > vh * 1.15) {
+        if (el.style.visibility !== "hidden") {
+          el.style.visibility = "hidden";
+        }
+        return;
+      }
+
+      if (el.style.visibility === "hidden") {
+        el.style.visibility = "visible";
+      }
+
+      const progress = Math.min(1, Math.max(0, scrollY / (vh * 0.85)));
+      const opacity = Math.max(0, 1 - progress * 1.25);
+      const translateY = -(progress * 130);
+
+      el.style.opacity = opacity.toFixed(3);
+      el.style.transform = `translate3d(0, ${translateY.toFixed(1)}px, 0)`;
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(updateScrollParallax);
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    updateScrollParallax();
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [isHomeRoute]);
 
   const showHeroPortrait = isHomeRoute && activeSection === "hero" && isDesktop;
   const mountHeroPortrait = isHomeRoute && isDesktop && (activeSection === "hero" || activeSection === "about");
@@ -182,118 +224,141 @@ export function SceneRoot() {
         transition: "background-color 0.45s ease",
       }}
     >
-      <CanvasErrorBoundary
-        fallback={null}
-        onError={() => {
-          setWebglFailed(true);
-        }}
-      >
-        <Canvas
-          camera={{ position: [0, 0, isDesktop ? 5.05 : 6.75], fov: 42 }}
-          dpr={isDesktop ? [1, 2] : [1, 1.5]}
-          frameloop={tabHidden ? "never" : "always"}
-          gl={{
-            antialias: true,
-            alpha: true,
-            powerPreference: "high-performance",
-          }}
-          onCreated={({ gl }) => {
-            cleanupContextListenersRef.current?.();
-            const el = gl.domElement;
-            const onLost = (event: Event) => {
-              event.preventDefault();
-              setWebglFailed(true);
-            };
-            const onRestored = () => {
-              setWebglFailed(false);
-            };
-            el.addEventListener("webglcontextlost", onLost);
-            el.addEventListener("webglcontextrestored", onRestored);
-            cleanupContextListenersRef.current = () => {
-              el.removeEventListener("webglcontextlost", onLost);
-              el.removeEventListener("webglcontextrestored", onRestored);
-            };
+      {/* Lorenzo Lottici-Inspired Cinematic Cosmic Horizon & Moon Backdrop */}
+      {isHomeRoute && (
+        <div
+          ref={cosmicBackdropRef}
+          className={styles.heroCosmicBackdrop}
+          aria-hidden="true"
+        >
+          <Image
+            src="/images/hero/hero-cosmic-bg.jpg"
+            alt=""
+            fill
+            priority
+            quality={92}
+            sizes="100vw"
+            className={styles.heroCosmicImg}
+          />
+          <div className={styles.heroCosmicVignette} />
+          <div className={styles.heroCosmicBottomFade} />
+        </div>
+      )}
+
+      {shouldRenderCanvas && (
+        <CanvasErrorBoundary
+          fallback={null}
+          onError={() => {
+            setWebglFailed(true);
           }}
         >
-          <ResponsiveSceneCamera isDesktop={isDesktop} />
+          <Canvas
+            camera={{ position: [0, 0, isDesktop ? 5.05 : 6.75], fov: 42 }}
+            dpr={isDesktop ? [1, 2] : [1, 1.5]}
+            frameloop={tabHidden ? "never" : "always"}
+            gl={{
+              antialias: true,
+              alpha: true,
+              powerPreference: "high-performance",
+            }}
+            onCreated={({ gl }) => {
+              cleanupContextListenersRef.current?.();
+              const el = gl.domElement;
+              const onLost = (event: Event) => {
+                event.preventDefault();
+                setWebglFailed(true);
+              };
+              const onRestored = () => {
+                setWebglFailed(false);
+              };
+              el.addEventListener("webglcontextlost", onLost);
+              el.addEventListener("webglcontextrestored", onRestored);
+              cleanupContextListenersRef.current = () => {
+                el.removeEventListener("webglcontextlost", onLost);
+                el.removeEventListener("webglcontextrestored", onRestored);
+              };
+            }}
+          >
+            <ResponsiveSceneCamera isDesktop={isDesktop} />
 
-          {/* T1/T2 — Hero Halftone Portrait synced to #hero-portrait-stage */}
-          {mountHeroPortrait && (
-            <DynamicPortraitHalftone
-              viewportSelector="#hero-portrait-stage"
-              visible={showHeroPortrait}
+            {/* T1/T2 — Hero Halftone Portrait synced to #hero-portrait-stage */}
+            {mountHeroPortrait && (
+              <DynamicPortraitHalftone
+                viewportSelector="#hero-portrait-stage"
+                visible={showHeroPortrait}
+              />
+            )}
+
+            {/* S2 — Procedural Topographic Contour Sphere synced to Section 02 aperture */}
+            {mountAboutSphere && (
+              <DynamicContourSphere
+                tier={gpuProfile.tier}
+                isMobile={!isDesktop}
+                reducedMotion={reducedMotion}
+                visible={showAboutSphere}
+                viewportSelector="#about-s2-aperture"
+              />
+            )}
+
+            {/* S3 — Halftone -> True-Color Optical Reveal synced to Section 03 stage (desktop) */}
+            {mountProjectReveal && (
+              <DynamicProjectReveal
+                visible={showProjectReveal}
+                reducedMotion={reducedMotion}
+                viewportSelector="#projects-s3-stage"
+              />
+            )}
+
+            {/* Section 04 Restrained Point Constellation */}
+            {mountToolkitConstellation && (
+              <DynamicToolkitConstellation
+                tier={gpuProfile.tier}
+                isMobile={!isDesktop}
+                reducedMotion={reducedMotion}
+                visible={showToolkitConstellation}
+              />
+            )}
+
+            {/* S7 — Scroll-Velocity Distortion synced to Section 06 $paper aperture */}
+            {mountVelocityPlane && (
+              <DynamicVelocityPlane
+                visible={showVelocityPlane}
+                reducedMotion={reducedMotion}
+                viewportSelector="#beyond-s7-stage"
+              />
+            )}
+
+            {/* S5 — Chrome Fluid Arches synced to Section 07 Aspirations aperture */}
+            {mountChromeArches && (
+              <DynamicChromeArches
+                tier={gpuProfile.tier}
+                isMobile={!isDesktop}
+                reducedMotion={reducedMotion}
+                visible={showChromeArches}
+                viewportSelector="#aspirations-s5-stage"
+              />
+            )}
+
+            {/* S4 — Chromatic Glass Crystal synced to Section 08 Contact aperture */}
+            {mountGlassObject && (
+              <DynamicGlassObject
+                tier={gpuProfile.tier}
+                isMobile={!isDesktop}
+                reducedMotion={reducedMotion}
+                visible={showGlassObject}
+                viewportSelector="#contact-s4-stage"
+              />
+            )}
+
+            {/* S8 — Subtle Global Grain & Vignette */}
+            <GrainOverlay
+              enabled={gpuProfile.tier === "high" || isDesktop}
+              grainOpacity={0.036}
+              vignetteStrength={0.1}
             />
-          )}
-
-          {/* S2 — Procedural Topographic Contour Sphere synced to Section 02 aperture */}
-          {mountAboutSphere && (
-            <DynamicContourSphere
-              tier={gpuProfile.tier}
-              isMobile={!isDesktop}
-              reducedMotion={reducedMotion}
-              visible={showAboutSphere}
-              viewportSelector="#about-s2-aperture"
-            />
-          )}
-
-          {/* S3 — Halftone -> True-Color Optical Reveal synced to Section 03 stage (desktop) */}
-          {mountProjectReveal && (
-            <DynamicProjectReveal
-              visible={showProjectReveal}
-              reducedMotion={reducedMotion}
-              viewportSelector="#projects-s3-stage"
-            />
-          )}
-
-          {/* Section 04 Restrained Point Constellation */}
-          {mountToolkitConstellation && (
-            <DynamicToolkitConstellation
-              tier={gpuProfile.tier}
-              isMobile={!isDesktop}
-              reducedMotion={reducedMotion}
-              visible={showToolkitConstellation}
-            />
-          )}
-
-          {/* S7 — Scroll-Velocity Distortion synced to Section 06 $paper aperture */}
-          {mountVelocityPlane && (
-            <DynamicVelocityPlane
-              visible={showVelocityPlane}
-              reducedMotion={reducedMotion}
-              viewportSelector="#beyond-s7-stage"
-            />
-          )}
-
-          {/* S5 — Chrome Fluid Arches synced to Section 07 Aspirations aperture */}
-          {mountChromeArches && (
-            <DynamicChromeArches
-              tier={gpuProfile.tier}
-              isMobile={!isDesktop}
-              reducedMotion={reducedMotion}
-              visible={showChromeArches}
-              viewportSelector="#aspirations-s5-stage"
-            />
-          )}
-
-          {/* S4 — Chromatic Glass Crystal synced to Section 08 Contact aperture */}
-          {mountGlassObject && (
-            <DynamicGlassObject
-              tier={gpuProfile.tier}
-              isMobile={!isDesktop}
-              reducedMotion={reducedMotion}
-              visible={showGlassObject}
-              viewportSelector="#contact-s4-stage"
-            />
-          )}
-
-          {/* S8 — Subtle Global Grain & Vignette */}
-          <GrainOverlay
-            enabled={gpuProfile.tier === "high" || isDesktop}
-            grainOpacity={0.036}
-            vignetteStrength={0.1}
-          />
-        </Canvas>
-      </CanvasErrorBoundary>
+          </Canvas>
+        </CanvasErrorBoundary>
+      )}
     </div>
   );
 }
