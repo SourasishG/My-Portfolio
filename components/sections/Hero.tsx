@@ -175,6 +175,20 @@ export function Hero() {
               </div>
 
               <div id="hero-portrait-stage" className={styles.portraitStageAnchor}>
+                {/* Luka Skhiladze-inspired Rotary Precision Dial */}
+                <svg className={styles.rotaryDialSvg} viewBox="0 0 400 400" fill="none" aria-hidden="true">
+                  <circle cx="200" cy="200" r="192" stroke="rgba(255, 255, 255, 0.08)" strokeWidth="1" strokeDasharray="2 6" />
+                  <circle cx="200" cy="200" r="184" stroke="rgba(77, 168, 255, 0.14)" strokeWidth="1" />
+                  <line x1="200" y1="2" x2="200" y2="14" stroke="#FF5B1F" strokeWidth="1.5" />
+                  <line x1="200" y1="386" x2="200" y2="398" stroke="rgba(255, 255, 255, 0.2)" strokeWidth="1" />
+                  <line x1="2" y1="200" x2="14" y2="200" stroke="rgba(255, 255, 255, 0.2)" strokeWidth="1" />
+                  <line x1="386" y1="200" x2="398" y2="200" stroke="rgba(255, 255, 255, 0.2)" strokeWidth="1" />
+                  <text x="200" y="24" fill="#FF5B1F" fontSize="8" letterSpacing="0.1em" fontFamily="var(--font-mono)" textAnchor="middle">000° // NORTH</text>
+                  <text x="376" y="203" fill="rgba(255, 255, 255, 0.45)" fontSize="7" letterSpacing="0.08em" fontFamily="var(--font-mono)" textAnchor="end">090°</text>
+                  <text x="200" y="380" fill="rgba(255, 255, 255, 0.45)" fontSize="7" letterSpacing="0.08em" fontFamily="var(--font-mono)" textAnchor="middle">180°</text>
+                  <text x="24" y="203" fill="rgba(255, 255, 255, 0.45)" fontSize="7" letterSpacing="0.08em" fontFamily="var(--font-mono)" textAnchor="start">270°</text>
+                </svg>
+
                 {showFallbackInDom && (
                   <PortraitFallback priority />
                 )}

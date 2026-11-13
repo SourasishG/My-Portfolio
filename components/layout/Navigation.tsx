@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight, FileText, Menu, X } from "lucide-react";
 import { NAV_ITEMS, SITE_IDENTITY, SOCIAL_LINKS } from "@/content/links";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { playAtmosphericChime, playMechanicalClick, playRotaryTick } from "@/lib/sound";
 import { useSceneStore } from "@/lib/store";
 import styles from "./Navigation.module.scss";
 
@@ -34,6 +35,8 @@ export function Navigation() {
   const activeSection = useSceneStore((s) => s.activeSection);
   const motionEnabled = useSceneStore((s) => s.motionEnabled);
   const toggleMotion = useSceneStore((s) => s.toggleMotion);
+  const soundEnabled = useSceneStore((s) => s.soundEnabled);
+  const toggleSound = useSceneStore((s) => s.toggleSound);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [kolkataTime, setKolkataTime] = useState<string>("--:--");
@@ -128,7 +131,10 @@ export function Navigation() {
             <button
               type="button"
               className={styles.motionToggle}
-              onClick={toggleMotion}
+              onClick={() => {
+                toggleMotion();
+                playMechanicalClick();
+              }}
               aria-label={`Toggle interactive motion (currently ${motionEnabled ? "on" : "off"})`}
               title="Toggle interactive 3D and scroll motion"
             >
@@ -137,6 +143,27 @@ export function Navigation() {
                 aria-hidden="true"
               />
               <span>MOTION [{motionEnabled ? "ON" : "OFF"}]</span>
+            </button>
+
+            <button
+              type="button"
+              className={styles.motionToggle}
+              onClick={() => {
+                const next = !soundEnabled;
+                toggleSound();
+                if (next) {
+                  playAtmosphericChime(580);
+                }
+              }}
+              aria-label={`Toggle interactive audio feedback (currently ${soundEnabled ? "on" : "off"})`}
+              title="Toggle tactile Web Audio feedback (inspired by Lorenzo Lottici & Luka Skhiladze)"
+            >
+              <span
+                className={`${styles.motionDot} ${!soundEnabled ? styles.motionOff : ""}`}
+                style={soundEnabled ? { backgroundColor: "#FF5B1F", boxShadow: "0 0 6px rgba(255, 91, 31, 0.7)" } : {}}
+                aria-hidden="true"
+              />
+              <span>SOUND [{soundEnabled ? "ON" : "OFF"}]</span>
             </button>
 
             <a
@@ -227,20 +254,44 @@ export function Navigation() {
               </div>
 
               <div className={styles.drawerFooter}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
-                  <div className={styles.drawerClock}>KOLKATA {kolkataTime} IST · INDIA</div>
-                  <button
-                    type="button"
-                    className={styles.motionToggle}
-                    onClick={toggleMotion}
-                    aria-label={`Toggle motion (currently ${motionEnabled ? "on" : "off"})`}
-                  >
-                    <span
-                      className={`${styles.motionDot} ${!motionEnabled ? styles.motionOff : ""}`}
-                      aria-hidden="true"
-                    />
-                    <span>MOTION [{motionEnabled ? "ON" : "OFF"}]</span>
-                  </button>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.5rem", marginBottom: "0.75rem", flexWrap: "wrap" }}>
+                  <div className={styles.drawerClock}>KOLKATA {kolkataTime} IST</div>
+                  <div style={{ display: "flex", gap: "0.5rem" }}>
+                    <button
+                      type="button"
+                      className={styles.motionToggle}
+                      onClick={() => {
+                        toggleMotion();
+                        playMechanicalClick();
+                      }}
+                      aria-label={`Toggle motion (currently ${motionEnabled ? "on" : "off"})`}
+                    >
+                      <span
+                        className={`${styles.motionDot} ${!motionEnabled ? styles.motionOff : ""}`}
+                        aria-hidden="true"
+                      />
+                      <span>MOTION [{motionEnabled ? "ON" : "OFF"}]</span>
+                    </button>
+                    <button
+                      type="button"
+                      className={styles.motionToggle}
+                      onClick={() => {
+                        const next = !soundEnabled;
+                        toggleSound();
+                        if (next) {
+                          playAtmosphericChime(580);
+                        }
+                      }}
+                      aria-label={`Toggle sound (currently ${soundEnabled ? "on" : "off"})`}
+                    >
+                      <span
+                        className={`${styles.motionDot} ${!soundEnabled ? styles.motionOff : ""}`}
+                        style={soundEnabled ? { backgroundColor: "#FF5B1F", boxShadow: "0 0 6px rgba(255, 91, 31, 0.7)" } : {}}
+                        aria-hidden="true"
+                      />
+                      <span>SOUND [{soundEnabled ? "ON" : "OFF"}]</span>
+                    </button>
+                  </div>
                 </div>
                 <a
                   href={SITE_IDENTITY.resumeHref}
