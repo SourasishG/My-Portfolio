@@ -14,6 +14,7 @@ if (typeof window !== "undefined") {
 }
 
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Canvas, useThree } from "@react-three/fiber";
 import { CanvasErrorBoundary } from "@/components/canvas/CanvasErrorBoundary";
@@ -22,6 +23,7 @@ import { useGpuTier } from "@/hooks/useGpuTier";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useSceneStore } from "@/lib/store";
+import styles from "./SceneRoot.module.scss";
 
 const DynamicContourSphere = dynamic(
   () => import("@/components/canvas/ContourSphere").then((m) => m.ContourSphere),
