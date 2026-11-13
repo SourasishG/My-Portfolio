@@ -899,6 +899,75 @@ Implements the core visual identity of **SIGNAL V2** inspired by Lorenzo Lottici
 3. **Q:** *How do you prevent denial-of-service or email-bombing attacks on public contact endpoints?*  
    **A:** By implementing multi-layered defensive controls: first, an IP-based sliding window rate limiter that restricts requests to a strict threshold (e.g. 5 submissions per 10-minute window per IP) and emits standard `429 Too Many Requests` status codes with `Retry-After` headers. Second, a strict payload size limit and schema validation to reject oversized requests immediately. Third, keeping the upstream delivery provider endpoint strictly on the server environment so credentials can never be extracted from client bundles.
 
+---
+
+## Module 28: Procedural Audio Feedback & Benchmark Design Architecture (Luka Skhiladze & Lorenzo Lottici DNA)
+
+### Purpose & Architectural Rationale
+Award-winning design engineering elevates digital interfaces beyond static layout into tactile, spatial instruments. By auditing two world-class benchmark portfolios:
+- **Luka Skhiladze (`skhiladze.com`):** Precision rotary dial instrument markings, calibrated radial HUD rings, tactile motion/sound toggle pills, and dual-perspective project indexing (`Featured / Full` archive).
+- **Lorenzo Lottici (`lorenzolottici.it`):** Monolithic obsidian canvas atmosphere, restrained Swiss typography, and tactile auditory micro-feedback on critical user interactions.
+
+We integrated these design principles into the SIGNAL portfolio while strictly observing project constraints:
+1. **Zero External Audio Assets or Third-Party Sound Packages:** Instead of downloading audio files (`.mp3`/`.wav`) that incur HTTP roundtrips, decoding delay, and bandwidth overhead, we built a procedural synthesizer using the native browser **Web Audio API** (`lib/sound.ts`).
+2. **Autoplay Policy Compliance & Zero Forced Audio:** Browsers require explicit user gesture to initialize audio contexts. Audio feedback is strictly disabled by default (`soundEnabled: false` in Zustand), activated solely when the visitor explicitly clicks `SOUND [OFF]` -> `SOUND [ON]` in the persistent navigation bar or mobile drawer.
+3. **Calibrated Rotary Dial Hero Instrument:** Surrounding the Hero halftone portrait stage, an SVG radial dial overlays polar coordinates (`000° // NORTH`, `090°`, `180°`, `270°`), hairline tick marks, and concentric dashed rings, transforming the stage into a precision engineering radar viewfinder.
+4. **Three Procedural Sound Synthesizers:**
+   - `playMechanicalClick()`: Dual-oscillator transient (triangle + highpass noise) shaped by a 22ms exponential decay envelope, emulating a mechanical tactile relay switch.
+   - `playRotaryTick()`: High-frequency 2.4 kHz sine micro-pulse (8ms envelope) providing instantaneous tactile haptic feedback during chip, tab, or archive hover.
+   - `playAtmosphericChime(frequency)`: Dual sine oscillators at fundamental and 2.76x musical harmonic ratio with a 750ms decay envelope and lowpass filtering, signaling state changes (sound enabled, successful transmission).
+
+### Key Architecture & Signal Flow
+
+```
+[User Action: Click SOUND [OFF]]
+            │
+            ▼
+[toggleSound() in Zustand Store] ──► [soundEnabled: true]
+            │
+            ▼
+[playAtmosphericChime(580)] ──► [AudioContext Lazy Init / Resume]
+                                          │
+                                          ▼
+                            ┌───────────────────────────┐
+                            │ Primary GainNode (Master) │
+                            └─────────────┬─────────────┘
+                                          │
+                  ┌───────────────────────┴───────────────────────┐
+                  ▼                                               ▼
+     [Oscillator 1: Fundamental]                     [Oscillator 2: Harmonic]
+        (Frequency: 580 Hz)                             (Frequency: 1600 Hz)
+                  │                                               │
+                  └───────────────┬───────────────────────────────┘
+                                  ▼
+                     [Exponential Gain Ramp]
+                      (0.08 -> 0.0001 in 0.75s)
+                                  │
+                                  ▼
+                       [Destination: Speakers]
+```
+
+### Trade-offs vs Alternatives
+
+| Option | Trade-off | Decision |
+|---|---|---|
+| **Procedural Web Audio API Synthesis** | Zero HTTP requests, zero npm dependencies, microsecond latency, programmatic pitch modulation. | **Chosen** |
+| Pre-recorded `.wav` / `.mp3` Audio Sprites | Authentic recorded sound samples, but requires extra bundle assets, network bandwidth, and potential playback delay. | Rejected |
+| Third-Party Library (Howler.js, Tone.js) | Full-featured audio engine, but violates zero-dependency rule and adds $\sim 40\text{ KB}$ to bundle. | Rejected |
+| Autoplay Sound on Page Load | Immersive immediate experience, but violates browser autoplay policies and alienates users in quiet environments. | Strictly rejected (default OFF) |
+
+### Interview Questions & Model Answers
+
+1. **Q:** *Why synthesize UI sounds procedurally using the Web Audio API rather than playing pre-recorded audio files?*  
+   **A:** Procedural synthesis offers three distinct engineering advantages: first, **zero network overhead** — audio files require downloading, caching, and decoding `.mp3` or `.wav` assets, whereas procedural synthesis uses native browser oscillators that take zero bytes of media assets. Second, **zero latency** — oscillators and gain nodes are constructed and scheduled directly on the browser's audio rendering thread with sub-millisecond precision. Third, **dynamic programmability** — frequencies, resonance, filter cutoff, and envelope durations can be modulated mathematically based on cursor velocity, scroll position, or UI state without loading multiple audio variations.
+
+2. **Q:** *How do modern browsers enforce audio playback policies, and how should an interactive web application handle them?*  
+   **A:** Modern browsers (Chrome, Safari, Firefox) enforce strict autoplay policies to protect users from unexpected noise and save bandwidth. An `AudioContext` initiated before a user gesture starts in a `"suspended"` state. To comply, sound effects must remain opt-in or lazy-initialized on the first explicit user gesture (e.g. clicking a `SOUND [ON]` toggle or interactive button). Calling `audioCtx.resume()` inside that user-gesture event handler cleanly unlocks audio execution without console warnings or policy violations.
+
+3. **Q:** *How do you prevent audio distortion or memory leaks when triggering high-frequency UI sound effects (like rapid chip hovers)?*  
+   **A:** By applying three architectural safeguards: first, **gain headroom clamping** — keeping individual node volumes low (e.g., $0.03\text{--}0.08$) and routing through a master bus so simultaneous overlapping sounds never clip above $0\text{ dBFS}$. Second, **tight envelope deallocation** — calling `oscillator.stop(audioCtx.currentTime + duration)` and disconnecting nodes after the decay envelope completes so garbage collection reclaims Web Audio nodes. Third, **rate-limiting / debouncing** — ignoring micro-ticks if the interval between events is less than the minimum perception threshold ($\sim 20\text{ ms}$).
+
+
 
 
 

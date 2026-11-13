@@ -21,6 +21,7 @@ import { SITE_IDENTITY, SOCIAL_LINKS } from "@/content/links";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { ContactFormValues, contactSubmissionSchema } from "@/lib/contact-schema";
 import { ensureGsapRegistered, gsap } from "@/lib/gsap";
+import { playAtmosphericChime, playMechanicalClick, playRotaryTick } from "@/lib/sound";
 import { useSceneStore } from "@/lib/store";
 import styles from "./Contact.module.scss";
 
@@ -201,6 +202,7 @@ export function Contact() {
   );
 
   const handleCopyEmail = useCallback(async () => {
+    playMechanicalClick();
     try {
       await navigator.clipboard.writeText(SITE_IDENTITY.email);
       setCopiedEmail(true);
@@ -216,6 +218,7 @@ export function Contact() {
   }, []);
 
   const onSubmit = async (data: ContactFormValues) => {
+    playMechanicalClick();
     setFeedback(null);
 
     try {
@@ -236,6 +239,7 @@ export function Contact() {
       } | null;
 
       if (response.ok && payload?.ok) {
+        playAtmosphericChime();
         setFeedback({
           kind: "success",
           title: "Transmission delivered",
@@ -453,6 +457,7 @@ export function Contact() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className={styles.socialLink}
+                    onMouseEnter={() => playRotaryTick()}
                   >
                     <span className={styles.socialMeta}>
                       <span className={styles.socialLabel}>{item.label}</span>
@@ -466,6 +471,7 @@ export function Contact() {
                   href={SITE_IDENTITY.resumeHref}
                   download={SITE_IDENTITY.resumeFileName}
                   className={styles.socialLink}
+                  onMouseEnter={() => playRotaryTick()}
                 >
                   <span className={styles.socialMeta}>
                     <span className={styles.socialLabel}>Resume (PDF)</span>

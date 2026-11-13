@@ -23,6 +23,7 @@ import {
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { ensureGsapRegistered, gsap, ScrollTrigger } from "@/lib/gsap";
+import { playMechanicalClick, playRotaryTick } from "@/lib/sound";
 import { useSceneStore } from "@/lib/store";
 import styles from "./Projects.module.scss";
 
@@ -197,6 +198,7 @@ export function Projects() {
   );
 
   const handleDesktopTabSelect = (idx: number) => {
+    playMechanicalClick();
     lastPinnedIdxRef.current = idx;
     setActiveFeaturedIdx(idx);
     const chosenProject = FEATURED_PROJECTS[idx];
@@ -216,6 +218,7 @@ export function Projects() {
   };
 
   const handleSelectScreen = (slug: string, idx: number, screen: ProjectScreenAsset) => {
+    playMechanicalClick();
     setScreenIdxBySlug((prev) => ({ ...prev, [slug]: idx }));
     syncVisualToStore(screen, fullColorLocked);
   };
@@ -236,6 +239,7 @@ export function Projects() {
   };
 
   const handleToggleFullColor = () => {
+    playMechanicalClick();
     const next = !fullColorLocked;
     setFullColorLocked(next);
     useSceneStore.getState().setProjectPointer(0.5, 0.5, next ? 2 : 0);
@@ -471,12 +475,13 @@ export function Projects() {
                               className={`${styles.screenBtn} ${
                                 isScreenActive ? styles.screenBtnActive : ""
                               }`}
-                              onClick={() =>
+                              onClick={() => {
+                                playMechanicalClick();
                                 setScreenIdxBySlug((prev) => ({
                                   ...prev,
                                   [project.slug]: sIdx,
-                                }))
-                              }
+                                }));
+                              }}
                             >
                               {screen.label}
                             </button>
@@ -537,17 +542,24 @@ export function Projects() {
                 <article
                   key={item.id}
                   className={styles.archiveItem}
-                  onMouseEnter={() => setHoveredArchiveId(item.id)}
-                  onFocus={() => setHoveredArchiveId(item.id)}
+                  onMouseEnter={() => {
+                    playRotaryTick();
+                    setHoveredArchiveId(item.id);
+                  }}
+                  onFocus={() => {
+                    playRotaryTick();
+                    setHoveredArchiveId(item.id);
+                  }}
                 >
                   <button
                     type="button"
                     aria-expanded={isExpanded}
                     aria-controls={`archive-panel-${item.id}`}
                     className={styles.archiveTrigger}
-                    onClick={() =>
-                      setExpandedArchiveId((prev) => (prev === item.id ? null : item.id))
-                    }
+                    onClick={() => {
+                      playMechanicalClick();
+                      setExpandedArchiveId((prev) => (prev === item.id ? null : item.id));
+                    }}
                   >
                     <span className={styles.archiveIndex}>[{item.index}]</span>
                     <span className={styles.archiveTitle}>{item.name}</span>
@@ -685,7 +697,11 @@ function ProjectDetailCard({ project }: { project: FeaturedProject }) {
       </div>
 
       <div className={styles.actionRow}>
-        <Link href={`/projects/${project.slug}`} className={styles.primaryBtn}>
+        <Link
+          href={`/projects/${project.slug}`}
+          className={styles.primaryBtn}
+          onClick={() => playMechanicalClick()}
+        >
           <span>Read Case Study</span>
           <ArrowRight size={14} aria-hidden="true" />
         </Link>
@@ -695,6 +711,7 @@ function ProjectDetailCard({ project }: { project: FeaturedProject }) {
           target="_blank"
           rel="noopener noreferrer"
           className={styles.secondaryLink}
+          onClick={() => playMechanicalClick()}
         >
           <span>GitHub</span>
           <ArrowUpRight size={13} aria-hidden="true" />
@@ -706,6 +723,7 @@ function ProjectDetailCard({ project }: { project: FeaturedProject }) {
             target="_blank"
             rel="noopener noreferrer"
             className={styles.secondaryLink}
+            onClick={() => playMechanicalClick()}
           >
             <span>Live Demo</span>
             <ArrowUpRight size={13} aria-hidden="true" />

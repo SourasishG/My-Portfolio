@@ -24,6 +24,7 @@ import {
 } from "@/content/timeline";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { ensureGsapRegistered, gsap } from "@/lib/gsap";
+import { playMechanicalClick, playRotaryTick } from "@/lib/sound";
 import styles from "./Journey.module.scss";
 
 /**
@@ -359,11 +360,13 @@ export function Journey() {
                     aria-expanded={isExpanded}
                     aria-controls={`cert-panel-${cert.id}`}
                     className={styles.certTrigger}
-                    onClick={() =>
+                    onMouseEnter={() => playRotaryTick()}
+                    onClick={() => {
+                      playMechanicalClick();
                       setExpandedCertId((prev) =>
                         prev === cert.id ? null : cert.id
-                      )
-                    }
+                      );
+                    }}
                   >
                     <span className={styles.certIndex}>[{cert.index}]</span>
                     <span className={styles.certTitle}>{cert.title}</span>
@@ -440,6 +443,7 @@ export function Journey() {
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   className={styles.verifyBtn}
+                                  onClick={() => playMechanicalClick()}
                                 >
                                   <span>Verify on Coursera</span>
                                   <ArrowUpRight size={13} aria-hidden="true" />
