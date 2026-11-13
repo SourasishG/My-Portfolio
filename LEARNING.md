@@ -524,3 +524,61 @@ Implements the core visual identity of **SIGNAL V2** inspired by Lorenzo Lottici
    $$\text{worldX} = \left(\frac{\text{rect.left} + 0.5 \times \text{rect.width}}{\text{vw}} - 0.5\right) \times \text{viewport.width}$$
    $$\text{worldY} = \left(0.5 - \frac{\text{rect.top} + 0.5 \times \text{rect.height}}{\text{vh}}\right) \times \text{viewport.height}$$
    This anchors the 3D WebGL mesh directly into the CSS layout grid regardless of screen resolution, scroll position, or DPI scaling.
+
+---
+
+## Module 21 — Section 02 Personal Architecture: Editorial Story Beats & Procedural Topography Aperture (`About.tsx`, `About.module.scss`, `ContourSphere.tsx`)
+
+### What it does
+1. **Lorenzo Lottici-Inspired 3-Beat Narrative Arc:** Instead of dense generic bio paragraphs, the About section structures Sourasish's engineering evolution into three crisp narrative beats:
+   - `[01] // THE SPARK`: *Curiosity at the Interface* (Frontend roots & user psychology)
+   - `[02] // THE ARCHITECTURE`: *Pushing Deeper Across the Stack* (Node.js/Express, REST APIs, SQL/NoSQL schemas & AWS cloud fundamentals)
+   - `[03] // THE CRAFT & AI`: *First Principles & Modern Craft* (Problem-first engineering, LLM-augmented developer workflows, 3D WebGL craft)
+2. **Editorial Typographic Contrast:** Employs the dual-typeface system established in the Hero: geometric sans-serif for structured technical content paired with high-contrast italic **Instrument Serif** (`system`) to emphasize the architectural mindset behind the syntax.
+3. **Procedural Topographic HUD Aperture (S2):** Features an optically framed viewport (`#about-s2-aperture`) where a procedural 3D contour sphere mechanically splits along its equator in direct response to scroll progress ($0 \to 0.92$), revealing an ember glowing core.
+4. **Verified Proof Telemetry:** Grounds the narrative with 4 verified pillars: Sister Nivedita University B.Tech CSE (2023–2027, CGPA 8.08), Methodical Problem-Solving work style, Full-Stack engineering arc, and First-Principles AI exploration.
+
+### Key Architecture & Data Flow
+
+```
+[User Scrolls Section 02] ──> [ScrollTrigger: #about-s2-aperture]
+                                      │
+                         onUpdate: self.progress (0..1)
+                                      │
+                        store.setAboutSplit(progress * 0.92)
+                                      │
+                           (Zustand transient ref)
+                                      │
+                             ContourSphere useFrame()
+                                      │
+            ┌─────────────────────────┴─────────────────────────┐
+            │                                                   │
+  Upper Hemisphere:                                   Lower Hemisphere:
+  position.y = split * 0.35                           position.y = -split * 0.35
+  rotation.y += delta * 0.2                           rotation.y -= delta * 0.15
+            │                                                   │
+            └─────────────────────────┬─────────────────────────┘
+                                      │
+                         Equator Disc Emissive Glow
+                         uGlowIntensity = smoothstep(...)
+```
+
+### Trade-offs vs Alternatives
+
+| Option | Trade-off | Decision |
+|---|---|---|
+| **Structured 3-Beat Cards + Telemetry Pillars** | Breaks up dense text into scannable engineering milestones; directly communicates career trajectory in seconds. | **Chosen** |
+| Unstructured Wall of Text | Easy to write, but creates reader fatigue and recruiters skip past critical credentials. | Rejected |
+| Dedicated 3D Canvas per Section | Simpler component encapsulation, but running multiple `<Canvas>` elements creates multiple WebGL rendering contexts, exceeding GPU resource budgets and causing severe mobile stutter. | Rejected (Single persistent Canvas) |
+| Scroll-Driven Video Cross-Section | Pre-rendered video avoids WebGL shader math, but adds 5–15MB video payloads and cannot respond dynamically to user pointer or theme tokens. | Rejected |
+
+### Interview Questions & Model Answers
+
+1. **Q:** *Why structure a software developer's "About" section into sequential narrative beats rather than traditional biographical paragraphs?*  
+   **A:** Hiring managers and senior engineers review portfolios rapidly (often in under 30 seconds). A wall of text forces the reader to hunt for relevant signals. Breaking the narrative into chronological, thematic beats (`THE SPARK` $\to$ `THE ARCHITECTURE` $\to$ `THE CRAFT & AI`) provides immediate cognitive clarity: it frames technical growth as an intentional engineering trajectory—from UI curiosity to distributed backend systems and first-principles craft—while keeping core telemetry (e.g. CGPA 8.08, SNU CSE '27) instantly scannable.
+
+2. **Q:** *How does GSAP ScrollTrigger drive the 3D procedural contour sphere split in Section 02 without triggering costly React component re-renders?*  
+   **A:** If `ScrollTrigger.onUpdate` called standard React `setState`, every scroll tick (60 to 120 times per second) would force React's reconciliation engine to re-render the entire component tree. Instead, ScrollTrigger updates a transient Zustand store variable or ref (`setAboutSplit`). Inside Three.js, `useFrame` reads this value directly each frame and mutates the mesh transforms (`mesh.position.y`) on the GPU scenegraph directly. React never re-renders, maintaining a solid 60 FPS even on mobile devices.
+
+3. **Q:** *How does the About section maintain full accessibility (WCAG AA) when complex WebGL 3D elements and scroll-linked animations are present?*  
+   **A:** All biographical copy, section headings, and telemetry pillars are rendered as semantic HTML elements (`<section>`, `<article>`, `<h3>`, `<p>`) in the native DOM, ensuring full indexing by search engine crawlers and seamless navigation with screen readers. The Three.js canvas is marked `aria-hidden="true"`. Furthermore, when reduced motion is detected or toggled off via `MOTION [ON / OFF]`, ScrollTrigger animations clear their transforms immediately and the procedural aperture switches to `<ContourSphereFallback />`, a lightweight static vector SVG.
