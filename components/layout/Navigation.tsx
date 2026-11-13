@@ -11,6 +11,14 @@ import { playAtmosphericChime, playMechanicalClick, playRotaryTick } from "@/lib
 import { useSceneStore } from "@/lib/store";
 import styles from "./Navigation.module.scss";
 
+const CURATED_DESKTOP_NAV = [
+  { id: "projects", label: "Work", href: "/#projects", index: "01" },
+  { id: "about", label: "About", href: "/#about", index: "02" },
+  { id: "toolkit", label: "Toolkit", href: "/#toolkit", index: "03" },
+  { id: "journey", label: "Journey", href: "/#journey", index: "04" },
+  { id: "contact", label: "Contact", href: "/#contact", index: "05" },
+];
+
 function formatKolkataIst(): string {
   try {
     return new Intl.DateTimeFormat("en-GB", {
@@ -107,7 +115,7 @@ export function Navigation() {
           </Link>
 
           <nav className={styles.desktopNav} aria-label="Primary sections">
-            {NAV_ITEMS.map((item) => {
+            {CURATED_DESKTOP_NAV.map((item) => {
               const isActive = pathname === "/" && activeSection === item.id;
               return (
                 <Link
@@ -149,7 +157,7 @@ export function Navigation() {
 
             <button
               type="button"
-              className={styles.motionToggle}
+              className={`${styles.soundToggle} ${soundEnabled ? styles.soundActive : ""}`}
               onClick={() => {
                 const next = !soundEnabled;
                 toggleSound();
@@ -160,11 +168,12 @@ export function Navigation() {
               aria-label={`Toggle interactive audio feedback (currently ${soundEnabled ? "on" : "off"})`}
               title="Toggle tactile Web Audio feedback (inspired by Lorenzo Lottici & Luka Skhiladze)"
             >
-              <span
-                className={`${styles.motionDot} ${!soundEnabled ? styles.motionOff : ""}`}
-                style={soundEnabled ? { backgroundColor: "#FF5B1F", boxShadow: "0 0 6px rgba(255, 91, 31, 0.7)" } : {}}
-                aria-hidden="true"
-              />
+              <div className={styles.equalizerBars} aria-hidden="true">
+                <span className={`${styles.eqBar} ${styles.eqBar1}`} />
+                <span className={`${styles.eqBar} ${styles.eqBar2}`} />
+                <span className={`${styles.eqBar} ${styles.eqBar3}`} />
+                <span className={`${styles.eqBar} ${styles.eqBar4}`} />
+              </div>
               <span>SOUND [{soundEnabled ? "ON" : "OFF"}]</span>
             </button>
 
@@ -276,7 +285,7 @@ export function Navigation() {
                     </button>
                     <button
                       type="button"
-                      className={styles.motionToggle}
+                      className={`${styles.soundToggle} ${soundEnabled ? styles.soundActive : ""}`}
                       onClick={() => {
                         const next = !soundEnabled;
                         toggleSound();
@@ -286,11 +295,12 @@ export function Navigation() {
                       }}
                       aria-label={`Toggle sound (currently ${soundEnabled ? "on" : "off"})`}
                     >
-                      <span
-                        className={`${styles.motionDot} ${!soundEnabled ? styles.motionOff : ""}`}
-                        style={soundEnabled ? { backgroundColor: "#FF5B1F", boxShadow: "0 0 6px rgba(255, 91, 31, 0.7)" } : {}}
-                        aria-hidden="true"
-                      />
+                      <div className={styles.equalizerBars} aria-hidden="true">
+                        <span className={`${styles.eqBar} ${styles.eqBar1}`} />
+                        <span className={`${styles.eqBar} ${styles.eqBar2}`} />
+                        <span className={`${styles.eqBar} ${styles.eqBar3}`} />
+                        <span className={`${styles.eqBar} ${styles.eqBar4}`} />
+                      </div>
                       <span>SOUND [{soundEnabled ? "ON" : "OFF"}]</span>
                     </button>
                   </div>

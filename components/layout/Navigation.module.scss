@@ -185,6 +185,93 @@
   }
 }
 
+.soundToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: $radius-pill;
+  padding: 4px 10px;
+  font-family: $font-mono;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  color: $muted;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.25);
+    color: $white;
+  }
+
+  &.soundActive {
+    border-color: rgba(255, 91, 31, 0.45);
+    color: $white;
+    background: rgba(255, 91, 31, 0.08);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #FF5B1F;
+    outline-offset: 2px;
+  }
+}
+
+.equalizerBars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 10px;
+  width: 12px;
+}
+
+.eqBar {
+  width: 2px;
+  background-color: #555966;
+  border-radius: 1px;
+  height: 35%;
+  transition: all 0.2s ease;
+}
+
+.soundActive .eqBar {
+  background-color: #FF5B1F;
+  box-shadow: 0 0 4px rgba(255, 91, 31, 0.6);
+  animation: eqBounce 0.85s ease-in-out infinite alternate;
+}
+
+.soundActive .eqBar1 {
+  height: 45%;
+  animation-delay: 0.12s;
+}
+
+.soundActive .eqBar2 {
+  height: 90%;
+  animation-delay: 0.35s;
+}
+
+.soundActive .eqBar3 {
+  height: 60%;
+  animation-delay: 0.2s;
+}
+
+.soundActive .eqBar4 {
+  height: 100%;
+  animation-delay: 0.48s;
+}
+
+@keyframes eqBounce {
+  0% {
+    transform: scaleY(0.25);
+  }
+  50% {
+    transform: scaleY(0.9);
+  }
+  100% {
+    transform: scaleY(0.4);
+  }
+}
+
 .motionDot {
   width: 6px;
   height: 6px;
