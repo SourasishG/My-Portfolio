@@ -133,7 +133,7 @@ export function PortraitHalftone({
 
   return (
     <group ref={groupRef}>
-      <mesh ref={meshRef} geometry={geometry}>
+      <mesh ref={meshRef} geometry={geometry} scale={[2.65, 2.65, 1]}>
         <shaderMaterial
           ref={materialRef}
           vertexShader={vertexShader}
