@@ -14,6 +14,7 @@ import {
 } from "@/content/skills";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { ensureGsapRegistered, gsap } from "@/lib/gsap";
+import { playMechanicalClick, playRotaryTick } from "@/lib/sound";
 import { useSceneStore } from "@/lib/store";
 import styles from "./Toolkit.module.scss";
 
@@ -128,10 +129,12 @@ export function Toolkit() {
   );
 
   const handleFilterClick = (filterId: SkillCategoryFilter) => {
+    playMechanicalClick();
     setCategoryFilter((prev) => (prev === filterId && filterId !== "all" ? "all" : filterId));
   };
 
   const handleSkillClick = (skill: SkillItem) => {
+    playMechanicalClick();
     setLockedSkillId((prev) => (prev === skill.id ? null : skill.id));
   };
 
@@ -389,6 +392,7 @@ export function Toolkit() {
                         }
                         whileTap={reducedMotion ? undefined : { scale: 0.98 }}
                         onMouseEnter={() => {
+                          playRotaryTick();
                           if (!lockedSkillId) setHoveredSkillId(skill.id);
                         }}
                         onMouseLeave={() => {
