@@ -345,16 +345,36 @@ function ShaderLabInteractive() {
           "Refractive faceted crystal with chromatic aberration splitting transmitted cyan/violet optical filaments across bevels inside a procedural PMREM studio radiance cage.",
       };
     }
+    if (sceneMode === "portrait") {
+      return {
+        code: "E2 // PORTRAIT HALFTONE (T1 / T2)",
+        budget: "2.5D Displacement + Halftone Dot-Screen · Max 1 WebGL Shader",
+        summary:
+          "Photographic halftone shader with cursor-reactive lens, depth-derived rim light, breathing idle micro-motion, and scroll dissolve into dots.",
+      };
+    }
+    if (sceneMode === "particles") {
+      return {
+        code: "E1 // PARTICLE SWARM (NOISE -> SIGNAL)",
+        budget: `${particleValues.particleCount.toLocaleString()} Instanced Particles · Simplex Curl Noise`,
+        summary:
+          "Interactive 3D particle field drifting with curl noise, converging into the portrait contour silhouette as convergence progress advances.",
+      };
+    }
     return {
       code: "S1 -> S2 // SCROLL MORPH TRANSITION",
       budget: "Co-rendered S1 + S2 Handover · Max 2 WebGL Effects Budget",
       summary:
         "Demonstrates how scrolling dampens S1 curl displacement while snapping point size along topographic elevation bands before cross-fading cleanly into S2.",
     };
-  }, [activePointCount, isMobilePreset, presetTier, s3SampleScreen.height, s3SampleScreen.width, s4Values.ior, sceneMode]);
+  }, [activePointCount, isMobilePreset, particleValues.particleCount, presetTier, s3SampleScreen.height, s3SampleScreen.width, s4Values.ior, sceneMode]);
 
   const fallbackNode =
-    sceneMode === "s2" ? (
+    sceneMode === "portrait" ? (
+      <div style={{ width: "min(72vw, 560px)", aspectRatio: "1 / 1" }}>
+        <PortraitFallback />
+      </div>
+    ) : sceneMode === "s2" ? (
       <ContourSphereFallback split={s2Values.splitProgress > 0.2} />
     ) : sceneMode === "s3" ? (
       <div className={styles.s3FallbackWrap}>
@@ -434,6 +454,20 @@ function ShaderLabInteractive() {
 
         <nav className={styles.controlsStrip} aria-label="Shader Lab quick controls">
           <div className={styles.segmented} role="group" aria-label="Active shader">
+            <button
+              type="button"
+              className={`${styles.segBtn} ${sceneMode === "portrait" ? styles.active : ""}`}
+              onClick={() => setSceneMode("portrait")}
+            >
+              Portrait T1/T2
+            </button>
+            <button
+              type="button"
+              className={`${styles.segBtn} ${sceneMode === "particles" ? styles.active : ""}`}
+              onClick={() => setSceneMode("particles")}
+            >
+              E1 Particles
+            </button>
             <button
               type="button"
               className={`${styles.segBtn} ${sceneMode === "s1" ? styles.active : ""}`}
