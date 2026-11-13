@@ -15,7 +15,7 @@ import {
   Send,
 } from "lucide-react";
 import { FieldErrors, Resolver, useForm, useWatch } from "react-hook-form";
-import { GlassObjectFallback } from "@/components/canvas/GlassObject";
+import { HeroBlobFallback } from "@/components/canvas/HeroBlob";
 import { CONTACT_COPY } from "@/content/copy";
 import { SITE_IDENTITY, SOCIAL_LINKS } from "@/content/links";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
@@ -388,7 +388,7 @@ export function Contact() {
                   className={styles.stageFallback}
                   style={{ opacity: s4ShaderVisible ? 0 : 1 }}
                 >
-                  <GlassObjectFallback />
+                  <HeroBlobFallback />
                 </div>
               </div>
             </figure>
