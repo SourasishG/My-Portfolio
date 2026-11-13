@@ -48,6 +48,10 @@ const DynamicGlassObject = dynamic(
   () => import("@/components/canvas/GlassObject").then((m) => m.GlassObject),
   { ssr: false }
 );
+const DynamicPortraitHalftone = dynamic(
+  () => import("@/components/canvas/PortraitHalftone").then((m) => m.PortraitHalftone),
+  { ssr: false }
+);
 
 function ResponsiveSceneCamera({ isDesktop }: { isDesktop: boolean }) {
   const { camera } = useThree();
@@ -140,6 +144,9 @@ export function SceneRoot() {
   const showHeroBlob = isHomeRoute && activeSection === "hero";
   const mountHeroBlob = isHomeRoute && (activeSection === "hero" || activeSection === "about");
 
+  const showHeroPortrait = isHomeRoute && activeSection === "hero" && isDesktop;
+  const mountHeroPortrait = isHomeRoute && isDesktop && (activeSection === "hero" || activeSection === "about");
+
   const showAboutSphere = isHomeRoute && activeSection === "about";
   const mountAboutSphere = isHomeRoute && (activeSection === "about" || activeSection === "hero" || activeSection === "projects");
 
@@ -212,19 +219,11 @@ export function SceneRoot() {
         >
           <ResponsiveSceneCamera isDesktop={isDesktop} />
 
-          {/* S1 — Hero Point-Cloud Blob */}
-          {mountHeroBlob && (
-            <HeroBlob
-              tier={gpuProfile.tier}
-              isMobile={!isDesktop}
-              reducedMotion={reducedMotion}
-              visible={showHeroBlob}
-              position={isDesktop ? [1.28, 0.02, 0] : [0, 0.45, 0]}
-              scale={isDesktop ? 1.06 : 0.92}
-              labOverrides={{
-                basePointSize: isDesktop ? 2.6 : 2.85,
-                opacity: isDesktop ? 0.94 : 0.98,
-              }}
+          {/* T1/T2 — Hero Halftone Portrait synced to #hero-portrait-stage */}
+          {mountHeroPortrait && (
+            <DynamicPortraitHalftone
+              viewportSelector="#hero-portrait-stage"
+              visible={showHeroPortrait}
             />
           )}
 

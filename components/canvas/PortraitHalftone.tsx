@@ -111,8 +111,48 @@ export function PortraitHalftone({
   const currentPointer = useRef(new THREE.Vector2(0.5, 0.5));
   const targetRotation = useRef(new THREE.Vector2(0, 0));
 
-  useFrame((_, delta) => {
+  useFrame((state, delta) => {
     if (!materialRef.current || !groupRef.current) return;
+
+    if (!visible) {
+      groupRef.current.visible = false;
+      return;
+    }
+
+    if (viewportSelector) {
+      if (!anchorElRef.current || !anchorElRef.current.isConnected) {
+        anchorElRef.current = document.querySelector(viewportSelector);
+      }
+      const el = anchorElRef.current;
+      if (!el) {
+        groupRef.current.visible = false;
+        return;
+      }
+      const rect = el.getBoundingClientRect();
+      const vw = Math.max(1, window.innerWidth);
+      const vh = Math.max(1, window.innerHeight);
+
+      if (rect.width <= 0 || rect.height <= 0 || rect.bottom <= 0 || rect.top >= vh) {
+        groupRef.current.visible = false;
+        return;
+      }
+
+      const normX = (rect.left + rect.width * 0.5) / vw - 0.5;
+      const normY = 0.5 - (rect.top + rect.height * 0.5) / vh;
+      const worldX = normX * state.viewport.width;
+      const worldY = normY * state.viewport.height;
+      const worldW = (rect.width / vw) * state.viewport.width;
+      const worldH = (rect.height / vh) * state.viewport.height;
+      const fitDim = Math.min(worldW, worldH);
+
+      groupRef.current.position.set(worldX, worldY, 0);
+      if (meshRef.current) {
+        meshRef.current.scale.set(fitDim, fitDim, 1);
+      }
+      groupRef.current.visible = true;
+    } else {
+      groupRef.current.visible = true;
+    }
 
     // Advance continuous time uniform
     materialRef.current.uniforms.uTime.value += delta;
