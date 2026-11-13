@@ -25,9 +25,9 @@ export interface PortraitHalftoneProps {
 export function PortraitHalftone({
   textureSrc = "/images/profile/portrait-bw.webp",
   depthSrc = "/images/profile/portrait-depth.png",
-  dotScale = 72,
+  dotScale = 84,
   depthDisplacement = 0.28,
-  revealRadius = 0.32,
+  revealRadius = 0.36,
   dissolve = 0,
   rimStrength = 0.65,
   interactivePointer = true,
@@ -158,10 +158,23 @@ export function PortraitHalftone({
     materialRef.current.uniforms.uTime.value += delta;
 
     if (interactivePointer) {
-      // Read normalized pointer from scene store (-1..1)
       const storePointer = useSceneStore.getState().pointer;
-      // Map to 0..1 UV coordinates
-      targetPointer.current.set(storePointer.x * 0.5 + 0.5, 1.0 - (storePointer.y * 0.5 + 0.5));
+
+      if (anchorElRef.current) {
+        const rect = anchorElRef.current.getBoundingClientRect();
+        const mouseWindowX = (storePointer.x * 0.5 + 0.5) * window.innerWidth;
+        const mouseWindowY = (1.0 - (storePointer.y * 0.5 + 0.5)) * window.innerHeight;
+
+        const uvX = (mouseWindowX - rect.left) / Math.max(1, rect.width);
+        const uvY = (mouseWindowY - rect.top) / Math.max(1, rect.height);
+
+        targetPointer.current.set(
+          THREE.MathUtils.clamp(uvX, -0.2, 1.2),
+          THREE.MathUtils.clamp(uvY, -0.2, 1.2)
+        );
+      } else {
+        targetPointer.current.set(storePointer.x * 0.5 + 0.5, 1.0 - (storePointer.y * 0.5 + 0.5));
+      }
 
       // Lerp pointer position smoothly (decay = 0.08)
       currentPointer.current.lerp(targetPointer.current, 0.08);
