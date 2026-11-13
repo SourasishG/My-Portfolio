@@ -153,7 +153,7 @@ export function Beyond() {
 
         {/* Main Editorial Split */}
         <div className={styles.splitGrid}>
-          {/* Left Column: S7 Velocity Portrait Stage + Narrow Ref-6 Caption */}
+          {/* Left Column: S7 Velocity Portrait Stage */}
           <figure className={styles.stageCol}>
             <div className={styles.stageFrame}>
               <div className={styles.signalCornerBar} aria-hidden="true" />
@@ -179,15 +179,6 @@ export function Beyond() {
                 />
               </div>
             </div>
-
-            <figcaption className={`${styles.stageCaption} beyond-caption`}>
-              <span className={styles.captionMarker} aria-hidden="true" />
-              <span>
-                {useStaticFallback || reducedMotion
-                  ? BEYOND_COPY.portraitStaticCaption
-                  : BEYOND_COPY.portraitCaption}
-              </span>
-            </figcaption>
           </figure>
 
           {/* Right Column: Perspective Note & 4 Interests Matrix */}

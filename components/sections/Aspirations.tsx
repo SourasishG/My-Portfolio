@@ -203,17 +203,6 @@ export function Aspirations() {
                   <ChromeArchesFallback />
                 </div>
               </div>
-
-              <div className={styles.stageBadgeRow}>
-                <span className={styles.stageBadge}>
-                  {ASPIRATIONS_COPY.stageTag}
-                </span>
-                <span className={styles.stageSubBadge}>
-                  {useStaticFallback || reducedMotion
-                    ? ASPIRATIONS_COPY.stageStaticLabel
-                    : ASPIRATIONS_COPY.stageTelemetryLabel}
-                </span>
-              </div>
             </div>
           </figure>
 

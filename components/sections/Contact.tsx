@@ -391,15 +391,6 @@ export function Contact() {
                   <GlassObjectFallback />
                 </div>
               </div>
-
-              <figcaption className={styles.stageBadgeRow}>
-                <span className={styles.stageBadge}>{CONTACT_COPY.stageTag}</span>
-                <span className={styles.stageSubBadge}>
-                  {useStaticFallback || reducedMotion
-                    ? CONTACT_COPY.stageStaticLabel
-                    : CONTACT_COPY.stageTelemetryLabel}
-                </span>
-              </figcaption>
             </figure>
 
             {/* Direct Channels & Resume Card */}
