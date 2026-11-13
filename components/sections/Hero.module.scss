@@ -7,8 +7,8 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding-top: calc(64px + clamp(1rem, 2.5vh, 2rem));
-  padding-bottom: clamp(1rem, 2.5vh, 2rem);
+  padding-top: calc(64px + clamp(1rem, 2vh, 2rem));
+  padding-bottom: clamp(1rem, 2vh, 2rem);
   overflow-x: clip;
   background-color: transparent;
 }
@@ -20,14 +20,17 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: space-between;
-  gap: clamp(1.5rem, 3.5vh, 3rem);
+  text-align: center;
+  gap: clamp(1.25rem, 2.5vh, 2.25rem);
 }
 
 // ----------------------------------------------------
 // Top HUD
 // ----------------------------------------------------
 .topHud {
+  width: 100%;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -112,37 +115,26 @@
 }
 
 // ----------------------------------------------------
-// Main Hero Grid (2-column asymmetric layout)
+// Header Block: Monumental Typography
 // ----------------------------------------------------
-.mainGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: clamp(2rem, 4vw, 4.5rem);
-  align-items: center;
-  margin-block: auto;
-  padding-block: $space-1;
-
-  @include respond-up($bp-lg) {
-    grid-template-columns: 1.15fr 0.85fr;
-  }
-}
-
-.typographyCol {
+.heroHeader {
   display: flex;
   flex-direction: column;
-  gap: clamp(1rem, 2vh, 1.75rem);
-  max-width: 640px;
+  align-items: center;
+  gap: clamp(0.5rem, 1.2vh, 1rem);
+  max-width: 840px;
+  margin-inline: auto;
 }
 
 .roleEyebrow {
   @include hud-label;
   color: var(--fog, #555966);
-  letter-spacing: 0.16em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 
 .heroTitle {
-  font-size: clamp(2.85rem, 8.5vw, 6.75rem);
+  font-size: clamp(3rem, 7.5vw, 6.75rem);
   font-weight: 700;
   line-height: 0.92;
   letter-spacing: -0.04em;
@@ -152,34 +144,28 @@
 }
 
 .nameSans {
-  display: block;
+  display: inline-block;
   font-family: $font-sans;
 }
 
 .serifAccent {
-  display: block;
+  display: inline-block;
   font-family: $font-serif;
   font-style: italic;
   font-weight: 400;
   text-transform: none;
   color: var(--mist, #E2E4E9);
   letter-spacing: -0.02em;
-  line-height: 0.95;
 }
 
 .manifesto {
-  font-size: clamp(1.125rem, 2vw, 1.625rem);
+  font-size: clamp(1.0625rem, 1.8vw, 1.45rem);
   font-weight: 500;
-  line-height: 1.32;
+  line-height: 1.36;
   letter-spacing: -0.015em;
   color: #ffffff;
-  padding-left: $space-3;
-  border-left: 2px solid var(--ember, #FF5B1F);
   margin: 0;
-
-  @include respond-up($bp-md) {
-    padding-left: $space-4;
-  }
+  max-width: 58ch;
 }
 
 .terminalCursor {
@@ -196,82 +182,24 @@
 }
 
 .bio {
-  font-size: clamp(0.9375rem, 1.1vw, 1.0625rem);
-  line-height: 1.62;
-  color: var(--mist, #E2E4E9);
+  font-size: clamp(0.875rem, 1.1vw, 1rem);
+  line-height: 1.6;
+  color: rgba(226, 228, 233, 0.72);
   margin: 0;
-  max-width: 54ch;
-}
-
-.ctaRow {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: $space-2;
-  padding-top: $space-1;
-
-  @include respond-up($bp-md) {
-    gap: $space-3;
-    padding-top: $space-2;
-  }
+  max-width: 58ch;
 }
 
 // ----------------------------------------------------
-// Portrait Frame Column (T1/T2 Halftone Stage)
+// Central Grand Rotary Tuner Stage (Luka Skhiladze Style)
 // ----------------------------------------------------
-.portraitCol {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.centralStageWrap {
   position: relative;
-  width: 100%;
-}
-
-.portraitCard {
-  position: relative;
-  width: min(85vw, 440px);
+  width: min(90vw, 540px);
   aspect-ratio: 1 / 1;
-  background-color: transparent;
-  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
-  border-radius: 4px;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
-
-  @include respond-up($bp-lg) {
-    width: min(38vw, 480px);
-  }
-}
-
-.cardHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-family: $font-mono;
-  font-size: 0.625rem;
-  letter-spacing: 0.12em;
-  color: var(--fog, #555966);
-  text-transform: uppercase;
-  z-index: 2;
-}
-
-.bracket {
-  color: var(--ember, #FF5B1F);
-  font-weight: 700;
-}
-
-.portraitStageAnchor {
-  position: relative;
-  flex: 1;
-  width: 100%;
-  margin-block: 0.5rem;
-  border-radius: 2px;
-  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-block: clamp(0.5rem, 1.5vh, 1.25rem);
 }
 
 .rotaryDialSvg {
@@ -280,101 +208,126 @@
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 1;
-  opacity: 0.82;
-  transition: opacity 0.3s ease;
-}
-
-.cardFooter {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-family: $font-mono;
-  font-size: 0.5625rem;
-  letter-spacing: 0.1em;
-  color: var(--fog, #555966);
-  text-transform: uppercase;
   z-index: 2;
-  padding-top: 0.4rem;
-  border-top: 1px dashed rgba(255, 255, 255, 0.06);
+  overflow: visible;
 }
 
-// ----------------------------------------------------
-// Facts Strip / Telemetry Grid
-// ----------------------------------------------------
-.factsStrip {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1px;
-  background-color: var(--border-subtle, rgba(255, 255, 255, 0.08));
-  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
-  border-radius: 4px;
-  overflow: hidden;
-
-  @include respond-up($bp-sm) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @include respond-up($bp-lg) {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-.factCard {
-  background-color: rgba(7, 8, 10, 0.88);
-  padding: 0.95rem 1.15rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  transition: background-color 0.25s ease;
-
-  &:hover {
-    background-color: rgba(18, 20, 24, 0.95);
-  }
-}
-
-.factHeader {
+.portraitCenterCard {
+  position: relative;
+  width: min(62vw, 350px);
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: center;
+  z-index: 1;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 60px rgba(0, 0, 0, 0.85);
+  background-color: transparent;
+}
+
+.portraitStageAnchor {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: transparent;
+}
+
+.stageApertureBadge {
+  display: none;
+  position: absolute;
+  bottom: -28px;
+  gap: 1rem;
   font-family: $font-mono;
   font-size: 0.625rem;
   letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.38);
   text-transform: uppercase;
-  color: var(--fog, #555966);
+  white-space: nowrap;
+
+  @include respond-up($bp-md) {
+    display: flex;
+  }
+}
+
+// ----------------------------------------------------
+// Action Controls Cluster
+// ----------------------------------------------------
+.ctaCluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.5rem, 1.5vw, 1rem);
+  padding-top: clamp(0.5rem, 1vh, 1rem);
+}
+
+// ----------------------------------------------------
+// Minimal Facts Telemetry Bar (Lorenzo & Luka Restraint)
+// ----------------------------------------------------
+.factsBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem 0.85rem;
+  font-family: $font-mono;
+  font-size: 0.75rem;
+  color: #555966;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.65rem 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: $radius-pill;
+  background-color: rgba(7, 8, 10, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  max-width: 960px;
+}
+
+.factItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .factIndex {
   color: var(--ember, #FF5B1F);
-  font-weight: 700;
+  font-weight: 600;
+}
+
+.factLabel {
+  color: rgba(255, 255, 255, 0.45);
 }
 
 .factValue {
-  font-family: $font-sans;
-  font-size: 0.9375rem;
+  color: #F4F2EE;
   font-weight: 600;
-  color: #ffffff;
-  letter-spacing: -0.01em;
-  line-height: 1.25;
 }
 
 .factMeta {
-  font-family: $font-mono;
+  color: rgba(255, 255, 255, 0.35);
   font-size: 0.6875rem;
-  color: var(--mist, #E2E4E9);
-  opacity: 0.7;
-  line-height: 1.35;
+}
+
+.factSep {
+  color: rgba(255, 255, 255, 0.25);
+  margin-left: 0.5rem;
 }
 
 // ----------------------------------------------------
 // Bottom HUD
 // ----------------------------------------------------
 .bottomHud {
+  width: 100%;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: $space-2 $space-4;
+  gap: $space-3;
   padding-top: $space-3;
   border-top: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
 
@@ -391,37 +344,54 @@
 }
 
 .socialBtn {
-  gap: 8px;
-  padding-inline: $space-3;
-  color: #ffffff;
+  font-family: $font-mono;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: var(--mist, #E2E4E9);
+  padding: 6px 12px;
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+  border-radius: $radius-pill;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.04);
+  }
 }
 
 .socialLabel {
-  font-size: 0.6875rem;
+  text-transform: uppercase;
 }
 
 .scrollCue {
   display: inline-flex;
   align-items: center;
   gap: $space-2;
-  min-height: 44px;
-  padding-inline: $space-2;
-  @include hud-label;
+  font-family: $font-mono;
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: var(--fog, #555966);
-  transition: color 0.18s ease;
+  text-decoration: none;
+  transition: color 0.2s ease;
 
   &:hover {
-    color: #ffffff;
+    color: var(--white, #F4F2EE);
+
+    .scrollTick {
+      background-color: var(--ember, #FF5B1F);
+    }
   }
 }
 
 .scrollTick {
-  width: 24px;
+  width: 16px;
   height: 1px;
-  background-color: var(--ember, #FF5B1F);
-  display: none;
-
-  @include respond-up($bp-md) {
-    display: inline-block;
-  }
+  background-color: var(--border-subtle, rgba(255, 255, 255, 0.2));
+  transition: background-color 0.2s ease;
 }
