@@ -744,5 +744,60 @@ Implements the core visual identity of **SIGNAL V2** inspired by Lorenzo Lottici
 3. **Q:** *How do embedded verification links and certificate scans provide high signal to recruiters?*  
    **A:** Many resumes list certifications that are unverified or based on passive course completion. Providing direct verification URLs (e.g. `coursera.org/verify/...`) and scanned certificates with authentic student credential IDs enables technical recruiters to verify qualifications with a single click, establishing credibility before the initial interview even begins.
 
+---
+
+## Module 25 — Section 06 Beyond the Screen: Editorial Light Interruption & The 4 Personal Lenses (`Beyond.tsx`, `Beyond.module.scss`, `copy.ts`)
+
+### What it does
+1. **Deliberate Editorial Contrast Interruption:**
+   - Section 06 is engineered as the single `$paper` (`#F4F4F2`) light editorial sheet within the otherwise dark obsidian SIGNAL portfolio, inspired by Swiss international typographic style.
+   - Text colors (`$paper-ink` `#0A0A0A` and `$paper-muted` `#555966`) provide maximum WCAG AAA contrast, with `$signal` (`#FF5B1F`) reserved strictly for geometric corner brackets and category indices.
+2. **Strict 4-Interests Boundary Preservation:**
+   - In strict compliance with project preservation rules, Section 06 presents exclusively the four verified personal interests:
+     - `[01] Football`: Spatial tempo, movement anticipation, and teamwork dynamics.
+     - `[02] Video Games`: Interactive systems, tactile feedback loops, and frame-budget discipline.
+     - `[03] Music`: Auditory pacing and dynamic transitions (the direct catalyst for engineering MUZO's audio engine).
+     - `[04] Movies`: Composition, light contrast, and narrative cadence.
+   - Zero invented personal details, hobbies, or fictional anecdotes.
+3. **S7 Velocity Plane Integration:**
+   - Houses the `#beyond-s7-stage` optical aperture where the single persistent canvas renders an interactive scroll-velocity mesh responding directly to page momentum, paired with a high-contrast monochrome portrait fallback.
+
+### Key Architecture & Data Flow
+
+```
+[Window Scroll Event] ──> [Lenis Smooth Scroll Engine]
+                                   │
+                         velocity = lenis.velocity
+                                   │
+                      store.setScrollVelocity(velocity)  <── (Zustand transient store)
+                                   │
+                           VelocityPlane useFrame()
+                                   │
+             uniform float uVelocity = lerp(uVelocity, velocity * 0.05, 0.1)
+                                   │
+                 Fragment Shader: Kinetic shear + RGB chromatic shift
+```
+
+### Trade-offs vs Alternatives
+
+| Option | Trade-off | Decision |
+|---|---|---|
+| **Single Light Editorial Interruption ($paper)** | Creates a striking editorial rhythm change that breaks scrolling fatigue while maintaining strict readability. | **Chosen** |
+| Uniform Dark Mode Across All Sections | Predictable, but can feel visually monotonous across 8 long scroll sections. | Rejected |
+| Generic Hobby List with Clip Art | Looks amateurish and detached from professional identity. | Framed strictly through the lens of engineering observation |
+| Fabricating Extra Interests | Artificially pads the section, but risks immediate contradiction in casual interview conversations. | Strictly rejected (Only the 4 verified interests) |
+
+### Interview Questions & Model Answers
+
+1. **Q:** *Why include an editorial "Beyond the Screen" section on an engineering portfolio?*  
+   **A:** Modern engineering teams hire people, not just code-generators. A thoughtfully framed personal section provides a window into an engineer's cognitive style and perspective outside the terminal. By connecting personal interests (such as football, gaming, music, and cinema) directly to systems thinking—spatial tempo, feedback loops, audio buffering, and visual composition—it reinforces that technical curiosity is an authentic habit of mind rather than a transactional task.
+
+2. **Q:** *How does introducing a single light-themed section in a dark portfolio affect accessibility and visual design?*  
+   **A:** Deliberate theme changes act as visual punctuation marks (a technique favored by editorial designers like Lorenzo Lottici). However, accessibility must be preserved: the background uses a soft, non-glare paper tint (`#F4F4F2`), paired with near-black ink (`#0A0A0A`) that achieves a 16:1 contrast ratio (exceeding WCAG AAA). Bright brand accents (`#FF5B1F`) are restricted to non-text geometric accents so text legibility is never compromised.
+
+3. **Q:** *How does the velocity shader respond to page momentum without degrading performance on lower-tier hardware?*  
+   **A:** Instead of binding scroll listeners directly inside React components, scroll velocity is calculated by the Lenis smooth scroll ticker and written to a transient Zustand store ref. In Three.js, `useFrame` reads this velocity value per frame and smoothly lerps the shader uniform `uVelocity`. On low-tier devices or when motion is toggled off (`MOTION [OFF]`), the shader stage unmounts and displays a static monochrome portrait with zero GPU overhead.
+
+
 
 
