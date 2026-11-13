@@ -27,6 +27,11 @@ import {
   GlassObjectFallback,
 } from "@/components/canvas/GlassObject";
 import {
+  PortraitHalftone,
+  PortraitFallback,
+} from "@/components/canvas/PortraitHalftone";
+import { ParticleSwarm } from "@/components/canvas/ParticleSwarm";
+import {
   getRecommendedHeroPointCount,
   HeroBlob,
   HeroBlobFallback,
@@ -40,7 +45,16 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { GpuTierLevel, useSceneStore } from "@/lib/store";
 import styles from "./lab.module.scss";
 
-type LabSceneMode = "s1" | "s2" | "morph" | "s3" | "s4" | "s5" | "s7";
+type LabSceneMode =
+  | "s1"
+  | "s2"
+  | "morph"
+  | "s3"
+  | "s4"
+  | "s5"
+  | "s7"
+  | "portrait"
+  | "particles";
 type PresetTier = "desktop" | "mid" | "mobile";
 
 const emptySubscribe = () => () => {};
@@ -58,11 +72,13 @@ function getInitialSceneMode(): LabSceneMode {
     qScene === "s3" ||
     qScene === "s4" ||
     qScene === "s5" ||
-    qScene === "s7"
+    qScene === "s7" ||
+    qScene === "portrait" ||
+    qScene === "particles"
   ) {
     return qScene;
   }
-  return "s1";
+  return "portrait";
 }
 
 function getInitialPresetTier(): PresetTier {
@@ -203,6 +219,21 @@ function ShaderLabInteractive() {
     envIntensity: { value: 1.55, min: 0.5, max: 2.8, step: 0.05 },
     tumbleSpeed: { value: 0.34, min: 0.0, max: 1.2, step: 0.02 },
     tintColor: "#F3F7FF",
+  }));
+
+  const [portraitValues] = useControls("E2 — Portrait Halftone (T1/T2)", () => ({
+    dotScale: { value: 72.0, min: 25.0, max: 140.0, step: 1.0 },
+    depthDisplacement: { value: 0.28, min: 0.0, max: 0.65, step: 0.01 },
+    revealRadius: { value: 0.32, min: 0.05, max: 0.8, step: 0.01 },
+    dissolve: { value: 0.0, min: 0.0, max: 1.0, step: 0.01 },
+    rimStrength: { value: 0.65, min: 0.0, max: 1.5, step: 0.02 },
+    showFallback: false,
+  }));
+
+  const [particleValues] = useControls("E1 — Particle Swarm (Noise -> Signal)", () => ({
+    convergence: { value: 0.0, min: 0.0, max: 1.0, step: 0.01 },
+    particleCount: { value: 12000, min: 2000, max: 25000, step: 1000 },
+    pointerStrength: { value: 0.5, min: 0.0, max: 1.5, step: 0.05 },
   }));
 
   const s3SampleScreen = useMemo(() => {
