@@ -231,7 +231,7 @@
   position: relative;
   width: min(85vw, 440px);
   aspect-ratio: 1 / 1;
-  background-color: rgba(12, 13, 16, 0.6);
+  background-color: transparent;
   border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
   border-radius: 4px;
   padding: 1rem;
@@ -239,7 +239,6 @@
   flex-direction: column;
   justify-content: space-between;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(12px);
 
   @include respond-up($bp-lg) {
     width: min(38vw, 480px);

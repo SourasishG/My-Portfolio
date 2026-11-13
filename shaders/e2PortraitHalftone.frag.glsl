@@ -27,15 +27,12 @@ void main() {
     discard;
   }
 
-  // Linear luminance of photographic texture
-  float luminance = dot(tex.rgb, vec3(0.299, 0.587, 0.114));
+  // Enhanced contrast photograph so features (eyes, glasses, smile, hair) are crisp
+  vec3 photo = pow(tex.rgb, vec3(1.12)) * 1.08;
+  float luminance = dot(photo, vec3(0.299, 0.587, 0.114));
 
-  // Aspect-corrected coordinate space for circular halftone grid cells
-  float aspect = uResolution.x / max(1.0, uResolution.y);
-  vec2 aspectUv = vUv * vec2(aspect, 1.0);
-
-  // Halftone dot-screen grid calculation
-  vec2 gridCoord = aspectUv * uDotScale;
+  // Halftone dot-screen grid calculation (1:1 square UV space)
+  vec2 gridCoord = vUv * uDotScale;
   vec2 cellIndex = floor(gridCoord);
   vec2 cellFraction = fract(gridCoord) - 0.5;
   float distToCenter = length(cellFraction);
@@ -48,13 +45,12 @@ void main() {
     targetRadius *= max(0.0, 1.0 - uDissolve * 1.3);
   }
 
-  // Razor-sharp screen-space anti-aliasing via fwidth
-  float fw = max(fwidth(distToCenter), 0.012);
+  // Tight anti-aliased dot mask (never blur the dots)
+  float fw = clamp(fwidth(distToCenter), 0.008, 0.038);
   float dotMask = 1.0 - smoothstep(targetRadius - fw, targetRadius + fw, distToCenter);
 
-  // Interactive cursor reveal lens
-  vec2 pointerAspect = uPointer * vec2(aspect, 1.0);
-  float distToPointer = length(aspectUv - pointerAspect);
+  // Interactive cursor reveal lens (in 1:1 UV space)
+  float distToPointer = length(vUv - uPointer);
   float lensFactor = 1.0 - smoothstep(uRevealRadius * 0.45, uRevealRadius, distToPointer);
 
   // Subtle lens rim halo (ember or cyan accent)
@@ -63,7 +59,6 @@ void main() {
                  * (1.0 - smoothstep(uRevealRadius, uRevealRadius + haloWidth, distToPointer));
 
   // Depth-derived back-left rim lighting (T2)
-  // Compute depth gradient to derive faux surface normal in screen space
   vec2 texel = 1.0 / uResolution;
   float dLeft = texture2D(uDepthMap, vUv - vec2(texel.x * 2.0, 0.0)).r;
   float dRight = texture2D(uDepthMap, vUv + vec2(texel.x * 2.0, 0.0)).r;
@@ -75,17 +70,19 @@ void main() {
   float rim = max(0.0, dot(surfaceNormal, lightDir));
   rim = pow(rim, 3.2) * uRimStrength * (1.0 - uDissolve);
 
-  // Base halftone color: ink background with off-white dots
-  vec3 baseColor = mix(uInkColor, uDotColor, dotMask);
+  // Editorial halftone shading:
+  // Base dots carry high-key tone, surrounded by ink
+  vec3 dotTint = mix(uDotColor, photo, 0.5);
+  vec3 halftoneRaster = mix(uInkColor, dotTint, dotMask);
 
-  // Add subtle photographic shading inside the dots
-  baseColor = mix(baseColor, tex.rgb, dotMask * 0.28);
+  // Preserve underlying photo structure so facial features are clearly defined and never washed out
+  vec3 baseColor = mix(photo * 0.85, halftoneRaster, 0.55);
 
-  // Blend with full-color/full-contrast image inside the cursor lens
-  vec3 finalColor = mix(baseColor, tex.rgb, lensFactor * 0.88);
+  // Blend with full-clarity image inside cursor reveal lens
+  vec3 finalColor = mix(baseColor, photo, lensFactor * 0.92);
 
-  // Add rim light accents
-  finalColor += uRimColor * rim * 1.35;
+  // Add rim light accents and cursor halo
+  finalColor += uRimColor * rim * 1.25;
   finalColor += vec3(1.0, 0.36, 0.12) * lensHalo * 0.7; // ember halo ring
 
   // Dissolve alpha fade
