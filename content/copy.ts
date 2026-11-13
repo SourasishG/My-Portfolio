@@ -2,7 +2,7 @@ export const HERO_FACTS = [
   {
     index: "01",
     label: "ACADEMIC BASE",
-    value: "B.Tech CSE · CGPA 8.08",
+    value: "B.Tech Computer Science",
     meta: "Sister Nivedita University · 2023–2027",
   },
   {
@@ -35,7 +35,7 @@ export const HERO_COPY = {
   lastName: "GHOSH",
   manifesto: "I design, develop, and build digital experiences.",
   supportingCopy:
-    "B.Tech Computer Science undergraduate (CGPA 8.08) at Sister Nivedita University, Kolkata. Transforming curiosity into dependable full-stack architecture—bridging resilient Node.js APIs, relational persistence, and interactive WebGL craft.",
+    "B.Tech Computer Science undergraduate at Sister Nivedita University, Kolkata. Transforming curiosity into dependable full-stack architecture—bridging resilient Node.js APIs, relational persistence, and interactive WebGL craft.",
   ctaPrimary: "Explore Selected Work",
   ctaResume: "Download Resume",
   ctaContact: "Get in Touch",
@@ -83,7 +83,7 @@ export const ABOUT_COPY = {
     {
       label: "ACADEMIC BASE",
       value: "B.Tech CSE · SNU (2023–2027)",
-      detail: "Sister Nivedita University · Current CGPA 8.08",
+      detail: "Sister Nivedita University · Computer Science & Engineering",
     },
     {
       label: "WORK STYLE",

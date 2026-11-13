@@ -141,7 +141,7 @@ flowchart TD
 ### 01 · PRESENCE (Hero)
 - **On Screen:** Monumental display typography: **Sourasish *Ghosh*** (`clamp(4rem, 14vw, 13rem)`) layered over the 2.5D halftone portrait. Monospace line `01 / PRESENCE · FULL-STACK DEVELOPER · KOLKATA, INDIA`. Tagline: *"I design, develop, and build digital experiences▮"*.
 - **Motion:** Split-text line mask reveal for name; blinking ember square cursor after "build"; 2.5D portrait reacts to pointer with eased yaw/pitch ($\pm 7^\circ$).
-- **Facts Strip:** Real computed metadata: `B.Tech CSE (CGPA 8.08)` · `2 Featured Case Studies` · `4 Certifications` · `AWS DevOps Internship`.
+- **Facts Strip:** Real computed metadata: `B.Tech CSE (2023–2027)` · `2 Featured Case Studies` · `4 Certifications` · `AWS DevOps Internship`.
 - **Mobile:** Name stacks cleanly (`Sourasish` / `Ghosh`); portrait sits centrally at 48vh; pointer parallax disabled in favor of scroll dissolve.
 
 ### 02 · ABOUT ("Understanding the system behind the syntax.")

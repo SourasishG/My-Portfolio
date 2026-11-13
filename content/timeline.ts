@@ -107,11 +107,11 @@ export const JOURNEY_TIMELINE: JourneyMilestone[] = [
     period: "2023 – 2027",
     title: "B.Tech in Computer Science & Engineering",
     organization: "Sister Nivedita University",
-    locationOrMode: "Kolkata · CGPA 8.08",
+    locationOrMode: "Kolkata, India",
     summary:
       "Undergraduate computer science curriculum pairing data structures, database management systems, operating principles, and full-stack software engineering.",
     highlights: [
-      "Maintained a current CGPA of 8.08 while building full-stack web projects and studying Generative AI & Large Language Models.",
+      "Pursuing core undergraduate CS curriculum while building full-stack web projects and studying Generative AI & Large Language Models.",
     ],
     tags: ["C / C++", "Python", "DBMS (SQL & NoSQL)", "Software Engineering"],
   },
@@ -151,7 +151,7 @@ export const EDUCATION_RECORDS: EducationRecord[] = [
     program: "B.Tech in Computer Science and Engineering",
     boardOrUniversity: "Undergraduate Degree Program",
     period: "2023 – 2027",
-    metrics: [{ label: "Current CGPA", value: "8.08" }],
+    metrics: [{ label: "Degree Status", value: "In Progress" }],
     focusAreas: [
       "Computer Science Foundations",
       "Relational & Document Databases",
