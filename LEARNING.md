@@ -639,3 +639,55 @@ Implements the core visual identity of **SIGNAL V2** inspired by Lorenzo Lottici
 3. **Q:** *How does paired debouncing (400ms) and `AbortController` request cancellation prevent race conditions in fast search interfaces?*  
    **A:** When a user types quickly (e.g. typing "Radiohead"), multiple network requests are dispatched in rapid succession. Due to network latency variations, the response for an earlier keystroke ("Rad") may arrive after the response for the full query ("Radiohead"), overwriting the correct results with stale data. Debouncing delays the API call until the user pauses typing (400ms), and initializing an `AbortController` cancels any in-flight fetch before dispatching a new request, guaranteeing that only the most recent search query is processed and rendered.
 
+---
+
+## Module 23 — Section 04 Technical Toolkit: Real-World Categorization, Zero Arbitrary Percentages & "Currently Exploring" Honesty (`Toolkit.tsx`, `Toolkit.module.scss`, `skills.ts`)
+
+### What it does
+1. **Discipline-Grouped Engineering Capabilities:** Organizes Sourasish's technical capabilities into 6 functional disciplines: Programming Languages, Frontend, Backend, Database, Cloud & DevOps, and Developer Tools.
+2. **Strict Zero Arbitrary Percentages Rule:**
+   - Completely replaces arbitrary vanity metrics (e.g. *"90% JavaScript"*, *"85% React"*) with real-world contextual evidence: each skill links directly to the specific project, case study, or academic milestone where it was applied.
+3. **Rigorous "Currently Exploring" Honesty Isolation:**
+   - Technologies currently under active study (`Next.js`, `TypeScript`, `AI/ML`, `Generative AI`, `Large Language Models`, `AI agents`, `Three.js`, `React Three Fiber`, `Framer Motion`) are strictly separated into an isolated `$violet` band labeled **"Currently exploring"**.
+   - Accompanied by an explicit disclaimer stating that these are active learning targets rather than mastered skills—reinforcing that building the SIGNAL portfolio itself is hands-on practice turning active study into working software.
+4. **Luka Skhiladze-Inspired Interactive Trace HUD:**
+   - Selecting any discipline filter or clicking any technology chip activates a real-time stack trace HUD that reveals the architectural summary and direct links to inspected codebases (e.g. inspecting *Three.js* links to *SIGNAL Portfolio* shaders and *Pokémon Atlas 3D*).
+
+### Key Architecture & Data Flow
+
+```
+[User Clicks Skill Chip: e.g. "Three.js"]
+                    │
+      setLockedSkillId("threejs")
+                    │
+       inspectedSkill = allSkills.find(id)
+                    │
+      store.setToolkitVisual(isExploring ? 1 : 0, activity)  <── (Zustand transient store)
+                    │
+      AnimatePresence updates .toolkit-trace-panel:
+        - Trace Badge: "ACTIVE TRACE // THREE.JS (CURRENTLY EXPLORING)"
+        - Summary: "Learning BufferGeometry math, custom GLSL..."
+        - Live Connections: [SIGNAL Portfolio · S1-S8] + [Pokémon Atlas 3D ↗]
+```
+
+### Trade-offs vs Alternatives
+
+| Option | Trade-off | Decision |
+|---|---|---|
+| **Discipline Cards + Interactive Stack Trace Panel** | Organizes 25+ technologies cleanly without visual clutter; connects every claim to proof. | **Chosen** |
+| Arbitrary Percentage Bars (e.g. "JavaScript 90%") | Common in student templates, but meaningless to senior engineers (what is 90% of a programming language?). | Strictly banned by project rules |
+| Blending New Learning with Mastered Stack | Makes a candidate seem senior on paper, but leads to instant failure when interviewed deeply on unverified claims. | Strictly rejected (Isolated "Currently exploring" band) |
+| Infinite Rotating 3D Tag Cloud | Distracting, difficult to read on mobile, and impossible for screen readers to navigate. | Clean semantic grid with keyboard navigation |
+
+### Interview Questions & Model Answers
+
+1. **Q:** *Why avoid proficiency progress bars (e.g. "React 90%") on developer portfolios?*  
+   **A:** Progress bars and percentage meters are inherently subjective and technically meaningless—mastery of an evolving ecosystem like JavaScript or React cannot be quantified on a linear percentage scale. Senior hiring managers view percentage bars as a hallmark of junior or template portfolios. Replacing them with concrete evidence—naming specific libraries, schema patterns, and linking directly to production codebases and case studies—demonstrates professional engineering maturity and authentic competence.
+
+2. **Q:** *Why is it advantageous to explicitly label advanced technologies like AI agents, Three.js, and TypeScript as "Currently exploring"?*  
+   **A:** Technical honesty is one of the highest-signal traits in engineering interviews. Overclaiming mastery in complex domains sets an unrealistic baseline that unravels under rigorous technical questioning. Openly declaring an active learning arc shows high agency, intellectual curiosity, and self-awareness. It invites interviewers to ask about active learning methodologies, challenges encountered, and practical experiments rather than testing against an exaggerated claim.
+
+3. **Q:** *How does the Toolkit's live stack trace HUD improve user experience compared to a static list of tags?*  
+   **A:** In a static list, tags appear detached from the engineer's actual body of work. The interactive stack trace HUD transforms passive reading into an active exploration tool: clicking any skill dynamically highlights its discipline, filters related technologies, and renders immediate architectural context with direct hyperlinks to case studies and GitHub repositories, reinforcing cross-stack synergy in a single click.
+
+
