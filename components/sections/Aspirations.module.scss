@@ -70,6 +70,14 @@
   max-width: 18ch;
 }
 
+.serifHeading {
+  font-family: $font-serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--mist, #E2E4E9);
+  letter-spacing: -0.01em;
+}
+
 .manifestoBlock {
   display: grid;
   gap: $space-3;

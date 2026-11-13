@@ -323,7 +323,8 @@ export function Contact() {
 
           <div className={styles.headingRow}>
             <h2 id="contact-heading" className={`${styles.heading} contact-intro`}>
-              {CONTACT_COPY.heading}
+              {"Let's build something "}
+              <span className={styles.serifHeading}>dependable</span>.
             </h2>
             <div className={`${styles.leadBlock} contact-intro`}>
               <p className={styles.leadCopy}>{CONTACT_COPY.lead}</p>

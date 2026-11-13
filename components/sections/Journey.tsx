@@ -157,7 +157,9 @@ export function Journey() {
 
           <div className={styles.introRow}>
             <h2 id="journey-heading" className={`${styles.heading} journey-entry`}>
-              {JOURNEY_COPY.heading}
+              Academic base,{" "}
+              <span className={styles.serifHeading}>internship practice</span> &
+              credentials.
             </h2>
             <p className={`${styles.leadCopy} journey-entry`}>
               {JOURNEY_COPY.leadCopy}

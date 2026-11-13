@@ -164,7 +164,8 @@ export function Aspirations() {
               id="aspirations-heading"
               className={`${styles.heading} aspirations-copy`}
             >
-              {ASPIRATIONS_COPY.heading}
+              Becoming a full-stack engineer who owns the{" "}
+              <span className={styles.serifHeading}>whole system</span>.
             </h2>
 
             <div className={`${styles.manifestoBlock} aspirations-copy`}>

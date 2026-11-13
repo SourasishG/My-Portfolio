@@ -35,6 +35,7 @@ interface SceneState {
   gpuTier: GpuTierLevel;
   webglFailed: boolean;
   useStaticFallback: boolean;
+  motionEnabled: boolean;
   preloaderDone: boolean;
 
   setScrollState: (scrollY: number, scrollProgress: number, velocity: number) => void;
@@ -53,6 +54,8 @@ interface SceneState {
   setGpuTier: (tier: GpuTierLevel) => void;
   setWebglFailed: (failed: boolean) => void;
   setUseStaticFallback: (fallback: boolean) => void;
+  setMotionEnabled: (enabled: boolean) => void;
+  toggleMotion: () => void;
   setPreloaderDone: (done: boolean) => void;
 }
 
@@ -78,6 +81,7 @@ export const useSceneStore = create<SceneState>((set, get) => ({
   gpuTier: "mid",
   webglFailed: false,
   useStaticFallback: false,
+  motionEnabled: true,
   preloaderDone: false,
 
   setScrollState: (scrollY, scrollProgress, velocity) => {
@@ -171,6 +175,21 @@ export const useSceneStore = create<SceneState>((set, get) => ({
     if (get().useStaticFallback !== useStaticFallback) {
       set({ useStaticFallback });
     }
+  },
+
+  setMotionEnabled: (motionEnabled) => {
+    set({
+      motionEnabled,
+      useStaticFallback: !motionEnabled,
+    });
+  },
+
+  toggleMotion: () => {
+    const next = !get().motionEnabled;
+    set({
+      motionEnabled: next,
+      useStaticFallback: !next,
+    });
   },
 
   setPreloaderDone: (preloaderDone) => {

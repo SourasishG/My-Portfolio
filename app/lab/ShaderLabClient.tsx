@@ -8,6 +8,17 @@ import React, {
   useState,
   useSyncExternalStore,
 } from "react";
+
+// Silence known upstream Three.js deprecation warning emitted inside @react-three/fiber's internal store
+if (typeof window !== "undefined") {
+  const origWarn = console.warn;
+  console.warn = (...args: unknown[]) => {
+    if (typeof args[0] === "string" && args[0].includes("THREE.Clock: This module has been deprecated")) {
+      return;
+    }
+    origWarn.apply(console, args);
+  };
+}
 import Link from "next/link";
 import Image from "next/image";
 import { Canvas, useThree } from "@react-three/fiber";
@@ -27,6 +38,11 @@ import {
   GlassObjectFallback,
 } from "@/components/canvas/GlassObject";
 import {
+  PortraitHalftone,
+  PortraitFallback,
+} from "@/components/canvas/PortraitHalftone";
+import { ParticleSwarm } from "@/components/canvas/ParticleSwarm";
+import {
   getRecommendedHeroPointCount,
   HeroBlob,
   HeroBlobFallback,
@@ -40,7 +56,16 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { GpuTierLevel, useSceneStore } from "@/lib/store";
 import styles from "./lab.module.scss";
 
-type LabSceneMode = "s1" | "s2" | "morph" | "s3" | "s4" | "s5" | "s7";
+type LabSceneMode =
+  | "s1"
+  | "s2"
+  | "morph"
+  | "s3"
+  | "s4"
+  | "s5"
+  | "s7"
+  | "portrait"
+  | "particles";
 type PresetTier = "desktop" | "mid" | "mobile";
 
 const emptySubscribe = () => () => {};
@@ -58,11 +83,13 @@ function getInitialSceneMode(): LabSceneMode {
     qScene === "s3" ||
     qScene === "s4" ||
     qScene === "s5" ||
-    qScene === "s7"
+    qScene === "s7" ||
+    qScene === "portrait" ||
+    qScene === "particles"
   ) {
     return qScene;
   }
-  return "s1";
+  return "portrait";
 }
 
 function getInitialPresetTier(): PresetTier {
@@ -103,15 +130,26 @@ export function ShaderLabClient() {
   return <ShaderLabInteractive />;
 }
 
-function LabCameraRig({ isMobilePreset }: { isMobilePreset: boolean }) {
+function LabCameraRig({
+  isMobilePreset,
+  sceneMode,
+}: {
+  isMobilePreset: boolean;
+  sceneMode: LabSceneMode;
+}) {
   const { camera, size } = useThree();
 
   useEffect(() => {
     const aspect = size.width / Math.max(1, size.height);
-    const targetZ = isMobilePreset || aspect < 0.85 ? 7.1 : 4.9;
+    const targetZ =
+      sceneMode === "portrait"
+        ? 4.2
+        : isMobilePreset || aspect < 0.85
+          ? 7.1
+          : 4.9;
     camera.position.set(0, 0, targetZ);
     camera.updateProjectionMatrix();
-  }, [camera, isMobilePreset, size.height, size.width]);
+  }, [camera, isMobilePreset, sceneMode, size.height, size.width]);
 
   return null;
 }
@@ -205,6 +243,21 @@ function ShaderLabInteractive() {
     tintColor: "#F3F7FF",
   }));
 
+  const [portraitValues] = useControls("E2 — Portrait Halftone (T1/T2)", () => ({
+    dotScale: { value: 72.0, min: 25.0, max: 140.0, step: 1.0 },
+    depthDisplacement: { value: 0.28, min: 0.0, max: 0.65, step: 0.01 },
+    revealRadius: { value: 0.32, min: 0.05, max: 0.8, step: 0.01 },
+    dissolve: { value: 0.0, min: 0.0, max: 1.0, step: 0.01 },
+    rimStrength: { value: 0.65, min: 0.0, max: 1.5, step: 0.02 },
+    showFallback: false,
+  }));
+
+  const [particleValues] = useControls("E1 — Particle Swarm (Noise -> Signal)", () => ({
+    convergence: { value: 0.0, min: 0.0, max: 1.0, step: 0.01 },
+    particleCount: { value: 12000, min: 2000, max: 25000, step: 1000 },
+    pointerStrength: { value: 0.5, min: 0.0, max: 1.5, step: 0.05 },
+  }));
+
   const s3SampleScreen = useMemo(() => {
     const projectIndex = s3Values.sample === "Office Aid" ? 1 : 0;
     return FEATURED_PROJECTS[projectIndex].screens[0];
@@ -240,7 +293,11 @@ function ShaderLabInteractive() {
   );
 
   const showFallback =
-    forceFallback || contextLost || !gpuProfile.webglSupported || effectiveReducedMotion;
+    forceFallback ||
+    contextLost ||
+    !gpuProfile.webglSupported ||
+    effectiveReducedMotion ||
+    (sceneMode === "portrait" && portraitValues.showFallback);
 
   const handlePointerMove = useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
@@ -314,16 +371,36 @@ function ShaderLabInteractive() {
           "Refractive faceted crystal with chromatic aberration splitting transmitted cyan/violet optical filaments across bevels inside a procedural PMREM studio radiance cage.",
       };
     }
+    if (sceneMode === "portrait") {
+      return {
+        code: "E2 // PORTRAIT HALFTONE (T1 / T2)",
+        budget: "2.5D Displacement + Halftone Dot-Screen · Max 1 WebGL Shader",
+        summary:
+          "Photographic halftone shader with cursor-reactive lens, depth-derived rim light, breathing idle micro-motion, and scroll dissolve into dots.",
+      };
+    }
+    if (sceneMode === "particles") {
+      return {
+        code: "E1 // PARTICLE SWARM (NOISE -> SIGNAL)",
+        budget: `${particleValues.particleCount.toLocaleString()} Instanced Particles · Simplex Curl Noise`,
+        summary:
+          "Interactive 3D particle field drifting with curl noise, converging into the portrait contour silhouette as convergence progress advances.",
+      };
+    }
     return {
       code: "S1 -> S2 // SCROLL MORPH TRANSITION",
       budget: "Co-rendered S1 + S2 Handover · Max 2 WebGL Effects Budget",
       summary:
         "Demonstrates how scrolling dampens S1 curl displacement while snapping point size along topographic elevation bands before cross-fading cleanly into S2.",
     };
-  }, [activePointCount, isMobilePreset, presetTier, s3SampleScreen.height, s3SampleScreen.width, s4Values.ior, sceneMode]);
+  }, [activePointCount, isMobilePreset, particleValues.particleCount, presetTier, s3SampleScreen.height, s3SampleScreen.width, s4Values.ior, sceneMode]);
 
   const fallbackNode =
-    sceneMode === "s2" ? (
+    sceneMode === "portrait" ? (
+      <div style={{ width: "min(72vw, 560px)", aspectRatio: "1 / 1" }}>
+        <PortraitFallback />
+      </div>
+    ) : sceneMode === "s2" ? (
       <ContourSphereFallback split={s2Values.splitProgress > 0.2} />
     ) : sceneMode === "s3" ? (
       <div className={styles.s3FallbackWrap}>
@@ -403,6 +480,20 @@ function ShaderLabInteractive() {
 
         <nav className={styles.controlsStrip} aria-label="Shader Lab quick controls">
           <div className={styles.segmented} role="group" aria-label="Active shader">
+            <button
+              type="button"
+              className={`${styles.segBtn} ${sceneMode === "portrait" ? styles.active : ""}`}
+              onClick={() => setSceneMode("portrait")}
+            >
+              Portrait T1/T2
+            </button>
+            <button
+              type="button"
+              className={`${styles.segBtn} ${sceneMode === "particles" ? styles.active : ""}`}
+              onClick={() => setSceneMode("particles")}
+            >
+              E1 Particles
+            </button>
             <button
               type="button"
               className={`${styles.segBtn} ${sceneMode === "s1" ? styles.active : ""}`}
@@ -549,7 +640,7 @@ function ShaderLabInteractive() {
               }}
               aria-hidden="true"
             >
-              <LabCameraRig isMobilePreset={isMobilePreset} />
+              <LabCameraRig isMobilePreset={isMobilePreset} sceneMode={sceneMode} />
               {sceneMode === "s1" && (
                 <HeroBlob
                   tier={effectiveTier}
@@ -697,6 +788,24 @@ function ShaderLabInteractive() {
                     tumbleSpeed: s4Values.tumbleSpeed,
                     tintColor: s4Values.tintColor,
                   }}
+                />
+              )}
+
+              {sceneMode === "portrait" && (
+                <PortraitHalftone
+                  dotScale={portraitValues.dotScale}
+                  depthDisplacement={portraitValues.depthDisplacement}
+                  revealRadius={portraitValues.revealRadius}
+                  dissolve={portraitValues.dissolve}
+                  rimStrength={portraitValues.rimStrength}
+                />
+              )}
+
+              {sceneMode === "particles" && (
+                <ParticleSwarm
+                  particleCount={particleValues.particleCount}
+                  convergence={particleValues.convergence}
+                  pointerStrength={particleValues.pointerStrength}
                 />
               )}
             </Canvas>

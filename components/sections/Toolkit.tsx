@@ -175,7 +175,8 @@ export function Toolkit() {
 
           <div className={styles.introRow}>
             <h2 id="toolkit-heading" className={`${styles.heading} toolkit-reveal`}>
-              {TOOLKIT_COPY.heading}
+              Core engineering stack &{" "}
+              <span className={styles.serifHeading}>active exploration</span>.
             </h2>
             <p className={`${styles.leadCopy} toolkit-reveal`}>
               {TOOLKIT_COPY.leadCopy}

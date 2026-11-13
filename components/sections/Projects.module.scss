@@ -66,6 +66,14 @@
   max-width: 17ch;
 }
 
+.serifHeading {
+  font-family: $font-serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--mist, #E2E4E9);
+  letter-spacing: -0.01em;
+}
+
 .leadCopy {
   font-size: $text-body;
   line-height: 1.66;

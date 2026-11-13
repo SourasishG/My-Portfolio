@@ -64,10 +64,71 @@
 .heading {
   font-size: clamp(2rem, 4.4vw, 3.65rem);
   font-weight: 700;
-  line-height: 1.03;
+  line-height: 1.05;
   letter-spacing: -0.032em;
   color: $white;
-  max-width: 18ch;
+  max-width: 20ch;
+}
+
+.serifHeading {
+  font-family: $font-serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--mist, #E2E4E9);
+  letter-spacing: -0.01em;
+}
+
+.narrativeTimeline {
+  display: grid;
+  gap: $space-3;
+  max-width: 60ch;
+}
+
+.beatCard {
+  background-color: rgba($charcoal, 0.7);
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+  border-radius: 4px;
+  padding: 1.25rem 1.35rem;
+  display: grid;
+  gap: 0.5rem;
+  transition: all 0.25s ease;
+
+  &:hover {
+    background-color: rgba($charcoal, 0.92);
+    border-color: rgba(255, 255, 255, 0.16);
+  }
+}
+
+.beatHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: $font-mono;
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fog, #555966);
+}
+
+.beatIndex {
+  color: var(--ember, #FF5B1F);
+  font-weight: 700;
+}
+
+.beatTitle {
+  font-family: $font-sans;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: -0.015em;
+  margin: 0;
+}
+
+.beatBody {
+  font-size: 0.9375rem;
+  line-height: 1.62;
+  color: var(--mist, #E2E4E9);
+  margin: 0;
 }
 
 .paragraphs {

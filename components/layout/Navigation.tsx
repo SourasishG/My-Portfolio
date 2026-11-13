@@ -32,6 +32,8 @@ export function Navigation() {
   const isLabRoute = pathname?.startsWith("/lab") ?? false;
   const reducedMotion = useReducedMotion();
   const activeSection = useSceneStore((s) => s.activeSection);
+  const motionEnabled = useSceneStore((s) => s.motionEnabled);
+  const toggleMotion = useSceneStore((s) => s.toggleMotion);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [kolkataTime, setKolkataTime] = useState<string>("--:--");
@@ -123,6 +125,20 @@ export function Navigation() {
               <span>KOLKATA {kolkataTime} IST</span>
             </div>
 
+            <button
+              type="button"
+              className={styles.motionToggle}
+              onClick={toggleMotion}
+              aria-label={`Toggle interactive motion (currently ${motionEnabled ? "on" : "off"})`}
+              title="Toggle interactive 3D and scroll motion"
+            >
+              <span
+                className={`${styles.motionDot} ${!motionEnabled ? styles.motionOff : ""}`}
+                aria-hidden="true"
+              />
+              <span>MOTION [{motionEnabled ? "ON" : "OFF"}]</span>
+            </button>
+
             <a
               href={SITE_IDENTITY.resumeHref}
               download={SITE_IDENTITY.resumeFileName}
@@ -211,7 +227,21 @@ export function Navigation() {
               </div>
 
               <div className={styles.drawerFooter}>
-                <div className={styles.drawerClock}>KOLKATA {kolkataTime} IST · INDIA</div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
+                  <div className={styles.drawerClock}>KOLKATA {kolkataTime} IST · INDIA</div>
+                  <button
+                    type="button"
+                    className={styles.motionToggle}
+                    onClick={toggleMotion}
+                    aria-label={`Toggle motion (currently ${motionEnabled ? "on" : "off"})`}
+                  >
+                    <span
+                      className={`${styles.motionDot} ${!motionEnabled ? styles.motionOff : ""}`}
+                      aria-hidden="true"
+                    />
+                    <span>MOTION [{motionEnabled ? "ON" : "OFF"}]</span>
+                  </button>
+                </div>
                 <a
                   href={SITE_IDENTITY.resumeHref}
                   download={SITE_IDENTITY.resumeFileName}

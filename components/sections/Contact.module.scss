@@ -70,6 +70,13 @@
   max-width: 15ch;
 }
 
+.serifHeading {
+  font-family: var(--font-instrument-serif), "Instrument Serif", Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
 .leadBlock {
   display: grid;
   gap: $space-2;

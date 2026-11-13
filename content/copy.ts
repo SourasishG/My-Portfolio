@@ -1,17 +1,46 @@
+export const HERO_FACTS = [
+  {
+    index: "01",
+    label: "ACADEMIC BASE",
+    value: "B.Tech CSE · CGPA 8.08",
+    meta: "Sister Nivedita University · 2023–2027",
+  },
+  {
+    index: "02",
+    label: "FEATURED WORK",
+    value: "2 Shipped Case Studies",
+    meta: "MUZO (Audio Discovery) & Office Aid (Monorepo)",
+  },
+  {
+    index: "03",
+    label: "CREDENTIALS",
+    value: "4 Verified Certifications",
+    meta: "AWS Cloud DevOps & HackerRank Verified",
+  },
+  {
+    index: "04",
+    label: "ENGINEERING FOCUS",
+    value: "Full-Stack Architecture",
+    meta: "React, Node.js REST APIs, SQL & Cloud Systems",
+  },
+] as const;
+
 export const HERO_COPY = {
   sectionIndex: "01",
-  sectionTag: "[01] // KINETIC CORE",
-  availabilityLabel: "Open to Full-Stack Roles & Internships",
+  sectionTag: "[01] // PRESENCE · FULL-STACK DEVELOPER",
+  conceptLine: "NOISE TO SIGNAL",
+  availabilityLabel: "Available for Full-Stack Roles & Internships",
   roleLabel: "Full-Stack Developer · Kolkata, India",
   firstName: "SOURASISH",
   lastName: "GHOSH",
   manifesto: "I design, develop, and build digital experiences.",
   supportingCopy:
-    "Computer Science undergraduate (B.Tech CSE, 2023–2027) & passionate Full-Stack Developer turning ideas into responsive interfaces, REST APIs, databases, and complete web applications.",
-  ctaPrimary: "View Projects",
+    "B.Tech Computer Science undergraduate (CGPA 8.08) at Sister Nivedita University, Kolkata. Transforming curiosity into dependable full-stack architecture—bridging resilient Node.js APIs, relational persistence, and interactive WebGL craft.",
+  ctaPrimary: "Explore Selected Work",
   ctaResume: "Download Resume",
-  ctaContact: "Contact",
+  ctaContact: "Get in Touch",
   scrollCue: "Scroll to explore",
+  facts: HERO_FACTS,
 } as const;
 
 export const ABOUT_COPY = {
@@ -19,6 +48,26 @@ export const ABOUT_COPY = {
   sectionTag: "[02] // PERSONAL ARCHITECTURE",
   subTag: "QUICK LEARNER · PATIENT PROBLEM-SOLVER",
   heading: "Understanding the system behind the syntax.",
+  narrativeBeats: [
+    {
+      index: "01",
+      tag: "THE SPARK",
+      title: "Curiosity at the Interface",
+      body: "My journey began in frontend development, learning how thoughtful interfaces respond to real people. Seeing code turn into fluid user experiences ignited a desire to understand every layer beneath the surface.",
+    },
+    {
+      index: "02",
+      tag: "THE ARCHITECTURE",
+      title: "Pushing Deeper Across the Stack",
+      body: "Over time my curiosity pushed deeper across the entire system—into Node.js and Express servers, REST APIs, relational and document persistence (PostgreSQL, MongoDB, Supabase), schema design, and AWS cloud deployment fundamentals.",
+    },
+    {
+      index: "03",
+      tag: "THE CRAFT & AI",
+      title: "First Principles & Modern Craft",
+      body: "I am passionate about first-principles engineering: understanding the architectural problem behind the code before writing syntax. I actively explore Large Language Models, AI-assisted development, and 3D WebGL craft to complement fundamental CS principles.",
+    },
+  ],
   paragraphs: [
     "My journey began in frontend development, learning how thoughtful interfaces respond to real people. Over time my curiosity pushed deeper across the stack—into Node.js and Express servers, REST APIs, relational and document databases, application architecture, and AWS cloud deployment fundamentals.",
     "Two traits define how I build: I learn quickly when facing unfamiliar tools, and I stay patient when diagnosing tricky edge cases. I am passionate about understanding the problem behind the code and how every layer of a software system connects end-to-end.",

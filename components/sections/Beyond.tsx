@@ -142,7 +142,8 @@ export function Beyond() {
               id="beyond-heading"
               className={`${styles.heading} beyond-headline`}
             >
-              {BEYOND_COPY.headline}
+              Beyond the{" "}
+              <span className={styles.serifHeading}>screen</span>.
             </h2>
             <p className={`${styles.leadCopy} beyond-caption`}>
               {BEYOND_COPY.leadCopy}

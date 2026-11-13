@@ -1,0 +1,74 @@
+@use "abstracts/tokens" as *;
+
+.frameRoot {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  display: none;
+
+  @media (min-width: 1024px) {
+    display: block;
+  }
+}
+
+.cornerMarker {
+  position: absolute;
+  font-family: $font-mono;
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fog, #555966);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  line-height: 1;
+  opacity: 0.65;
+  transition: opacity 0.3s ease;
+  user-select: none;
+}
+
+.crosshair {
+  color: var(--ember, #FF5B1F);
+  font-weight: 700;
+  opacity: 0.85;
+}
+
+.topLeft {
+  top: 1.25rem;
+  left: 1.5rem;
+}
+
+.topRight {
+  top: 1.25rem;
+  right: 1.5rem;
+}
+
+.bottomLeft {
+  bottom: 1.25rem;
+  left: 1.5rem;
+}
+
+.bottomRight {
+  bottom: 1.25rem;
+  right: 1.5rem;
+}
+
+.hairlineBorder {
+  position: absolute;
+  background-color: var(--border-subtle, rgba(255, 255, 255, 0.05));
+}
+
+.hairlineLeft {
+  top: 3.5rem;
+  bottom: 3.5rem;
+  left: 0.75rem;
+  width: 1px;
+}
+
+.hairlineRight {
+  top: 3.5rem;
+  bottom: 3.5rem;
+  right: 0.75rem;
+  width: 1px;
+}

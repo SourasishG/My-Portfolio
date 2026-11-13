@@ -117,8 +117,8 @@ function createGlassStudioEnv(gl: THREE.WebGLRenderer): THREE.WebGLRenderTarget 
 function buildCrystalGeometries(isLowDetail: boolean) {
   // Non-indexed faceted icosahedron keeps planar triangle normals for prism facets
   const rawOuter = new THREE.IcosahedronGeometry(0.96, isLowDetail ? 0 : 1);
-  const outer = rawOuter.toNonIndexed();
-  rawOuter.dispose();
+  const outer = rawOuter.index ? rawOuter.toNonIndexed() : rawOuter;
+  if (outer !== rawOuter) rawOuter.dispose();
   outer.computeVertexNormals();
 
   // Inner suspended wireframe cage & optical core behind the glass
