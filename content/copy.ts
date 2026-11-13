@@ -1,17 +1,46 @@
+export const HERO_FACTS = [
+  {
+    index: "01",
+    label: "ACADEMIC BASE",
+    value: "B.Tech CSE · CGPA 8.08",
+    meta: "Sister Nivedita University · 2023–2027",
+  },
+  {
+    index: "02",
+    label: "FEATURED WORK",
+    value: "2 Shipped Case Studies",
+    meta: "MUZO (Audio Discovery) & Office Aid (Monorepo)",
+  },
+  {
+    index: "03",
+    label: "CREDENTIALS",
+    value: "4 Verified Certifications",
+    meta: "AWS Cloud DevOps & HackerRank Verified",
+  },
+  {
+    index: "04",
+    label: "ENGINEERING FOCUS",
+    value: "Full-Stack Architecture",
+    meta: "React, Node.js REST APIs, SQL & Cloud Systems",
+  },
+] as const;
+
 export const HERO_COPY = {
   sectionIndex: "01",
-  sectionTag: "[01] // KINETIC CORE",
-  availabilityLabel: "Open to Full-Stack Roles & Internships",
+  sectionTag: "[01] // PRESENCE · FULL-STACK DEVELOPER",
+  conceptLine: "NOISE TO SIGNAL",
+  availabilityLabel: "Available for Full-Stack Roles & Internships",
   roleLabel: "Full-Stack Developer · Kolkata, India",
   firstName: "SOURASISH",
   lastName: "GHOSH",
   manifesto: "I design, develop, and build digital experiences.",
   supportingCopy:
-    "Computer Science undergraduate (B.Tech CSE, 2023–2027) & passionate Full-Stack Developer turning ideas into responsive interfaces, REST APIs, databases, and complete web applications.",
-  ctaPrimary: "View Projects",
+    "B.Tech Computer Science undergraduate (CGPA 8.08) at Sister Nivedita University, Kolkata. Transforming curiosity into dependable full-stack architecture—bridging resilient Node.js APIs, relational persistence, and interactive WebGL craft.",
+  ctaPrimary: "Explore Selected Work",
   ctaResume: "Download Resume",
-  ctaContact: "Contact",
+  ctaContact: "Get in Touch",
   scrollCue: "Scroll to explore",
+  facts: HERO_FACTS,
 } as const;
 
 export const ABOUT_COPY = {

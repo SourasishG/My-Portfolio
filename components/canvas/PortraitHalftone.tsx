@@ -18,6 +18,8 @@ export interface PortraitHalftoneProps {
   dissolve?: number;
   rimStrength?: number;
   interactivePointer?: boolean;
+  viewportSelector?: string;
+  visible?: boolean;
 }
 
 export function PortraitHalftone({
@@ -29,10 +31,13 @@ export function PortraitHalftone({
   dissolve = 0,
   rimStrength = 0.65,
   interactivePointer = true,
+  viewportSelector,
+  visible = true,
 }: PortraitHalftoneProps) {
   const meshRef = useRef<THREE.Mesh>(null);
   const groupRef = useRef<THREE.Group>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
+  const anchorElRef = useRef<HTMLElement | null>(null);
   const { size } = useThree();
 
   // Load textures with TextureLoader

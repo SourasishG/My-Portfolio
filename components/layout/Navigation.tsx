@@ -227,7 +227,21 @@ export function Navigation() {
               </div>
 
               <div className={styles.drawerFooter}>
-                <div className={styles.drawerClock}>KOLKATA {kolkataTime} IST · INDIA</div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
+                  <div className={styles.drawerClock}>KOLKATA {kolkataTime} IST · INDIA</div>
+                  <button
+                    type="button"
+                    className={styles.motionToggle}
+                    onClick={toggleMotion}
+                    aria-label={`Toggle motion (currently ${motionEnabled ? "on" : "off"})`}
+                  >
+                    <span
+                      className={`${styles.motionDot} ${!motionEnabled ? styles.motionOff : ""}`}
+                      aria-hidden="true"
+                    />
+                    <span>MOTION [{motionEnabled ? "ON" : "OFF"}]</span>
+                  </button>
+                </div>
                 <a
                   href={SITE_IDENTITY.resumeHref}
                   download={SITE_IDENTITY.resumeFileName}
