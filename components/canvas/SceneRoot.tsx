@@ -45,8 +45,8 @@ const DynamicChromeArches = dynamic(
   () => import("@/components/canvas/ChromeArches").then((m) => m.ChromeArches),
   { ssr: false }
 );
-const DynamicGlassObject = dynamic(
-  () => import("@/components/canvas/GlassObject").then((m) => m.GlassObject),
+const DynamicHeroBlob = dynamic(
+  () => import("@/components/canvas/HeroBlob").then((m) => m.HeroBlob),
   { ssr: false }
 );
 const DynamicPortraitHalftone = dynamic(
@@ -206,8 +206,8 @@ export function SceneRoot() {
   const mountChromeArches =
     isHomeRoute && (activeSection === "aspirations" || activeSection === "beyond" || activeSection === "contact");
 
-  const showGlassObject = isHomeRoute && activeSection === "contact";
-  const mountGlassObject =
+  const showContactBlob = isHomeRoute && activeSection === "contact";
+  const mountContactBlob =
     isHomeRoute && (activeSection === "contact" || activeSection === "aspirations");
 
   const canvasBackdrop = isHomeRoute && activeSection === "hero" ? "#000000" : "#07080B";
@@ -339,13 +339,13 @@ export function SceneRoot() {
               />
             )}
 
-            {/* S4 — Chromatic Glass Crystal synced to Section 08 Contact aperture */}
-            {mountGlassObject && (
-              <DynamicGlassObject
+            {/* S1 — Interactive Particle Blob synced to Section 08 Contact stage */}
+            {mountContactBlob && (
+              <DynamicHeroBlob
                 tier={gpuProfile.tier}
                 isMobile={!isDesktop}
                 reducedMotion={reducedMotion}
-                visible={showGlassObject}
+                visible={showContactBlob}
                 viewportSelector="#contact-s4-stage"
               />
             )}
