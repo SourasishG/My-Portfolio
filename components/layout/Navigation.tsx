@@ -12,8 +12,8 @@ import { useSceneStore } from "@/lib/store";
 import styles from "./Navigation.module.scss";
 
 const CURATED_DESKTOP_NAV = [
-  { id: "projects", label: "Work", href: "/#projects", index: "01" },
-  { id: "about", label: "About", href: "/#about", index: "02" },
+  { id: "about", label: "About", href: "/#about", index: "01" },
+  { id: "projects", label: "Work", href: "/#projects", index: "02" },
   { id: "toolkit", label: "Toolkit", href: "/#toolkit", index: "03" },
   { id: "journey", label: "Journey", href: "/#journey", index: "04" },
   { id: "contact", label: "Contact", href: "/#contact", index: "05" },
