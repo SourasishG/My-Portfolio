@@ -183,6 +183,18 @@
   color: $cyan;
 }
 
+.traceActiveLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.traceIcon {
+  flex-shrink: 0;
+  display: inline-block;
+  vertical-align: middle;
+}
+
 .traceBadgeExploring {
   color: $violet;
 }
@@ -373,9 +385,9 @@
 .skillChip {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.5rem;
   min-height: 36px;
-  padding: 0 0.72rem;
+  padding: 0 0.75rem;
   border: 1px solid $line-strong;
   background-color: rgba($ink, 0.84);
   color: $white;
@@ -390,6 +402,19 @@
     outline: 2px solid $cyan;
     outline-offset: 2px;
   }
+}
+
+.chipLogo {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.skillChip:hover .chipLogo,
+.exploringChip:hover .chipLogo {
+  transform: scale(1.18);
 }
 
 .skillChipActive {

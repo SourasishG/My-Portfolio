@@ -237,10 +237,13 @@ export function Toolkit() {
                   <span className={styles.lockDot} aria-hidden="true" />
                 )}
                 {inspectedSkill ? (
-                  <>
-                    ACTIVE TRACE // {inspectedSkill.name.toUpperCase()}
-                    {isExploringInspected ? " (CURRENTLY EXPLORING)" : ""}
-                  </>
+                  <span className={styles.traceActiveLabel}>
+                    <SkillIcon id={inspectedSkill.id} size={14} className={styles.traceIcon} />
+                    <span>
+                      ACTIVE TRACE // {inspectedSkill.name.toUpperCase()}
+                      {isExploringInspected ? " (CURRENTLY EXPLORING)" : ""}
+                    </span>
+                  </span>
                 ) : (
                   "STACK TRACE // READY"
                 )}
@@ -407,6 +410,7 @@ export function Toolkit() {
                         }}
                         onClick={() => handleSkillClick(skill)}
                       >
+                        <SkillIcon id={skill.id} size={15} className={styles.chipLogo} />
                         <span>{skill.name}</span>
                         {skill.qualifier && (
                           <span className={styles.skillQualifier}>
@@ -490,6 +494,7 @@ export function Toolkit() {
                   }}
                   onClick={() => handleSkillClick(skill)}
                 >
+                  <SkillIcon id={skill.id} size={15} className={styles.chipLogo} />
                   <span>{skill.name}</span>
                   <span className={styles.exploringMiniTag}>EXPLORING</span>
                 </motion.button>
