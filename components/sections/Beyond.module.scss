@@ -188,21 +188,14 @@
 .stageAperture {
   position: relative;
   width: 100%;
-  aspect-ratio: 575 / 780;
+  aspect-ratio: 3 / 4;
   overflow: hidden;
-  background-color: $paper;
-}
-
-.stageApertureShaderActive {
   background-color: transparent;
-  // Paints crisp #F4F4F2 ground across the entire #beyond section outside this exact hole
-  outline: 4000px solid $paper;
 }
 
 .stageImage {
   object-fit: cover;
-  object-position: 50% 18%;
-  transition: opacity 0.22s ease;
+  object-position: center;
 }
 
 .stageCaption {

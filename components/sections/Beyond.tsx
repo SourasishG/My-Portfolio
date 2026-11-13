@@ -7,7 +7,6 @@ import { Film, Gamepad2, Headphones, Trophy } from "lucide-react";
 import { BEYOND_COPY, BEYOND_INTERESTS, BeyondInterest } from "@/content/copy";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { ensureGsapRegistered, gsap } from "@/lib/gsap";
-import { useSceneStore } from "@/lib/store";
 import styles from "./Beyond.module.scss";
 
 function InterestIcon({ id }: { id: BeyondInterest["id"] }) {
@@ -32,15 +31,6 @@ export function Beyond() {
   const tracePathRef = useRef<SVGPathElement>(null);
 
   const reducedMotion = useReducedMotion();
-  const activeSection = useSceneStore((s) => s.activeSection);
-  const useStaticFallback = useSceneStore((s) => s.useStaticFallback);
-  const velocityShaderReady = useSceneStore((s) => s.velocityShaderReady);
-
-  const s7ShaderVisible =
-    !useStaticFallback &&
-    !reducedMotion &&
-    activeSection === "beyond" &&
-    velocityShaderReady;
 
   useGSAP(
     () => {
@@ -104,9 +94,7 @@ export function Beyond() {
     <section
       id="beyond"
       ref={sectionRef}
-      className={`${styles.beyondSection} beyond-paper-section ${
-        s7ShaderVisible ? styles.beyondShaderWindow : ""
-      }`}
+      className={`${styles.beyondSection} beyond-paper-section`}
       aria-labelledby="beyond-heading"
     >
       <div className={styles.container}>
@@ -163,19 +151,16 @@ export function Beyond() {
 
               <div
                 id="beyond-s7-stage"
-                className={`${styles.stageAperture} ${
-                  s7ShaderVisible ? styles.stageApertureShaderActive : ""
-                }`}
+                className={styles.stageAperture}
               >
                 <Image
                   src="/images/profile/portrait-alt.jpg"
                   alt={BEYOND_COPY.portraitAlt}
                   fill
-                  loading="eager"
-                  sizes="(max-width: 1023px) 92vw, 420px"
-                  quality={90}
+                  priority
+                  sizes="(max-width: 1023px) 92vw, 440px"
+                  quality={95}
                   className={styles.stageImage}
-                  style={{ opacity: s7ShaderVisible ? 0 : 1 }}
                 />
               </div>
             </div>

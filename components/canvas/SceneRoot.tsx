@@ -155,9 +155,8 @@ export function SceneRoot() {
   const mountToolkitConstellation =
     isHomeRoute && (activeSection === "toolkit" || activeSection === "projects" || activeSection === "journey");
 
-  const showVelocityPlane = isHomeRoute && activeSection === "beyond";
-  const mountVelocityPlane =
-    isHomeRoute && (activeSection === "beyond" || activeSection === "journey" || activeSection === "aspirations");
+  const showVelocityPlane = isLabRoute;
+  const mountVelocityPlane = isLabRoute;
 
   const showChromeArches = isHomeRoute && activeSection === "aspirations";
   const mountChromeArches =
