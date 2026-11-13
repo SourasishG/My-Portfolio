@@ -112,12 +112,15 @@ export function HeroBlob({
   position = [0, 0, 0],
   scale = 1,
   visible = true,
+  viewportSelector,
   labOverrides,
 }: HeroBlobProps) {
   const pointsRef = useRef<THREE.Points>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
+  const anchorElRef = useRef<HTMLElement | null>(null);
   const glPixelRatio = useThree((state) => state.gl.getPixelRatio());
   const smoothPointerRef = useRef(new THREE.Vector2(0, 0));
+  const setStoreGlassReady = useSceneStore((s) => s.setGlassObjectReady);
 
   const pointCount =
     labOverrides?.pointCount ?? getRecommendedHeroPointCount(tier, isMobile);
@@ -133,42 +136,113 @@ export function HeroBlob({
   useEffect(() => {
     return () => {
       geometry.dispose();
+      if (viewportSelector && useSceneStore.getState().glassObjectReady) {
+        setStoreGlassReady(false);
+      }
     };
-  }, [geometry]);
+  }, [geometry, viewportSelector, setStoreGlassReady]);
 
-  useFrame((_, delta) => {
+  useFrame((state, delta) => {
+    const points = pointsRef.current;
     const shaderMat = materialRef.current;
-    if (!visible || !shaderMat) return;
+    if (!points || !shaderMat) return;
+
+    if (!visible || reducedMotion) {
+      points.visible = false;
+      if (viewportSelector && useSceneStore.getState().glassObjectReady) {
+        setStoreGlassReady(false);
+      }
+      return;
+    }
 
     const clampedDelta = Math.min(delta, 0.05);
     const storeState = useSceneStore.getState();
     const uniforms = shaderMat.uniforms;
 
+    if (viewportSelector) {
+      if (!anchorElRef.current || !anchorElRef.current.isConnected) {
+        anchorElRef.current = document.querySelector(viewportSelector);
+      }
+      const el = anchorElRef.current;
+      if (!el) {
+        points.visible = false;
+        return;
+      }
+
+      const rect = el.getBoundingClientRect();
+      const vw = Math.max(1, window.innerWidth);
+      const vh = Math.max(1, window.innerHeight);
+
+      if (rect.width <= 0 || rect.height <= 0 || rect.bottom <= 0 || rect.top >= vh) {
+        points.visible = false;
+        return;
+      }
+
+      const normX = (rect.left + rect.width * 0.5) / vw - 0.5;
+      const normY = 0.5 - (rect.top + rect.height * 0.5) / vh;
+      const worldX = normX * state.viewport.width;
+      const worldY = normY * state.viewport.height;
+      const worldBox = Math.min(
+        (rect.width / vw) * state.viewport.width,
+        (rect.height / vh) * state.viewport.height
+      );
+      const fitScale = (worldBox * 0.94) / 3.3;
+
+      points.position.set(worldX, worldY, 0);
+      points.scale.setScalar(fitScale);
+      points.visible = true;
+
+      if (!useSceneStore.getState().glassObjectReady) {
+        setStoreGlassReady(true);
+      }
+
+      // Local cursor coordinates relative to stage aperture for interactive repulsion
+      const mouseWindowX = (storeState.pointer.x * 0.5 + 0.5) * vw;
+      const mouseWindowY = (1.0 - (storeState.pointer.y * 0.5 + 0.5)) * vh;
+
+      const relX = (mouseWindowX - (rect.left + rect.width * 0.5)) / Math.max(1, rect.width * 0.5);
+      const relY = ((rect.top + rect.height * 0.5) - mouseWindowY) / Math.max(1, rect.height * 0.5);
+
+      smoothPointerRef.current.x = THREE.MathUtils.lerp(
+        smoothPointerRef.current.x,
+        relX,
+        Math.min(1, clampedDelta * 10)
+      );
+      smoothPointerRef.current.y = THREE.MathUtils.lerp(
+        smoothPointerRef.current.y,
+        relY,
+        Math.min(1, clampedDelta * 10)
+      );
+    } else {
+      points.position.set(...position);
+      points.scale.setScalar(scale);
+      points.visible = true;
+
+      const targetX = storeState.pointer.x;
+      const targetY = storeState.pointer.y;
+      smoothPointerRef.current.x = THREE.MathUtils.lerp(
+        smoothPointerRef.current.x,
+        targetX,
+        Math.min(1, clampedDelta * 8)
+      );
+      smoothPointerRef.current.y = THREE.MathUtils.lerp(
+        smoothPointerRef.current.y,
+        targetY,
+        Math.min(1, clampedDelta * 8)
+      );
+    }
+
     if (!reducedMotion) {
       uniforms.uTime.value = (uniforms.uTime.value as number) + clampedDelta;
     }
 
-    // Smooth transient pointer tracking (zero React re-renders).
-    const targetX = storeState.pointer.x;
-    const targetY = storeState.pointer.y;
-    smoothPointerRef.current.x = THREE.MathUtils.lerp(
-      smoothPointerRef.current.x,
-      targetX,
-      Math.min(1, clampedDelta * 8)
-    );
-    smoothPointerRef.current.y = THREE.MathUtils.lerp(
-      smoothPointerRef.current.y,
-      targetY,
-      Math.min(1, clampedDelta * 8)
-    );
     (uniforms.uPointer.value as THREE.Vector2).copy(smoothPointerRef.current);
-
     uniforms.uPixelRatio.value = Math.min(glPixelRatio, isMobile ? 1.5 : 2);
 
     const targetScroll =
       labOverrides?.scroll !== undefined
         ? labOverrides.scroll
-        : storeState.heroMorph;
+        : (viewportSelector ? 0 : storeState.heroMorph);
     uniforms.uScroll.value = THREE.MathUtils.lerp(
       uniforms.uScroll.value as number,
       targetScroll,
@@ -206,7 +280,7 @@ export function HeroBlob({
     }
 
     if (pointsRef.current && !reducedMotion) {
-      const rotSpeed = labOverrides?.autoRotateSpeed ?? 0.055;
+      const rotSpeed = labOverrides?.autoRotateSpeed ?? (viewportSelector ? 0.08 : 0.055);
       pointsRef.current.rotation.y += clampedDelta * rotSpeed;
       pointsRef.current.rotation.x = THREE.MathUtils.lerp(
         pointsRef.current.rotation.x,
