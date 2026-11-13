@@ -36,6 +36,7 @@ interface SceneState {
   webglFailed: boolean;
   useStaticFallback: boolean;
   motionEnabled: boolean;
+  soundEnabled: boolean;
   preloaderDone: boolean;
 
   setScrollState: (scrollY: number, scrollProgress: number, velocity: number) => void;
@@ -56,6 +57,8 @@ interface SceneState {
   setUseStaticFallback: (fallback: boolean) => void;
   setMotionEnabled: (enabled: boolean) => void;
   toggleMotion: () => void;
+  setSoundEnabled: (enabled: boolean) => void;
+  toggleSound: () => void;
   setPreloaderDone: (done: boolean) => void;
 }
 
@@ -82,6 +85,7 @@ export const useSceneStore = create<SceneState>((set, get) => ({
   webglFailed: false,
   useStaticFallback: false,
   motionEnabled: true,
+  soundEnabled: false,
   preloaderDone: false,
 
   setScrollState: (scrollY, scrollProgress, velocity) => {
@@ -190,6 +194,14 @@ export const useSceneStore = create<SceneState>((set, get) => ({
       motionEnabled: next,
       useStaticFallback: !next,
     });
+  },
+
+  setSoundEnabled: (soundEnabled) => {
+    set({ soundEnabled });
+  },
+
+  toggleSound: () => {
+    set({ soundEnabled: !get().soundEnabled });
   },
 
   setPreloaderDone: (preloaderDone) => {
