@@ -114,6 +114,8 @@ export function Navigation() {
                   key={item.id}
                   href={item.href}
                   className={`${styles.navLink} ${isActive ? styles.navLinkActive : ""}`}
+                  onMouseEnter={() => playRotaryTick()}
+                  onClick={() => playMechanicalClick()}
                 >
                   <span className={styles.navIndex}>{item.index}</span>
                   <span>{item.label}</span>

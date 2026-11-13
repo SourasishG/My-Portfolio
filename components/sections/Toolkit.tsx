@@ -475,6 +475,7 @@ export function Toolkit() {
                   whileHover={reducedMotion ? undefined : { y: -1, scale: 1.02 }}
                   whileTap={reducedMotion ? undefined : { scale: 0.98 }}
                   onMouseEnter={() => {
+                    playRotaryTick();
                     if (!lockedSkillId) setHoveredSkillId(skill.id);
                   }}
                   onMouseLeave={() => {
