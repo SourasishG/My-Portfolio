@@ -33,7 +33,7 @@ export function PortraitHalftone({
   const meshRef = useRef<THREE.Mesh>(null);
   const groupRef = useRef<THREE.Group>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
-  const { size, viewport } = useThree();
+  const { size } = useThree();
 
   // Load textures with TextureLoader
   const { baseTexture, depthTexture } = useMemo(() => {

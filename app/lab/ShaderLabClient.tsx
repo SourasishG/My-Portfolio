@@ -119,15 +119,26 @@ export function ShaderLabClient() {
   return <ShaderLabInteractive />;
 }
 
-function LabCameraRig({ isMobilePreset }: { isMobilePreset: boolean }) {
+function LabCameraRig({
+  isMobilePreset,
+  sceneMode,
+}: {
+  isMobilePreset: boolean;
+  sceneMode: LabSceneMode;
+}) {
   const { camera, size } = useThree();
 
   useEffect(() => {
     const aspect = size.width / Math.max(1, size.height);
-    const targetZ = isMobilePreset || aspect < 0.85 ? 7.1 : 4.9;
+    const targetZ =
+      sceneMode === "portrait"
+        ? 4.2
+        : isMobilePreset || aspect < 0.85
+          ? 7.1
+          : 4.9;
     camera.position.set(0, 0, targetZ);
     camera.updateProjectionMatrix();
-  }, [camera, isMobilePreset, size.height, size.width]);
+  }, [camera, isMobilePreset, sceneMode, size.height, size.width]);
 
   return null;
 }
@@ -271,7 +282,11 @@ function ShaderLabInteractive() {
   );
 
   const showFallback =
-    forceFallback || contextLost || !gpuProfile.webglSupported || effectiveReducedMotion;
+    forceFallback ||
+    contextLost ||
+    !gpuProfile.webglSupported ||
+    effectiveReducedMotion ||
+    (sceneMode === "portrait" && portraitValues.showFallback);
 
   const handlePointerMove = useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
@@ -614,7 +629,7 @@ function ShaderLabInteractive() {
               }}
               aria-hidden="true"
             >
-              <LabCameraRig isMobilePreset={isMobilePreset} />
+              <LabCameraRig isMobilePreset={isMobilePreset} sceneMode={sceneMode} />
               {sceneMode === "s1" && (
                 <HeroBlob
                   tier={effectiveTier}
@@ -762,6 +777,24 @@ function ShaderLabInteractive() {
                     tumbleSpeed: s4Values.tumbleSpeed,
                     tintColor: s4Values.tintColor,
                   }}
+                />
+              )}
+
+              {sceneMode === "portrait" && (
+                <PortraitHalftone
+                  dotScale={portraitValues.dotScale}
+                  depthDisplacement={portraitValues.depthDisplacement}
+                  revealRadius={portraitValues.revealRadius}
+                  dissolve={portraitValues.dissolve}
+                  rimStrength={portraitValues.rimStrength}
+                />
+              )}
+
+              {sceneMode === "particles" && (
+                <ParticleSwarm
+                  particleCount={particleValues.particleCount}
+                  convergence={particleValues.convergence}
+                  pointerStrength={particleValues.pointerStrength}
                 />
               )}
             </Canvas>

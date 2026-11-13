@@ -70,8 +70,8 @@ function buildSplitAwareContourSphereGeometry(
   north.applyQuaternion(alignQuat);
   south.applyQuaternion(alignQuat);
 
-  const northNonIdx = north.toNonIndexed();
-  const southNonIdx = south.toNonIndexed();
+  const northNonIdx = north.index ? north.toNonIndexed() : north.clone();
+  const southNonIdx = south.index ? south.toNonIndexed() : south.clone();
   north.dispose();
   south.dispose();
 
