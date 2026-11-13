@@ -10,30 +10,36 @@ import {
   Download,
   Mail,
 } from "lucide-react";
-import { HeroBlobFallback } from "@/components/canvas/HeroBlob";
+import { PortraitFallback } from "@/components/canvas/PortraitHalftone";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { HERO_COPY } from "@/content/copy";
 import { SITE_IDENTITY, SOCIAL_LINKS } from "@/content/links";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { ensureGsapRegistered, gsap, ScrollTrigger, SplitText } from "@/lib/gsap";
 import { useSceneStore } from "@/lib/store";
 import styles from "./Hero.module.scss";
 
 /**
- * Section 01 — Kinetic Core Hero (`#hero`).
+ * Section 01 — Presence Hero (`#hero`).
  *
- * Rendering & animation ownership guarantees:
- * - Server-rendered headline (`<h1>SOURASISH GHOSH</h1>`) starts immediately at `opacity: 1` for instant LCP.
- * - GSAP + SplitText owns `.hero-name` upward character settle (`yPercent` inside line masks only)
- *   plus `#hero` ScrollTrigger writing `heroMorph` (`0..1`) into `useSceneStore`.
- * - Framer Motion strictly owns `.hero-cta-magnetic` and `.hero-social-btn` via `<MagneticButton>`.
- * - Automatically displays static SVG topology fallback when reduced motion is preferred or WebGL is inactive.
+ * Visual & Motion Architecture:
+ * - Monumental display typography combining Geist Sans with Instrument Serif italic.
+ * - Sub-tagline with pulsating ember terminal cursor.
+ * - 2.5D Halftone Portrait stage (`#hero-portrait-stage`) synced with Three.js canvas.
+ * - Under reduced motion, low tier, or mobile, displays accessible pure CSS <PortraitFallback />.
+ * - Facts telemetry strip displaying real, verified credentials and academic metrics.
  */
 export function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const nameRef = useRef<HTMLHeadingElement>(null);
   const reducedMotion = useReducedMotion();
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
   const useStaticFallback = useSceneStore((s) => s.useStaticFallback);
+  const motionEnabled = useSceneStore((s) => s.motionEnabled);
+
+  const showFallbackInDom =
+    useStaticFallback || !motionEnabled || reducedMotion || !isDesktop;
 
   useGSAP(
     () => {
@@ -46,6 +52,7 @@ export function Hero() {
       let split: SplitText | null = null;
       const preferReduced =
         reducedMotion ||
+        !motionEnabled ||
         (typeof window !== "undefined" &&
           window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
@@ -57,10 +64,10 @@ export function Hero() {
         });
 
         gsap.from(split.chars, {
-          yPercent: 22,
-          duration: 0.72,
+          yPercent: 25,
+          duration: 0.76,
           ease: "expo.out",
-          stagger: 0.016,
+          stagger: 0.018,
           clearProps: "transform",
         });
       }
@@ -80,7 +87,7 @@ export function Hero() {
         split?.revert();
       };
     },
-    { scope: sectionRef, dependencies: [reducedMotion], revertOnUpdate: true }
+    { scope: sectionRef, dependencies: [reducedMotion, motionEnabled], revertOnUpdate: true }
   );
 
   return (
@@ -90,17 +97,13 @@ export function Hero() {
       className={styles.heroSection}
       aria-label="Hero Introduction"
     >
-      {useStaticFallback && (
-        <div className={styles.fallbackStage} aria-hidden="true">
-          <HeroBlobFallback label="SIGNAL point-cloud fallback visual" />
-        </div>
-      )}
-
       <div className={styles.container}>
+        {/* Top HUD Line */}
         <div className={styles.topHud}>
           <div className={styles.hudGroup}>
             <span className={styles.hudTag}>{HERO_COPY.sectionTag}</span>
             <span className={styles.coords}>{SITE_IDENTITY.coordinates}</span>
+            <span className={styles.conceptTag}>{`${HERO_COPY.conceptLine} // 2026`}</span>
           </div>
 
           <div className={styles.statusPill}>
@@ -109,51 +112,97 @@ export function Hero() {
           </div>
         </div>
 
-        <div className={styles.mainBlock}>
-          <p className={styles.roleEyebrow}>{HERO_COPY.roleLabel}</p>
+        {/* Main Grid: Typography Column + 2.5D Halftone Portrait Stage */}
+        <div className={styles.mainGrid}>
+          <div className={styles.typographyCol}>
+            <p className={styles.roleEyebrow}>{HERO_COPY.roleLabel}</p>
 
-          <h1 ref={nameRef} className={`${styles.heroTitle} hero-name`}>
-            <span className={styles.nameLine}>{HERO_COPY.firstName}</span>{" "}
-            <span className={styles.nameLine}>{HERO_COPY.lastName}</span>
-          </h1>
+            <h1 ref={nameRef} className={`${styles.heroTitle} hero-name`}>
+              <span className={styles.nameSans}>{HERO_COPY.firstName}</span>{" "}
+              <span className={styles.serifAccent}>{HERO_COPY.lastName}</span>
+            </h1>
 
-          <p className={`${styles.manifesto} hero-headline`}>
-            {HERO_COPY.manifesto}
-          </p>
+            <p className={`${styles.manifesto} hero-headline`}>
+              {HERO_COPY.manifesto}
+              <span className={styles.terminalCursor} aria-hidden="true">
+                ▮
+              </span>
+            </p>
 
-          <p className={`${styles.bio} hero-sub`}>{HERO_COPY.supportingCopy}</p>
+            <p className={`${styles.bio} hero-sub`}>{HERO_COPY.supportingCopy}</p>
 
-          <div className={styles.ctaRow}>
-            <MagneticButton
-              href="/#projects"
-              variant="primary"
-              className="hero-cta-magnetic"
-            >
-              <span>{HERO_COPY.ctaPrimary}</span>
-              <ArrowDownRight size={15} aria-hidden="true" />
-            </MagneticButton>
+            <div className={styles.ctaRow}>
+              <MagneticButton
+                href="/#projects"
+                variant="primary"
+                className="hero-cta-magnetic"
+              >
+                <span>{HERO_COPY.ctaPrimary}</span>
+                <ArrowDownRight size={15} aria-hidden="true" />
+              </MagneticButton>
 
-            <MagneticButton
-              href={SITE_IDENTITY.resumeHref}
-              download={SITE_IDENTITY.resumeFileName}
-              variant="secondary"
-              className="hero-cta-magnetic"
-            >
-              <Download size={14} aria-hidden="true" />
-              <span>{HERO_COPY.ctaResume}</span>
-            </MagneticButton>
+              <MagneticButton
+                href={SITE_IDENTITY.resumeHref}
+                download={SITE_IDENTITY.resumeFileName}
+                variant="secondary"
+                className="hero-cta-magnetic"
+              >
+                <Download size={14} aria-hidden="true" />
+                <span>{HERO_COPY.ctaResume}</span>
+              </MagneticButton>
 
-            <MagneticButton
-              href="/#contact"
-              variant="ghost"
-              className="hero-cta-magnetic"
-            >
-              <Mail size={14} aria-hidden="true" />
-              <span>{HERO_COPY.ctaContact}</span>
-            </MagneticButton>
+              <MagneticButton
+                href="/#contact"
+                variant="ghost"
+                className="hero-cta-magnetic"
+              >
+                <Mail size={14} aria-hidden="true" />
+                <span>{HERO_COPY.ctaContact}</span>
+              </MagneticButton>
+            </div>
+          </div>
+
+          {/* Right Column: 2.5D Halftone Portrait Stage Frame */}
+          <div className={styles.portraitCol}>
+            <div className={styles.portraitCard}>
+              <div className={styles.cardHeader}>
+                <span>
+                  <span className={styles.bracket}>[ </span>
+                  FIG 01.1 // T1/T2 EDITORIAL RELIEF
+                  <span className={styles.bracket}> ]</span>
+                </span>
+                <span className={styles.bracket}>+</span>
+              </div>
+
+              <div id="hero-portrait-stage" className={styles.portraitStageAnchor}>
+                {showFallbackInDom && (
+                  <PortraitFallback />
+                )}
+              </div>
+
+              <div className={styles.cardFooter}>
+                <span>MiDaS v2.1 MONOCULAR HEIGHTMAP</span>
+                <span>fwidth() ANTI-ALIASED</span>
+              </div>
+            </div>
           </div>
         </div>
 
+        {/* Facts Telemetry Strip */}
+        <div className={styles.factsStrip} aria-label="Key Engineer Telemetry">
+          {HERO_COPY.facts.map((fact) => (
+            <div key={fact.index} className={styles.factCard}>
+              <div className={styles.factHeader}>
+                <span className={styles.factIndex}>{fact.index}</span>
+                <span>{`// ${fact.label}`}</span>
+              </div>
+              <div className={styles.factValue}>{fact.value}</div>
+              <div className={styles.factMeta}>{fact.meta}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom HUD: Social Links + Scroll Cue */}
         <div className={styles.bottomHud}>
           <nav className={styles.socialGroup} aria-label="Social profiles">
             {SOCIAL_LINKS.map((social) => (

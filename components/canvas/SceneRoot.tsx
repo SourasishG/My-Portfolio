@@ -18,7 +18,6 @@ import { usePathname } from "next/navigation";
 import { Canvas, useThree } from "@react-three/fiber";
 import { CanvasErrorBoundary } from "@/components/canvas/CanvasErrorBoundary";
 import { GrainOverlay } from "@/components/canvas/GrainOverlay";
-import { HeroBlob } from "@/components/canvas/HeroBlob";
 import { useGpuTier } from "@/hooks/useGpuTier";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
@@ -141,8 +140,6 @@ export function SceneRoot() {
   }
 
   const isHomeRoute = pathname === "/";
-  const showHeroBlob = isHomeRoute && activeSection === "hero";
-  const mountHeroBlob = isHomeRoute && (activeSection === "hero" || activeSection === "about");
 
   const showHeroPortrait = isHomeRoute && activeSection === "hero" && isDesktop;
   const mountHeroPortrait = isHomeRoute && isDesktop && (activeSection === "hero" || activeSection === "about");

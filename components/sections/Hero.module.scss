@@ -1,5 +1,5 @@
-@use "abstracts/tokens" as *;
-@use "abstracts/mixins" as *;
+@use "@/styles/abstracts/tokens" as *;
+@use "@/styles/abstracts/mixins" as *;
 
 .heroSection {
   position: relative;
@@ -7,59 +7,10 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding-top: calc(64px + clamp(0.85rem, 3.2vh, 2.75rem));
-  padding-bottom: clamp(1rem, 3.2vh, 2.5rem);
+  padding-top: calc(64px + clamp(1rem, 2.5vh, 2rem));
+  padding-bottom: clamp(1rem, 2.5vh, 2rem);
   overflow-x: clip;
   background-color: transparent;
-
-  // Focused readability scrim over the text column without muting S1 across the open stage
-  &::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    background: linear-gradient(
-      180deg,
-      rgba($black, 0.14) 0%,
-      rgba($black, 0.56) 36%,
-      rgba($black, 0.68) 72%,
-      rgba($black, 0.44) 100%
-    );
-
-    @include respond-up($bp-lg) {
-      background:
-        linear-gradient(
-          90deg,
-          rgba($black, 0.84) 0%,
-          rgba($black, 0.52) 40%,
-          rgba($black, 0) 64%,
-          rgba($black, 0) 100%
-        ),
-        linear-gradient(180deg, rgba($black, 0.25) 0%, rgba($black, 0) 20%, rgba($black, 0.35) 100%);
-    }
-  }
-}
-
-.fallbackStage {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0.78;
-
-  @include respond-up($bp-lg) {
-    justify-content: flex-end;
-    padding-right: clamp(2rem, 6vw, 7rem);
-
-    > div {
-      width: min(46vw, 560px) !important;
-      height: min(46vw, 560px) !important;
-    }
-  }
 }
 
 .container {
@@ -70,13 +21,12 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: $space-4;
-
-  @include respond-up($bp-md) {
-    gap: $space-6;
-  }
+  gap: clamp(1.5rem, 3.5vh, 3rem);
 }
 
+// ----------------------------------------------------
+// Top HUD
+// ----------------------------------------------------
 .topHud {
   display: flex;
   flex-wrap: wrap;
@@ -84,10 +34,9 @@
   justify-content: space-between;
   gap: $space-2;
   padding-bottom: $space-3;
-  border-bottom: 1px solid $line;
+  border-bottom: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
 
   @include respond-up($bp-md) {
-    gap: $space-3;
     padding-bottom: $space-4;
   }
 }
@@ -101,15 +50,26 @@
 
 .hudTag {
   @include hud-label;
-  color: $cyan;
+  color: var(--ember, #FF5B1F);
 }
 
 .coords {
   @include hud-label;
-  color: $muted;
+  color: var(--fog, #555966);
   display: none;
 
   @include respond-up($bp-sm) {
+    display: inline-block;
+  }
+}
+
+.conceptTag {
+  @include hud-label;
+  color: var(--mist, #E2E4E9);
+  opacity: 0.75;
+  display: none;
+
+  @include respond-up($bp-lg) {
     display: inline-block;
   }
 }
@@ -118,82 +78,129 @@
   display: inline-flex;
   align-items: center;
   gap: $space-2;
-  padding: 6px 12px;
-  border: 1px solid $line-strong;
-  background-color: rgba($charcoal, 0.72);
-  backdrop-filter: blur(8px);
+  padding: 5px 12px;
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  background-color: rgba(7, 8, 10, 0.85);
+  backdrop-filter: blur(10px);
+  border-radius: $radius-pill;
   font-family: $font-mono;
   font-size: 0.6875rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: $white;
+  color: var(--white, #F4F2EE);
 }
 
 .statusDot {
-  width: 7px;
-  height: 7px;
-  border-radius: $radius-pill;
-  background-color: $signal;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #00E5FF;
+  box-shadow: 0 0 8px rgba(0, 229, 255, 0.8);
   flex-shrink: 0;
-  box-shadow: 0 0 10px rgba($signal, 0.7);
+  animation: pulseBeacon 2.4s ease-in-out infinite;
 }
 
-.mainBlock {
-  max-width: 680px;
+@keyframes pulseBeacon {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.85);
+  }
+}
+
+// ----------------------------------------------------
+// Main Hero Grid (2-column asymmetric layout)
+// ----------------------------------------------------
+.mainGrid {
   display: grid;
-  gap: clamp(0.7rem, 1.8vh, 1.65rem);
+  grid-template-columns: 1fr;
+  gap: clamp(2rem, 4vw, 4.5rem);
+  align-items: center;
   margin-block: auto;
   padding-block: $space-1;
 
-  @include respond-up($bp-md) {
-    padding-block: $space-3;
+  @include respond-up($bp-lg) {
+    grid-template-columns: 1.15fr 0.85fr;
   }
+}
+
+.typographyCol {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2vh, 1.75rem);
+  max-width: 640px;
 }
 
 .roleEyebrow {
   @include hud-label;
-  color: $cyan;
-  letter-spacing: 0.14em;
+  color: var(--fog, #555966);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 
 .heroTitle {
-  font-size: clamp(2.55rem, 8.1vw, 7.25rem);
+  font-size: clamp(2.85rem, 8.5vw, 6.75rem);
   font-weight: 700;
-  line-height: 0.89;
+  line-height: 0.92;
   letter-spacing: -0.04em;
-  color: $white;
+  color: #ffffff;
   text-transform: uppercase;
-  word-break: keep-all;
+  margin: 0;
 }
 
-.nameLine {
+.nameSans {
   display: block;
+  font-family: $font-sans;
+}
+
+.serifAccent {
+  display: block;
+  font-family: $font-serif;
+  font-style: italic;
+  font-weight: 400;
+  text-transform: none;
+  color: var(--mist, #E2E4E9);
+  letter-spacing: -0.02em;
+  line-height: 0.95;
 }
 
 .manifesto {
-  font-size: clamp(1.125rem, 2.2vw, 1.875rem);
+  font-size: clamp(1.125rem, 2vw, 1.625rem);
   font-weight: 500;
-  line-height: 1.24;
-  letter-spacing: -0.02em;
-  color: $white;
+  line-height: 1.32;
+  letter-spacing: -0.015em;
+  color: #ffffff;
   padding-left: $space-3;
-  border-left: 2px solid $cyan;
-  max-width: 28ch;
+  border-left: 2px solid var(--ember, #FF5B1F);
+  margin: 0;
 
   @include respond-up($bp-md) {
     padding-left: $space-4;
   }
 }
 
-.bio {
-  font-size: clamp(0.9rem, 1.05vw, 1.0625rem);
-  line-height: 1.54;
-  color: $muted;
-  max-width: 54ch;
+.terminalCursor {
+  display: inline-block;
+  margin-left: 0.35rem;
+  color: var(--ember, #FF5B1F);
+  font-family: $font-mono;
+  animation: blinkCursor 1s step-end infinite;
+}
 
-  @include respond-up($bp-md) {
-    line-height: 1.65;
-  }
+@keyframes blinkCursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.bio {
+  font-size: clamp(0.9375rem, 1.1vw, 1.0625rem);
+  line-height: 1.62;
+  color: var(--mist, #E2E4E9);
+  margin: 0;
+  max-width: 54ch;
 }
 
 .ctaRow {
@@ -209,6 +216,149 @@
   }
 }
 
+// ----------------------------------------------------
+// Portrait Frame Column (T1/T2 Halftone Stage)
+// ----------------------------------------------------
+.portraitCol {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+
+.portraitCard {
+  position: relative;
+  width: min(85vw, 440px);
+  aspect-ratio: 1 / 1;
+  background-color: rgba(12, 13, 16, 0.6);
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+  border-radius: 4px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(12px);
+
+  @include respond-up($bp-lg) {
+    width: min(38vw, 480px);
+  }
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: $font-mono;
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  color: var(--fog, #555966);
+  text-transform: uppercase;
+  z-index: 2;
+}
+
+.bracket {
+  color: var(--ember, #FF5B1F);
+  font-weight: 700;
+}
+
+.portraitStageAnchor {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  margin-block: 0.5rem;
+  border-radius: 2px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: $font-mono;
+  font-size: 0.5625rem;
+  letter-spacing: 0.1em;
+  color: var(--fog, #555966);
+  text-transform: uppercase;
+  z-index: 2;
+  padding-top: 0.4rem;
+  border-top: 1px dashed rgba(255, 255, 255, 0.06);
+}
+
+// ----------------------------------------------------
+// Facts Strip / Telemetry Grid
+// ----------------------------------------------------
+.factsStrip {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1px;
+  background-color: var(--border-subtle, rgba(255, 255, 255, 0.08));
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+  border-radius: 4px;
+  overflow: hidden;
+
+  @include respond-up($bp-sm) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include respond-up($bp-lg) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.factCard {
+  background-color: rgba(7, 8, 10, 0.88);
+  padding: 0.95rem 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  transition: background-color 0.25s ease;
+
+  &:hover {
+    background-color: rgba(18, 20, 24, 0.95);
+  }
+}
+
+.factHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: $font-mono;
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fog, #555966);
+}
+
+.factIndex {
+  color: var(--ember, #FF5B1F);
+  font-weight: 700;
+}
+
+.factValue {
+  font-family: $font-sans;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+
+.factMeta {
+  font-family: $font-mono;
+  font-size: 0.6875rem;
+  color: var(--mist, #E2E4E9);
+  opacity: 0.7;
+  line-height: 1.35;
+}
+
+// ----------------------------------------------------
+// Bottom HUD
+// ----------------------------------------------------
 .bottomHud {
   display: flex;
   flex-wrap: wrap;
@@ -216,7 +366,7 @@
   justify-content: space-between;
   gap: $space-2 $space-4;
   padding-top: $space-3;
-  border-top: 1px solid $line;
+  border-top: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
 
   @include respond-up($bp-md) {
     padding-top: $space-4;
@@ -233,7 +383,7 @@
 .socialBtn {
   gap: 8px;
   padding-inline: $space-3;
-  color: $white;
+  color: #ffffff;
 }
 
 .socialLabel {
@@ -247,18 +397,18 @@
   min-height: 44px;
   padding-inline: $space-2;
   @include hud-label;
-  color: $muted;
+  color: var(--fog, #555966);
   transition: color 0.18s ease;
 
   &:hover {
-    color: $white;
+    color: #ffffff;
   }
 }
 
 .scrollTick {
   width: 24px;
   height: 1px;
-  background-color: $cyan;
+  background-color: var(--ember, #FF5B1F);
   display: none;
 
   @include respond-up($bp-md) {
