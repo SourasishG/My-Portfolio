@@ -28,6 +28,7 @@ export interface HeroBlobProps {
   position?: [number, number, number];
   scale?: number;
   visible?: boolean;
+  viewportSelector?: string;
   labOverrides?: HeroBlobLabOverrides;
 }
 
