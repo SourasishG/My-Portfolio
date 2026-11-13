@@ -48,6 +48,26 @@ export const ABOUT_COPY = {
   sectionTag: "[02] // PERSONAL ARCHITECTURE",
   subTag: "QUICK LEARNER · PATIENT PROBLEM-SOLVER",
   heading: "Understanding the system behind the syntax.",
+  narrativeBeats: [
+    {
+      index: "01",
+      tag: "THE SPARK",
+      title: "Curiosity at the Interface",
+      body: "My journey began in frontend development, learning how thoughtful interfaces respond to real people. Seeing code turn into fluid user experiences ignited a desire to understand every layer beneath the surface.",
+    },
+    {
+      index: "02",
+      tag: "THE ARCHITECTURE",
+      title: "Pushing Deeper Across the Stack",
+      body: "Over time my curiosity pushed deeper across the entire system—into Node.js and Express servers, REST APIs, relational and document persistence (PostgreSQL, MongoDB, Supabase), schema design, and AWS cloud deployment fundamentals.",
+    },
+    {
+      index: "03",
+      tag: "THE CRAFT & AI",
+      title: "First Principles & Modern Craft",
+      body: "I am passionate about first-principles engineering: understanding the architectural problem behind the code before writing syntax. I actively explore Large Language Models, AI-assisted development, and 3D WebGL craft to complement fundamental CS principles.",
+    },
+  ],
   paragraphs: [
     "My journey began in frontend development, learning how thoughtful interfaces respond to real people. Over time my curiosity pushed deeper across the stack—into Node.js and Express servers, REST APIs, relational and document databases, application architecture, and AWS cloud deployment fundamentals.",
     "Two traits define how I build: I learn quickly when facing unfamiliar tools, and I stay patient when diagnosing tricky edge cases. I am passionate about understanding the problem behind the code and how every layer of a software system connects end-to-end.",
