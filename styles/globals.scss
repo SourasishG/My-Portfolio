@@ -42,6 +42,20 @@ main {
   z-index: $z-content;
 }
 
+// Global browser scrollbar removal — preserves smooth scrolling via wheel, trackpad, keys, and Lenis
+*,
+*::before,
+*::after {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+*::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
 @include reduced-motion {
   *,
   *::before,

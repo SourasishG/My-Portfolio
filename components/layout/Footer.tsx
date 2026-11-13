@@ -136,8 +136,6 @@ export function Footer() {
           </div>
 
           <div className={`${styles.wordmarkBlock} footer-wordmark`}>
-            <span className={styles.wordmarkTag}>{SITE_IDENTITY.brandTag}</span>
-            <p className={styles.wordmark}>{FOOTER_COPY.wordmark}</p>
             <p className={styles.tagline}>{FOOTER_COPY.tagline}</p>
           </div>
 
@@ -167,12 +165,6 @@ export function Footer() {
                   </Link>
                 </li>
               ))}
-              <li>
-                <Link href="/lab" className={styles.footerLink}>
-                  <span className={styles.linkIdx}>LAB</span>
-                  <span>Shader Lab (S1–S8)</span>
-                </Link>
-              </li>
             </ul>
           </nav>
 
@@ -220,7 +212,7 @@ export function Footer() {
             © {new Date().getFullYear()} {FOOTER_COPY.copyrightName}. Built cleanly in Kolkata, India.
           </span>
           <span className={styles.statusNote}>
-            SIGNAL // ALL 08 SECTIONS ACTIVE
+            ALL 08 SECTIONS ACTIVE
           </span>
         </div>
       </div>

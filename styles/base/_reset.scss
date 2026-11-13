@@ -11,6 +11,14 @@ html {
   background-color: $ink;
   color: $white;
   scroll-behavior: auto; // Lenis manages smooth scrolling when motion is allowed
+  scrollbar-width: none; // Firefox
+  -ms-overflow-style: none; // IE and Edge
+
+  &::-webkit-scrollbar {
+    display: none; // Chrome, Safari, Opera
+    width: 0;
+    height: 0;
+  }
 }
 
 body {
@@ -24,6 +32,14 @@ body {
   overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  scrollbar-width: none; // Firefox
+  -ms-overflow-style: none; // IE and Edge
+
+  &::-webkit-scrollbar {
+    display: none; // Chrome, Safari, Opera
+    width: 0;
+    height: 0;
+  }
 }
 
 h1, h2, h3, h4, h5, h6, p, figure, blockquote, ul, ol {
