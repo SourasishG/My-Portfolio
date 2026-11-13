@@ -177,6 +177,21 @@ export const useSceneStore = create<SceneState>((set, get) => ({
     }
   },
 
+  setMotionEnabled: (motionEnabled) => {
+    set({
+      motionEnabled,
+      useStaticFallback: !motionEnabled,
+    });
+  },
+
+  toggleMotion: () => {
+    const next = !get().motionEnabled;
+    set({
+      motionEnabled: next,
+      useStaticFallback: !next,
+    });
+  },
+
   setPreloaderDone: (preloaderDone) => {
     if (get().preloaderDone !== preloaderDone) {
       set({ preloaderDone });

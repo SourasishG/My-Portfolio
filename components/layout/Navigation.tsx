@@ -32,6 +32,8 @@ export function Navigation() {
   const isLabRoute = pathname?.startsWith("/lab") ?? false;
   const reducedMotion = useReducedMotion();
   const activeSection = useSceneStore((s) => s.activeSection);
+  const motionEnabled = useSceneStore((s) => s.motionEnabled);
+  const toggleMotion = useSceneStore((s) => s.toggleMotion);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [kolkataTime, setKolkataTime] = useState<string>("--:--");
@@ -122,6 +124,20 @@ export function Navigation() {
               <span className={styles.clockDot} aria-hidden="true" />
               <span>KOLKATA {kolkataTime} IST</span>
             </div>
+
+            <button
+              type="button"
+              className={styles.motionToggle}
+              onClick={toggleMotion}
+              aria-label={`Toggle interactive motion (currently ${motionEnabled ? "on" : "off"})`}
+              title="Toggle interactive 3D and scroll motion"
+            >
+              <span
+                className={`${styles.motionDot} ${!motionEnabled ? styles.motionOff : ""}`}
+                aria-hidden="true"
+              />
+              <span>MOTION [{motionEnabled ? "ON" : "OFF"}]</span>
+            </button>
 
             <a
               href={SITE_IDENTITY.resumeHref}

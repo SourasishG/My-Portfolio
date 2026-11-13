@@ -158,6 +158,47 @@
   background-color: $cyan;
 }
 
+.motionToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: $radius-pill;
+  padding: 4px 10px;
+  font-family: $font-mono;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  color: $muted;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.25);
+    color: $white;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #FF5B1F;
+    outline-offset: 2px;
+  }
+}
+
+.motionDot {
+  width: 6px;
+  height: 6px;
+  border-radius: $radius-pill;
+  background-color: #00E5FF;
+  box-shadow: 0 0 6px rgba(0, 229, 255, 0.6);
+  transition: all 0.2s ease;
+
+  &.motionOff {
+    background-color: #555966;
+    box-shadow: none;
+  }
+}
+
 .resumeLink {
   display: inline-flex;
   align-items: center;
