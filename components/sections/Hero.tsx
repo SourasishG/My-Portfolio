@@ -176,7 +176,7 @@ export function Hero() {
 
               <div id="hero-portrait-stage" className={styles.portraitStageAnchor}>
                 {showFallbackInDom && (
-                  <PortraitFallback />
+                  <PortraitFallback priority />
                 )}
               </div>
 

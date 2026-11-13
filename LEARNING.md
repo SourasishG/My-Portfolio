@@ -469,3 +469,58 @@ Implements the core visual identity of **SIGNAL V2** inspired by Lorenzo Lottici
 
 3. **Q:** *Why is calling `Math.random()` inside a React 19 component or `useMemo` hook flagged as an error by modern linters (`react-hooks/purity`), and how does a seeded PRNG resolve it?*  
    **A:** React 19 and the React Compiler enforce functional purity: components and hooks must be idempotent—rendering with the same props and state must always produce the identical output. `Math.random()` is an impure function that returns a different value on every execution, causing subtle hydration mismatches between server and client, and breaking React's Fast Refresh and memoization optimizations. A deterministic seeded PRNG function (e.g. `seededRandom(index, salt)`) produces mathematically uniform pseudo-random floats based strictly on particle index, guaranteeing identical results on SSR and client hydration while satisfying all purity rules.
+
+---
+
+## Module 20 — Persistent Architectural Frame, Motion Controls & Award-Caliber Hero (`PersistentFrame.tsx`, `Navigation.tsx`, `Hero.tsx`, `Hero.module.scss`)
+
+### What it does
+1. **Architectural Persistent Frame (`PersistentFrame.tsx`):** Renders precise corner crosshairs and geographic telemetry (`22°34' N · 88°24' E`, `IST · UTC+05:30`, `SIGNAL // V2.0`, `SOURASISH GHOSH`) and hairline side borders inspired by Lorenzo Lottici and Luka Skhiladze. Runs with `pointer-events: none` at `z-index: 40` on desktop screens.
+2. **Interactive Motion Control (`MOTION [ON / OFF]`):** Adds a persistent, accessible switch in both the desktop top bar and mobile navigation drawer. Connected directly to `useSceneStore`, toggling motion off immediately pauses 3D WebGL particle/mesh animation, displays `<PortraitFallback />` with zero layout shift, and clears GSAP tween transforms.
+3. **Monumental Editorial Typography (Geist Sans + Instrument Serif):** Combines geometric grotesque uppercase `SOURASISH` with editorial italic **Instrument Serif** `Ghosh`, accented by an interactive blinking ember terminal block cursor (`▮`).
+4. **Verified Facts Telemetry Strip:** Exposes four responsive cards containing 100% verified factual data: B.Tech CSE (CGPA 8.08 at Sister Nivedita University 2023–2027), 2 Shipped Case Studies (MUZO & Office Aid), 4 Verified Certifications, and Full-Stack Architecture focus.
+5. **Responsive Viewport Synchronization:** Synchronizes Three.js `PortraitHalftone` in `<Canvas>` with the DOM container `#hero-portrait-stage` on desktop, while automatically mounting `<PortraitFallback />` in DOM for mobile viewports ($< 1024\text{px}$), low-tier GPUs, and reduced-motion modes.
+
+### Key Architecture & Data Flow
+
+```
+[Window Resize / Scroll] ──> [DOM Element: #hero-portrait-stage]
+                                     │
+                             getBoundingClientRect()
+                                     │
+                           Normalized Coordinates:
+                 normX = (rect.left + rect.width * 0.5) / vw - 0.5
+                 normY = 0.5 - (rect.top + rect.height * 0.5) / vh
+                                     │
+                 worldX = normX * state.viewport.width
+                 worldY = normY * state.viewport.height
+                                     │
+                      ┌──────────────┴──────────────┐
+             [Desktop & Motion ON]        [Mobile / Motion OFF / Fallback]
+                      │                                  │
+          Three.js PortraitHalftone               Pure CSS Halftone
+          (fwidth dots + 3D parallax)       (<PortraitFallback priority />)
+```
+
+### Trade-offs vs Alternatives
+
+| Option | Trade-off | Decision |
+|---|---|---|
+| **DOM Anchor + Three.js Viewport Sync** | Requires per-frame coordinate calculation in `useFrame`, but gives true 3D spatial parallax and depth relief while keeping surrounding typography in native, crawlable, accessible DOM. | **Chosen** |
+| Pure Canvas WebGL Layout (rendering text inside Three.js) | Full 3D freedom, but destroys SEO, breaks text selection, ruins screen-reader accessibility, and bloats bundle sizes with SDF font textures. | Rejected |
+| Pure CSS 2D Image Hero | Zero WebGL overhead, but loses the tactile 3D relief, cursor reveal lens, and award-caliber visual identity inspired by the benchmarks. | Used as **Accessible Fallback only** |
+| OS-only `prefers-reduced-motion` | Only users who configure OS-level accessibility flags get reduced motion. | Extended with user-accessible **`MOTION [ON / OFF]` switch** |
+
+### Interview Questions & Model Answers
+
+1. **Q:** *Why pair an ultra-bold geometric sans-serif with an italic serif (*Instrument Serif*) in the hero headline?*  
+   **A:** Pure sans-serif feels utilitarian and tech-heavy, while pure serif can feel overly traditional. Juxtaposing a sharp, geometric grotesque (`SOURASISH`) with an elegant, high-contrast italic serif (`Ghosh`) creates visual tension and editorial prestige (a signature technique of benchmark designers like Lorenzo Lottici). It communicates both rigorous engineering discipline and refined creative craft.
+
+2. **Q:** *How does the persistent `MOTION [ON / OFF]` toggle provide defense-in-depth accessibility alongside OS `prefers-reduced-motion`?*  
+   **A:** OS settings like `prefers-reduced-motion` are often buried deep in system preferences, and many users on low-power devices, battery saver modes, or motion sensitivity may not have toggled it system-wide. Giving users an explicit in-app `MOTION [ON / OFF]` switch in the navigation bar empowers visitors to immediately calm visual motion, pause GPU WebGL shaders, and fall back to static typography with a single click.
+
+3. **Q:** *How does Three.js synchronize a 3D mesh's position and scale with a responsive DOM bounding box (`getBoundingClientRect`) across resize and scroll events?*  
+   **A:** The Three.js camera uses a perspective frustum where the visible world dimensions at $z = 0$ are given by `state.viewport.width` and `state.viewport.height`. In `useFrame`, we query `anchorEl.getBoundingClientRect()`, normalize its screen coordinates to $[-0.5, 0.5]$, and multiply by the camera's viewport dimensions:
+   $$\text{worldX} = \left(\frac{\text{rect.left} + 0.5 \times \text{rect.width}}{\text{vw}} - 0.5\right) \times \text{viewport.width}$$
+   $$\text{worldY} = \left(0.5 - \frac{\text{rect.top} + 0.5 \times \text{rect.height}}{\text{vh}}\right) \times \text{viewport.height}$$
+   This anchors the 3D WebGL mesh directly into the CSS layout grid regardless of screen resolution, scroll position, or DPI scaling.
