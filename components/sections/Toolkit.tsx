@@ -85,46 +85,56 @@ export function Toolkit() {
         (typeof window !== "undefined" &&
           window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
-      const revealEls = sectionEl.querySelectorAll(".toolkit-reveal");
+      let killed = false;
+      const timer = setTimeout(() => {
+        if (killed || !sectionRef.current) return;
 
-      if (preferReduced) {
+        const revealEls = sectionEl.querySelectorAll(".toolkit-reveal");
+
+        if (preferReduced) {
+          if (tracePath) {
+            gsap.set(tracePath, { clearProps: "strokeDasharray,strokeDashoffset" });
+          }
+          if (revealEls.length > 0) {
+            gsap.set(revealEls, { clearProps: "opacity,transform" });
+          }
+          return;
+        }
+
         if (tracePath) {
-          gsap.set(tracePath, { clearProps: "strokeDasharray,strokeDashoffset" });
+          gsap.set(tracePath, { strokeDasharray: 1, strokeDashoffset: 1 });
+          gsap.to(tracePath, {
+            strokeDashoffset: 0,
+            duration: 0.9,
+            ease: "expo.out",
+            scrollTrigger: {
+              trigger: sectionEl,
+              start: "top 80%",
+              once: true,
+            },
+          });
         }
+
         if (revealEls.length > 0) {
-          gsap.set(revealEls, { clearProps: "opacity,transform" });
+          gsap.from(revealEls, {
+            y: 16,
+            duration: 0.58,
+            ease: "expo.out",
+            stagger: 0.055,
+            clearProps: "transform",
+            scrollTrigger: {
+              trigger: sectionEl,
+              start: "top 84%",
+              once: true,
+            },
+          });
         }
-        return;
-      }
+      }, 140);
 
-      if (tracePath) {
-        gsap.set(tracePath, { strokeDasharray: 1, strokeDashoffset: 1 });
-        gsap.to(tracePath, {
-          strokeDashoffset: 0,
-          duration: 0.9,
-          ease: "expo.out",
-          scrollTrigger: {
-            trigger: sectionEl,
-            start: "top 80%",
-            once: true,
-          },
-        });
-      }
-
-      if (revealEls.length > 0) {
-        gsap.from(revealEls, {
-          y: 16,
-          duration: 0.58,
-          ease: "expo.out",
-          stagger: 0.055,
-          clearProps: "transform",
-          scrollTrigger: {
-            trigger: sectionEl,
-            start: "top 84%",
-            once: true,
-          },
-        });
-      }
+      return () => {
+        killed = true;
+        clearTimeout(timer);
+      };
     },
     { scope: sectionRef, dependencies: [reducedMotion], revertOnUpdate: true }
   );

@@ -60,67 +60,84 @@ export function Aspirations() {
         (typeof window !== "undefined" &&
           window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
-      const copyEls = sectionEl.querySelectorAll(".aspirations-copy");
+      let cleanup: (() => void) | undefined;
+      let killed = false;
 
-      if (preferReduced) {
-        if (tracePath) {
-          gsap.set(tracePath, { clearProps: "strokeDasharray,strokeDashoffset" });
-        }
-        if (copyEls.length > 0) {
-          gsap.set(copyEls, { clearProps: "opacity,transform" });
-        }
-        const state = useSceneStore.getState();
-        if (typeof state.setAspirationsProgress === "function") {
-          state.setAspirationsProgress(0.35);
-        } else {
-          state.aspirationsProgress = 0.35;
-        }
-        return;
-      }
+      const timer = setTimeout(() => {
+        if (killed || !sectionRef.current) return;
 
-      if (tracePath) {
-        gsap.set(tracePath, { strokeDasharray: 1, strokeDashoffset: 1 });
-        gsap.to(tracePath, {
-          strokeDashoffset: 0,
-          duration: 0.9,
-          ease: "expo.out",
-          scrollTrigger: {
-            trigger: sectionEl,
-            start: "top 80%",
-            once: true,
-          },
-        });
-      }
+        const copyEls = sectionEl.querySelectorAll(".aspirations-copy");
 
-      if (copyEls.length > 0) {
-        gsap.from(copyEls, {
-          y: 16,
-          duration: 0.56,
-          ease: "expo.out",
-          stagger: 0.055,
-          clearProps: "transform",
-          scrollTrigger: {
-            trigger: sectionEl,
-            start: "top 82%",
-            once: true,
-          },
-        });
-      }
-
-      ScrollTrigger.create({
-        trigger: sectionEl,
-        start: "top bottom",
-        end: "bottom top",
-        scrub: true,
-        onUpdate: (self) => {
+        if (preferReduced) {
+          if (tracePath) {
+            gsap.set(tracePath, { clearProps: "strokeDasharray,strokeDashoffset" });
+          }
+          if (copyEls.length > 0) {
+            gsap.set(copyEls, { clearProps: "opacity,transform" });
+          }
           const state = useSceneStore.getState();
           if (typeof state.setAspirationsProgress === "function") {
-            state.setAspirationsProgress(self.progress);
+            state.setAspirationsProgress(0.35);
           } else {
-            state.aspirationsProgress = self.progress;
+            state.aspirationsProgress = 0.35;
           }
-        },
-      });
+          return;
+        }
+
+        if (tracePath) {
+          gsap.set(tracePath, { strokeDasharray: 1, strokeDashoffset: 1 });
+          gsap.to(tracePath, {
+            strokeDashoffset: 0,
+            duration: 0.9,
+            ease: "expo.out",
+            scrollTrigger: {
+              trigger: sectionEl,
+              start: "top 80%",
+              once: true,
+            },
+          });
+        }
+
+        if (copyEls.length > 0) {
+          gsap.from(copyEls, {
+            y: 16,
+            duration: 0.56,
+            ease: "expo.out",
+            stagger: 0.055,
+            clearProps: "transform",
+            scrollTrigger: {
+              trigger: sectionEl,
+              start: "top 82%",
+              once: true,
+            },
+          });
+        }
+
+        const scrubSt = ScrollTrigger.create({
+          trigger: sectionEl,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true,
+          onUpdate: (self) => {
+            const state = useSceneStore.getState();
+            if (typeof state.setAspirationsProgress === "function") {
+              state.setAspirationsProgress(self.progress);
+            } else {
+              state.aspirationsProgress = self.progress;
+            }
+          },
+        });
+
+        cleanup = () => {
+          scrubSt.kill();
+        };
+      }, 200);
+
+      return () => {
+        killed = true;
+        clearTimeout(timer);
+        cleanup?.();
+      };
     },
     { scope: sectionRef, dependencies: [reducedMotion], revertOnUpdate: true }
   );

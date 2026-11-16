@@ -28,7 +28,8 @@ export function PortraitFallback({
             width={420}
             height={420}
             fetchPriority="high"
-            decoding="async"
+            loading="eager"
+            decoding="sync"
             className={styles.fallbackImage}
           />
         </picture>
