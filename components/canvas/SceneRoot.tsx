@@ -236,7 +236,7 @@ export function SceneRoot() {
             alt=""
             fill
             priority
-            quality={92}
+            quality={75}
             sizes="100vw"
             className={styles.heroCosmicImg}
           />

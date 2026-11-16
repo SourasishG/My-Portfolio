@@ -132,7 +132,7 @@ export function Navigation() {
                 toggleMotion();
                 playMechanicalClick();
               }}
-              aria-label={`Toggle interactive motion (currently ${motionEnabled ? "on" : "off"})`}
+              aria-label={`Motion [${motionEnabled ? "ON" : "OFF"}]: toggle interactive motion`}
               title="Toggle interactive 3D and scroll motion"
             >
               <span
@@ -152,7 +152,7 @@ export function Navigation() {
                   playAtmosphericChime(580);
                 }
               }}
-              aria-label={`Toggle interactive audio feedback (currently ${soundEnabled ? "on" : "off"})`}
+              aria-label={`Sound [${soundEnabled ? "ON" : "OFF"}]: toggle interactive audio feedback`}
               title="Toggle tactile Web Audio feedback (inspired by Lorenzo Lottici & Luka Skhiladze)"
             >
               <div className={styles.equalizerBars} aria-hidden="true">

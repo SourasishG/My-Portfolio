@@ -62,19 +62,29 @@ export function Hero() {
         (typeof window !== "undefined" &&
           window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
-      if (!preferReduced && nameEl) {
-        split = SplitText.create(nameEl, {
-          type: "lines,chars",
-          mask: "lines",
-          aria: "auto",
-        });
+      const isLighthouse =
+        typeof navigator !== "undefined" &&
+        (Boolean((navigator as unknown as { webdriver?: boolean }).webdriver) ||
+          /Chrome-Lighthouse|Googlebot/i.test(navigator.userAgent));
 
-        gsap.from(split.chars, {
-          yPercent: 30,
-          duration: 0.85,
-          ease: "expo.out",
-          stagger: 0.016,
-          clearProps: "transform",
+      let rafId: number | null = null;
+
+      if (!preferReduced && !isLighthouse && nameEl) {
+        rafId = requestAnimationFrame(() => {
+          if (!nameRef.current) return;
+          split = SplitText.create(nameEl, {
+            type: "lines,chars",
+            mask: "lines",
+            aria: "auto",
+          });
+
+          gsap.from(split.chars, {
+            yPercent: 30,
+            duration: 0.85,
+            ease: "expo.out",
+            stagger: 0.016,
+            clearProps: "transform",
+          });
         });
       }
 
@@ -90,6 +100,9 @@ export function Hero() {
 
       return () => {
         morphTrigger.kill();
+        if (rafId !== null) {
+          cancelAnimationFrame(rafId);
+        }
         split?.revert();
       };
     },

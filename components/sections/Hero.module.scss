@@ -58,7 +58,7 @@
 
 .coords {
   @include hud-label;
-  color: var(--fog, #555966);
+  color: rgba(255, 255, 255, 0.68);
   display: none;
 
   @include respond-up($bp-sm) {
@@ -128,7 +128,7 @@
 
 .roleEyebrow {
   @include hud-label;
-  color: var(--fog, #555966);
+  color: rgba(255, 255, 255, 0.72);
   letter-spacing: 0.18em;
   text-transform: uppercase;
 }
@@ -300,7 +300,7 @@
 }
 
 .factLabel {
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.68);
 }
 
 .factValue {
@@ -309,7 +309,7 @@
 }
 
 .factMeta {
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.62);
   font-size: 0.6875rem;
 }
 
@@ -376,7 +376,7 @@
   font-size: 0.6875rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--fog, #555966);
+  color: rgba(255, 255, 255, 0.68);
   text-decoration: none;
   transition: color 0.2s ease;
 
