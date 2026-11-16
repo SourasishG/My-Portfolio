@@ -9,7 +9,7 @@ export const HERO_FACTS = [
     index: "02",
     label: "FEATURED WORK",
     value: "2 Shipped Case Studies",
-    meta: "MUZO (Audio Discovery) & Office Aid (Monorepo)",
+    meta: "MedBuddy (PWA & WebGL) & Office Aid (Monorepo)",
   },
   {
     index: "03",
@@ -196,7 +196,7 @@ export const BEYOND_INTERESTS: BeyondInterest[] = [
     title: "Music",
     lens: "RHYTHM & AUDITORY PACING",
     caption:
-      "Attention to texture, pacing, and transition dynamics—curiosity that directly motivated engineering MUZO's browser audio engine.",
+      "Attention to texture, pacing, and transition dynamics—curiosity that directly motivated engineering browser audio engines and interactive WebGL experiences.",
   },
   {
     id: "movies",

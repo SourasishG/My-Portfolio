@@ -63,7 +63,7 @@ export const CORE_SKILL_GROUPS: SkillCategoryGroup[] = [
         group: "languages",
         summary: "Primary web application language across browser audio engines, state stores, and Express servers.",
         connections: [
-          { label: "MUZO Case Study", context: "HTML5 Audio engine & AbortController search", href: "/projects/muzo" },
+          { label: "MedBuddy Case Study", context: "Next.js 16 App Router, Scoped Middleware & PWA", href: "/projects/medbuddy" },
           { label: "Office Aid Case Study", context: "React 19 + Node/Express REST services", href: "/projects/office-aid" },
         ],
       },
@@ -99,7 +99,7 @@ export const CORE_SKILL_GROUPS: SkillCategoryGroup[] = [
         group: "frontend",
         summary: "Component-driven interfaces, custom hooks, state synchronization, and responsive dashboards.",
         connections: [
-          { label: "MUZO Case Study", context: "React + Zustand playback UI", href: "/projects/muzo" },
+          { label: "MedBuddy Case Study", context: "React 19 Server Components & TanStack React Query 5", href: "/projects/medbuddy" },
           { label: "Office Aid Case Study", context: "React 19 modular workspace", href: "/projects/office-aid" },
           { label: "Pokémon Atlas 3D", context: "React 19 + R3F Explorer", href: "https://github.com/SourasishG/Pokemon-Atlas-3D" },
         ],
@@ -110,7 +110,7 @@ export const CORE_SKILL_GROUPS: SkillCategoryGroup[] = [
         group: "frontend",
         summary: "Semantic landmarks, keyboard-accessible structure, and native Audio media primitives.",
         connections: [
-          { label: "MUZO Case Study", context: "Singleton HTMLAudioElement controller", href: "/projects/muzo" },
+          { label: "MedBuddy Case Study", context: "Accessible PWA interface & Service Worker precache", href: "/projects/medbuddy" },
           { label: "SIGNAL Portfolio", context: "Accessible semantic App Router DOM" },
         ],
       },
@@ -120,7 +120,7 @@ export const CORE_SKILL_GROUPS: SkillCategoryGroup[] = [
         group: "frontend",
         summary: "Hand-authored custom properties, grid/flex responsive systems, and neumorphic lighting.",
         connections: [
-          { label: "MUZO Case Study", context: "Zero-library 3D Neumorphic token sheet", href: "/projects/muzo" },
+          { label: "MedBuddy Case Study", context: "SCSS Modules, dark glassmorphism & responsive layouts", href: "/projects/medbuddy" },
         ],
       },
       {
@@ -213,7 +213,7 @@ export const CORE_SKILL_GROUPS: SkillCategoryGroup[] = [
         summary: "Designing JSON CRUD endpoints, Zod payload contracts, fallback external API mappers, and AbortController clients.",
         connections: [
           { label: "Office Aid Case Study", context: "JWT-authenticated REST API + 40 Postman tests", href: "/projects/office-aid" },
-          { label: "MUZO Case Study", context: "Deezer & iTunes Search catalog normalization", href: "/projects/muzo" },
+          { label: "MedBuddy Case Study", context: "Supabase PostgreSQL 16 RPCs & Web Push VAPID endpoints", href: "/projects/medbuddy" },
         ],
       },
     ],
@@ -342,6 +342,7 @@ export const CURRENTLY_EXPLORING_SKILLS: SkillItem[] = [
     summary: "Exploring App Router Server Components, static dynamic routes, and server API route proxies.",
     connections: [
       { label: "SIGNAL Portfolio", context: "This site is built with Next.js 16 App Router" },
+      { label: "MedBuddy Case Study", context: "Next.js 16 App Router + Supabase RLS", href: "/projects/medbuddy" },
       { label: "Support Ticket Dashboard", context: "Next.js 16 + Redux Toolkit", href: "https://support-ticket-dashboard-lime.vercel.app/" },
     ],
   },

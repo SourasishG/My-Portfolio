@@ -56,7 +56,7 @@ export function Projects() {
 
   const [activeFeaturedIdx, setActiveFeaturedIdx] = useState(0);
   const [screenIdxBySlug, setScreenIdxBySlug] = useState<Record<string, number>>({
-    muzo: 0,
+    medbuddy: 0,
     "office-aid": 0,
   });
   const [fullColorLocked, setFullColorLocked] = useState(false);
@@ -362,7 +362,7 @@ export function Projects() {
                       alt={activeDesktopScreen.alt}
                       fill
                       sizes="(max-width: 1023px) 94vw, 760px"
-                      priority={activeDesktopScreen.id === "muzo-player"}
+                      priority={activeDesktopScreen.id === "medbuddy-landing"}
                       className={styles.stageImage}
                       style={{ opacity: s3ShaderVisible ? 0 : 1 }}
                     />
