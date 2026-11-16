@@ -262,14 +262,17 @@ export function SceneRoot() {
               powerPreference: "high-performance",
             }}
             onCreated={({ gl }) => {
+              useSceneStore.getState().setCanvasReady(true);
               cleanupContextListenersRef.current?.();
               const el = gl.domElement;
               const onLost = (event: Event) => {
                 event.preventDefault();
                 setWebglFailed(true);
+                useSceneStore.getState().setCanvasReady(false);
               };
               const onRestored = () => {
                 setWebglFailed(false);
+                useSceneStore.getState().setCanvasReady(true);
               };
               el.addEventListener("webglcontextlost", onLost);
               el.addEventListener("webglcontextrestored", onRestored);

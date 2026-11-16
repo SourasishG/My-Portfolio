@@ -10,8 +10,8 @@ const DynamicSceneRoot = dynamic(
 
 /**
  * Client-side wrapper required by Next.js 16 App Router to load `<SceneRoot>` with `ssr: false`
- * outside Server Components. Defers heavy WebGL context initialization until immediately after
- * first paint / idle slice so Hero LCP, DOM hydration, and input readiness stay responsive.
+ * outside Server Components. Defers heavy WebGL context initialization until the page finishes
+ * loading and hits an idle slice, ensuring Hero LCP, DOM hydration, and input readiness stay 100% responsive.
  */
 export function CanvasPortal() {
   const [readyToMount, setReadyToMount] = useState(false);
@@ -20,25 +20,25 @@ export function CanvasPortal() {
     let timeoutId: number | null = null;
     let idleId: number | null = null;
 
-    const isLighthouse =
-      typeof navigator !== "undefined" &&
-      (Boolean((navigator as unknown as { webdriver?: boolean }).webdriver) ||
-        /Chrome-Lighthouse|Googlebot/i.test(navigator.userAgent));
+    const scheduleMount = () => {
+      if ("requestIdleCallback" in window) {
+        idleId = window.requestIdleCallback(
+          () => setReadyToMount(true),
+          { timeout: 2500 }
+        );
+      } else {
+        timeoutId = setTimeout(() => setReadyToMount(true), 1200) as unknown as number;
+      }
+    };
 
-    const isMobile = typeof window !== "undefined" && window.innerWidth < 1024;
-    // Defer WebGL mounting on mobile/Lighthouse to guarantee zero main-thread blocking during initial paint
-    const deferDelay = isLighthouse ? 3500 : isMobile ? 800 : 250;
-
-    if (typeof window !== "undefined" && "requestIdleCallback" in window && !isLighthouse) {
-      idleId = window.requestIdleCallback(
-        () => setReadyToMount(true),
-        { timeout: deferDelay }
-      );
+    if (document.readyState === "complete") {
+      scheduleMount();
     } else {
-      timeoutId = setTimeout(() => setReadyToMount(true), deferDelay) as unknown as number;
+      window.addEventListener("load", scheduleMount, { once: true });
     }
 
     return () => {
+      window.removeEventListener("load", scheduleMount);
       if (idleId !== null && "cancelIdleCallback" in window) {
         window.cancelIdleCallback(idleId);
       }

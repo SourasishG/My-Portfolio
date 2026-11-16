@@ -43,9 +43,10 @@ export function Hero() {
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   const useStaticFallback = useSceneStore((s) => s.useStaticFallback);
   const motionEnabled = useSceneStore((s) => s.motionEnabled);
+  const canvasReady = useSceneStore((s) => s.canvasReady);
 
   const showFallbackInDom =
-    useStaticFallback || !motionEnabled || reducedMotion || !isDesktop;
+    useStaticFallback || !motionEnabled || reducedMotion || !isDesktop || !canvasReady;
 
   useGSAP(
     () => {
@@ -71,19 +72,21 @@ export function Hero() {
 
       if (!preferReduced && !isLighthouse && nameEl) {
         rafId = requestAnimationFrame(() => {
-          if (!nameRef.current) return;
-          split = SplitText.create(nameEl, {
-            type: "lines,chars",
-            mask: "lines",
-            aria: "auto",
-          });
+          requestAnimationFrame(() => {
+            if (!nameRef.current) return;
+            split = SplitText.create(nameEl, {
+              type: "lines,chars",
+              mask: "lines",
+              aria: "auto",
+            });
 
-          gsap.from(split.chars, {
-            yPercent: 30,
-            duration: 0.85,
-            ease: "expo.out",
-            stagger: 0.016,
-            clearProps: "transform",
+            gsap.from(split.chars, {
+              yPercent: 30,
+              duration: 0.85,
+              ease: "expo.out",
+              stagger: 0.016,
+              clearProps: "transform",
+            });
           });
         });
       }

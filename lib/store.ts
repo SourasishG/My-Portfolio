@@ -38,6 +38,7 @@ interface SceneState {
   motionEnabled: boolean;
   soundEnabled: boolean;
   preloaderDone: boolean;
+  canvasReady: boolean;
 
   setScrollState: (scrollY: number, scrollProgress: number, velocity: number) => void;
   setPointer: (x: number, y: number) => void;
@@ -60,6 +61,7 @@ interface SceneState {
   setSoundEnabled: (enabled: boolean) => void;
   toggleSound: () => void;
   setPreloaderDone: (done: boolean) => void;
+  setCanvasReady: (ready: boolean) => void;
 }
 
 export const useSceneStore = create<SceneState>((set, get) => ({
@@ -87,6 +89,7 @@ export const useSceneStore = create<SceneState>((set, get) => ({
   motionEnabled: true,
   soundEnabled: false,
   preloaderDone: false,
+  canvasReady: false,
 
   setScrollState: (scrollY, scrollProgress, velocity) => {
     const state = get();
@@ -207,6 +210,12 @@ export const useSceneStore = create<SceneState>((set, get) => ({
   setPreloaderDone: (preloaderDone) => {
     if (get().preloaderDone !== preloaderDone) {
       set({ preloaderDone });
+    }
+  },
+
+  setCanvasReady: (canvasReady) => {
+    if (get().canvasReady !== canvasReady) {
+      set({ canvasReady });
     }
   },
 }));
