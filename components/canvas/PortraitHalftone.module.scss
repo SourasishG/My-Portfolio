@@ -20,7 +20,6 @@
   height: 100%;
   object-fit: contain;
   display: block;
-  filter: contrast(1.18) brightness(1.04);
 }
 
 .dotScreenOverlay {
@@ -30,6 +29,5 @@
   background-image: radial-gradient(rgba(244, 242, 238, 0.22) 1px, transparent 1px);
   background-size: 8px 8px;
   background-position: 0 0;
-  mix-blend-mode: overlay;
-  opacity: 0.85;
+  opacity: 0.65;
 }

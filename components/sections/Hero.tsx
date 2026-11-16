@@ -91,18 +91,23 @@ export function Hero() {
         });
       }
 
-      const morphTrigger = ScrollTrigger.create({
-        trigger: sectionEl,
-        start: "top top",
-        end: "bottom top",
-        scrub: true,
-        onUpdate: (self) => {
-          store.setHeroMorph(self.progress);
-        },
-      });
+      let morphTrigger: ScrollTrigger | null = null;
+      const morphTimer = setTimeout(() => {
+        if (!sectionRef.current) return;
+        morphTrigger = ScrollTrigger.create({
+          trigger: sectionEl,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+          onUpdate: (self) => {
+            store.setHeroMorph(self.progress);
+          },
+        });
+      }, 100);
 
       return () => {
-        morphTrigger.kill();
+        clearTimeout(morphTimer);
+        morphTrigger?.kill();
         if (rafId !== null) {
           cancelAnimationFrame(rafId);
         }

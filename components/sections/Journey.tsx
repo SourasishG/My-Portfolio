@@ -63,63 +63,73 @@ export function Journey() {
         (typeof window !== "undefined" &&
           window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
-      const entryEls = sectionEl.querySelectorAll(".journey-entry");
+      let killed = false;
+      const timer = setTimeout(() => {
+        if (killed || !sectionRef.current) return;
 
-      if (preferReduced) {
+        const entryEls = sectionEl.querySelectorAll(".journey-entry");
+
+        if (preferReduced) {
+          if (tracePath) {
+            gsap.set(tracePath, { clearProps: "strokeDasharray,strokeDashoffset" });
+          }
+          if (spinePath) {
+            gsap.set(spinePath, { clearProps: "strokeDasharray,strokeDashoffset" });
+          }
+          if (entryEls.length > 0) {
+            gsap.set(entryEls, { clearProps: "opacity,transform" });
+          }
+          return;
+        }
+
         if (tracePath) {
-          gsap.set(tracePath, { clearProps: "strokeDasharray,strokeDashoffset" });
+          gsap.set(tracePath, { strokeDasharray: 1, strokeDashoffset: 1 });
+          gsap.to(tracePath, {
+            strokeDashoffset: 0,
+            duration: 0.9,
+            ease: "expo.out",
+            scrollTrigger: {
+              trigger: sectionEl,
+              start: "top 80%",
+              once: true,
+            },
+          });
         }
-        if (spinePath) {
-          gsap.set(spinePath, { clearProps: "strokeDasharray,strokeDashoffset" });
+
+        if (spinePath && timelineWrap) {
+          gsap.set(spinePath, { strokeDasharray: 1, strokeDashoffset: 1 });
+          gsap.to(spinePath, {
+            strokeDashoffset: 0,
+            ease: "none",
+            scrollTrigger: {
+              trigger: timelineWrap,
+              start: "top 75%",
+              end: "bottom 68%",
+              scrub: 0.35,
+            },
+          });
         }
+
         if (entryEls.length > 0) {
-          gsap.set(entryEls, { clearProps: "opacity,transform" });
+          gsap.from(entryEls, {
+            y: 16,
+            duration: 0.56,
+            ease: "expo.out",
+            stagger: 0.055,
+            clearProps: "transform",
+            scrollTrigger: {
+              trigger: sectionEl,
+              start: "top 84%",
+              once: true,
+            },
+          });
         }
-        return;
-      }
+      }, 160);
 
-      if (tracePath) {
-        gsap.set(tracePath, { strokeDasharray: 1, strokeDashoffset: 1 });
-        gsap.to(tracePath, {
-          strokeDashoffset: 0,
-          duration: 0.9,
-          ease: "expo.out",
-          scrollTrigger: {
-            trigger: sectionEl,
-            start: "top 80%",
-            once: true,
-          },
-        });
-      }
-
-      if (spinePath && timelineWrap) {
-        gsap.set(spinePath, { strokeDasharray: 1, strokeDashoffset: 1 });
-        gsap.to(spinePath, {
-          strokeDashoffset: 0,
-          ease: "none",
-          scrollTrigger: {
-            trigger: timelineWrap,
-            start: "top 75%",
-            end: "bottom 68%",
-            scrub: 0.35,
-          },
-        });
-      }
-
-      if (entryEls.length > 0) {
-        gsap.from(entryEls, {
-          y: 16,
-          duration: 0.56,
-          ease: "expo.out",
-          stagger: 0.055,
-          clearProps: "transform",
-          scrollTrigger: {
-            trigger: sectionEl,
-            start: "top 84%",
-            once: true,
-          },
-        });
-      }
+      return () => {
+        killed = true;
+        clearTimeout(timer);
+      };
     },
     { scope: sectionRef, dependencies: [reducedMotion], revertOnUpdate: true }
   );
