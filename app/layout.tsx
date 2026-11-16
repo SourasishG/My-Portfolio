@@ -121,6 +121,24 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable}`}
       suppressHydrationWarning
     >
+      <head>
+        <link
+          rel="preload"
+          as="image"
+          href="/images/profile/portrait-bw-280.webp"
+          type="image/webp"
+          fetchPriority="high"
+          media="(max-width: 640px)"
+        />
+        <link
+          rel="preload"
+          as="image"
+          href="/images/profile/portrait-bw-420.webp"
+          type="image/webp"
+          fetchPriority="high"
+          media="(min-width: 641px)"
+        />
+      </head>
       <body>
         <script
           type="application/ld+json"
