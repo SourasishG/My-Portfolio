@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import Image from "next/image";
 import { useGSAP } from "@gsap/react";
-import { ContourSphereFallback } from "@/components/canvas/ContourSphere";
+import { ContourSphereFallback } from "@/components/canvas/fallbacks";
 import { ABOUT_COPY } from "@/content/copy";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { ensureGsapRegistered, gsap, ScrollTrigger } from "@/lib/gsap";

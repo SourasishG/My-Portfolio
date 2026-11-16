@@ -4,7 +4,7 @@ import { useRef } from "react";
 import Link from "next/link";
 import { useGSAP } from "@gsap/react";
 import { ArrowDownRight, Compass, Cpu, Layers } from "lucide-react";
-import { ChromeArchesFallback } from "@/components/canvas/ChromeArches";
+import { ChromeArchesFallback } from "@/components/canvas/fallbacks";
 import {
   ASPIRATIONS_COPY,
   ASPIRATIONS_HORIZONS,

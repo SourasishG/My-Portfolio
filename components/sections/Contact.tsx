@@ -15,7 +15,7 @@ import {
   Send,
 } from "lucide-react";
 import { FieldErrors, Resolver, useForm, useWatch } from "react-hook-form";
-import { HeroBlobFallback } from "@/components/canvas/HeroBlob";
+import { HeroBlobFallback } from "@/components/canvas/fallbacks";
 import { CONTACT_COPY } from "@/content/copy";
 import { SITE_IDENTITY, SOCIAL_LINKS } from "@/content/links";
 import { useReducedMotion } from "@/hooks/useReducedMotion";

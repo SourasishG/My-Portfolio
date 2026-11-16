@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft, Compass } from "lucide-react";
-import { ContourSphereFallback } from "@/components/canvas/ContourSphere";
+import { ContourSphereFallback } from "@/components/canvas/fallbacks";
 import styles from "./not-found.module.scss";
 
 export default function NotFoundPage() {

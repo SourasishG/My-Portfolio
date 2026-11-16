@@ -1,13 +1,11 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef } from "react";
-import Image from "next/image";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import vertexShader from "@/shaders/e2PortraitHalftone.vert.glsl";
 import fragmentShader from "@/shaders/e2PortraitHalftone.frag.glsl";
 import { useSceneStore } from "@/lib/store";
-import styles from "./PortraitHalftone.module.scss";
 
 export interface PortraitHalftoneProps {
   textureSrc?: string;
@@ -206,31 +204,4 @@ export function PortraitHalftone({
   );
 }
 
-/**
- * High-res accessible static fallback for touch devices, low-tier GPUs,
- * prefers-reduced-motion, or WebGL-disabled environments.
- */
-export function PortraitFallback({
-  alt = "Portrait of Sourasish Ghosh, Full-Stack Developer",
-  priority = false,
-}: {
-  alt?: string;
-  priority?: boolean;
-}) {
-  return (
-    <div className={styles.fallbackContainer} aria-label={alt}>
-      <div className={styles.imageWrap}>
-        <Image
-          src="/images/profile/portrait-bw.webp"
-          alt={alt}
-          width={420}
-          height={420}
-          priority={priority}
-          sizes="(max-width: 640px) 240px, (max-width: 1024px) 280px, 420px"
-          className={styles.fallbackImage}
-        />
-        <div className={styles.dotScreenOverlay} aria-hidden="true" />
-      </div>
-    </div>
-  );
-}
+export { PortraitFallback } from "./fallbacks/PortraitFallback";

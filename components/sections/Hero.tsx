@@ -10,7 +10,7 @@ import {
   Download,
   Mail,
 } from "lucide-react";
-import { PortraitFallback } from "@/components/canvas/PortraitHalftone";
+import { PortraitFallback } from "@/components/canvas/fallbacks";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { HERO_COPY } from "@/content/copy";
 import { SITE_IDENTITY, SOCIAL_LINKS } from "@/content/links";
