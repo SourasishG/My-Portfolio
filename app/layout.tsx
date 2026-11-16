@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     template: "%s | Sourasish Ghosh — SIGNAL",
   },
   description:
-    "Personal portfolio of Sourasish Ghosh, Full-Stack Developer and B.Tech Computer Science & Engineering undergraduate in Kolkata, India. Featuring MUZO, Office Aid, AWS DevOps training, and interactive WebGL experiences.",
+    "Personal portfolio of Sourasish Ghosh, Full-Stack Developer and B.Tech Computer Science & Engineering undergraduate in Kolkata, India. Featuring MedBuddy, Office Aid, AWS DevOps training, and interactive WebGL experiences.",
   authors: [{ name: SITE_IDENTITY.fullName }],
   creator: SITE_IDENTITY.fullName,
   keywords: [
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     "Express",
     "PostgreSQL",
     "MongoDB",
-    "MUZO",
+    "MedBuddy",
     "Office Aid",
     "Portfolio",
   ],
@@ -63,7 +63,7 @@ export const metadata: Metadata = {
     siteName: "SIGNAL — Sourasish Ghosh",
     title: "Sourasish Ghosh — Full-Stack Developer",
     description:
-      "I design, develop, and build digital experiences. Explore MUZO, Office Aid, full-stack architecture, and WebGL craft.",
+      "I design, develop, and build digital experiences. Explore MedBuddy, Office Aid, full-stack architecture, and WebGL craft.",
   },
   twitter: {
     card: "summary_large_image",

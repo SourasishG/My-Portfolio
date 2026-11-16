@@ -338,8 +338,8 @@ export function Toolkit() {
                   <>
                     <p className={styles.traceHintText}>{TOOLKIT_COPY.inspectHint}</p>
                     <div className={styles.traceLinks}>
-                      <Link href="/projects/muzo" className={styles.connectionChipLink}>
-                        <span>Inspect MUZO Stack</span>
+                      <Link href="/projects/medbuddy" className={styles.connectionChipLink}>
+                        <span>Inspect MedBuddy Stack</span>
                         <ArrowRight size={12} aria-hidden="true" />
                       </Link>
                       <Link
