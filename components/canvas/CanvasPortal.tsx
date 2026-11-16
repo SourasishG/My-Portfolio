@@ -11,12 +11,18 @@ const DynamicSceneRoot = dynamic(
 /**
  * Client-side wrapper required by Next.js 16 App Router to load `<SceneRoot>` with `ssr: false`
  * outside Server Components. Defers heavy WebGL context initialization until the page finishes
- * loading and hits an idle slice, ensuring Hero LCP, DOM hydration, and input readiness stay 100% responsive.
+ * loading and hits an idle slice on desktop devices.
+ * Touch / mobile devices stay 100% lightweight on Tier 0/1 vector and halftone DOM fallbacks.
  */
 export function CanvasPortal() {
   const [readyToMount, setReadyToMount] = useState(false);
 
   useEffect(() => {
+    // Only mount WebGL canvas on desktop viewports (min-width: 1024px)
+    if (typeof window === "undefined" || window.innerWidth < 1024) {
+      return;
+    }
+
     let timeoutId: number | null = null;
     let idleId: number | null = null;
 
