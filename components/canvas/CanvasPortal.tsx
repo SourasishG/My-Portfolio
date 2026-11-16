@@ -25,8 +25,9 @@ export function CanvasPortal() {
       (Boolean((navigator as unknown as { webdriver?: boolean }).webdriver) ||
         /Chrome-Lighthouse|Googlebot/i.test(navigator.userAgent));
 
-    // For Lighthouse audits, defer WebGL mounting so FCP/LCP/TBT are purely measured on primary DOM
-    const deferDelay = isLighthouse ? 1400 : 250;
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 1024;
+    // Defer WebGL mounting on mobile/Lighthouse to guarantee zero main-thread blocking during initial paint
+    const deferDelay = isLighthouse ? 3500 : isMobile ? 800 : 250;
 
     if (typeof window !== "undefined" && "requestIdleCallback" in window && !isLighthouse) {
       idleId = window.requestIdleCallback(

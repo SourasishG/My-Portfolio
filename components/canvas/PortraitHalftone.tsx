@@ -223,9 +223,10 @@ export function PortraitFallback({
         <Image
           src="/images/profile/portrait-bw.webp"
           alt={alt}
-          width={1024}
-          height={1024}
+          width={420}
+          height={420}
           priority={priority}
+          sizes="(max-width: 640px) 240px, (max-width: 1024px) 280px, 420px"
           className={styles.fallbackImage}
         />
         <div className={styles.dotScreenOverlay} aria-hidden="true" />
