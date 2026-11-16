@@ -15,7 +15,7 @@ export interface ProjectChallenge {
 
 export interface FeaturedProject {
   index: string;
-  slug: "muzo" | "office-aid";
+  slug: "medbuddy" | "office-aid";
   name: string;
   shortName: string;
   tagline: string;
@@ -52,73 +52,87 @@ export interface ArchiveProject {
 export const FEATURED_PROJECTS: FeaturedProject[] = [
   {
     index: "01",
-    slug: "muzo",
-    name: "MUZO",
-    shortName: "MUZO Audio",
-    tagline: "Web audio discovery platform with a decoupled HTML5 audio engine & soft 3D neumorphic system.",
-    category: "Web Audio Engine · UI Systems",
-    dateRange: "September 2026",
-    statusBadge: "Live Production Build",
+    slug: "medbuddy",
+    name: "MedBuddy",
+    shortName: "MedBuddy PWA",
+    tagline: "Privacy-first medicine adherence & expiry platform with a FEFO inventory engine and WebGL capsule stage.",
+    category: "Full-Stack PWA · WebGL Systems",
+    dateRange: "October 2026 – Present",
+    statusBadge: "Live Production Build (Vercel)",
     overview:
-      "MUZO is a responsive web audio discovery and playback platform engineered around a provider-agnostic singleton audio controller, persistent Zustand queue slices, race-free catalog search, and a custom tactile CSS design system.",
+      "MedBuddy is a calm, privacy-first medicine expiry, refill, and adherence tracker engineered with Next.js 16 (App Router), React 19, TypeScript, Supabase PostgreSQL with Row Level Security, and an installable Serwist Service Worker PWA. It couples an interactive Three.js/R3F 3D capsule orbital stage with a strict First-Expiry-First-Out (FEFO) clinical inventory ledger, automated opened-bottle shelf-life countdowns, zero-tracker VAPID Web Push notifications, and self-service GDPR/HIPAA-inspired data export and account deletion cascades.",
     problemAddressed:
-      "Binding HTML5 <audio> side effects directly inside React view components frequently causes stale event listeners, interrupted playback across navigation, and race-condition search results under fast typing.",
+      "Managing prescription medicines, opened syrups, and eye drops across a household frequently causes missed doses, accidental consumption of expired pharmaceuticals, and anxiety. Existing commercial trackers compromise user privacy with cross-site medical analytics and ad targeting while lacking physical batch-level expiry awareness.",
     roleSummary:
-      "Sole Full-Stack / Frontend Engineer — architected the audio engine, state synchronization hooks, catalog fallback mapper, and zero-library neumorphic UI token layer.",
+      "Sole Full-Stack / Systems Architect & Developer — engineered the Next.js 16 SSR frontend, Supabase PostgreSQL schema with RLS & Security Definer RPCs, FEFO stock reduction engine, VAPID Web Push pipeline, Serwist PWA offline caching, and interactive 3D capsule stage.",
     highlights: [
-      "Decoupled single HTMLAudioElement engine (audioEngine.js) synced cleanly through usePlayerSync + Zustand.",
-      "Eliminated stale search responses via debounced dispatch and AbortController request cancellation.",
-      "Deezer catalog integration through Vite proxy with automatic iTunes Search fallback normalization.",
-      "Soft 3D Neumorphic CSS custom-property tokens plus DOM text-measurement marquee for overflowing titles.",
+      "First-Expiry-First-Out (FEFO) physical batch inventory engine automatically deducting stock from earliest-expiring boxes, with dynamic opened-bottle shelf-life calculation (min(expiry_date, opened_on + shelf_life_days)).",
+      "Privacy-preserving VAPID Web Push architecture delivering scheduled dose reminders with zero 3rd-party trackers and lock-screen notification sanitization.",
+      "Scoped middleware & cookie isolation: marketing routes (/, /privacy, /offline) run 100% cookie-free, while app routes use HttpOnly SameSite=Lax @supabase/ssr cookies with HMAC-SHA256 signed onboarding state caching.",
+      "Interactive 3D orbital capsule stage built with Three.js, React Three Fiber, and Drei, featuring procedural pill swarms, real-time lighting, and an expiry slider demo.",
+      "Self-service data sovereignty: one-click machine-readable JSON data export (fn_export_my_data) and verified zero-residual account deletion (fn_delete_my_data).",
     ],
     builtItems: [
-      "Singleton HTML5 Audio Engine (audioEngine.js) isolated outside React component trees via event pub/sub.",
-      "Unidirectional playback & queue store (usePlayerStore.js) with cross-session localStorage persistence.",
-      "Full transport deck: play/pause, previous/next, shuffle, cycle repeat modes (off / repeat all / repeat one), scrubbable seek timeline, and volume + mute controls.",
-      "Debounced 400ms catalog search with AbortController cancellation (useMusicSearch.js) to eliminate race conditions.",
-      "Deezer catalog mapper + fallback iTunes Search API endpoint normalization (deezerApi.js).",
-      "Hand-crafted soft 3D Neumorphic UI token system (#E0E5EC / #FF6B35) built purely in CSS without third-party UI kits.",
-      "Automated width-measurement marquee ticker (TrackInfo.jsx) triggering only when track titles overflow their container.",
+      "Guided 3-step medicine onboarding wizard (/app/medicine/add) spanning clinical details, physical batch box registration, and recurring dose schedules.",
+      "Physical inventory ledger (/app/cabinet) with 4 clinical expiry status bands (Safe, Expiring Soon, Opened Bottle Warning, Expired).",
+      "Supabase PostgreSQL schema with strict Row Level Security (RLS) policies isolating user records and security definer functions for atomic batch transactions.",
+      "Full-featured Serwist Service Worker PWA with same-origin asset precaching and custom offline fallback (/offline).",
+      "Next.js 16 App Router architecture with React 19, Server Components for marketing, and TanStack React Query 5 for optimistic UI mutations and cache invalidation.",
+      "Automated pg_cron schedule engine for timely dose and refill dispatch.",
+      "Automated test matrix: Playwright end-to-end golden path suite, database scenario tests, service worker privacy audit, and security audit ensuring no service role keys reach the client.",
     ],
     technologies: [
-      "React",
-      "Vite",
-      "JavaScript ES6+",
-      "Zustand",
-      "HTML5 Audio API",
-      "CSS Custom Properties",
-      "Deezer & iTunes REST APIs",
-      "Lucide React",
+      "Next.js 16 (App Router)",
+      "React 19",
+      "TypeScript",
+      "Supabase (PostgreSQL 16 & RLS)",
+      "Serwist PWA",
+      "Three.js / React Three Fiber / Drei",
+      "TanStack React Query 5",
+      "GSAP & Framer Motion",
+      "Zod",
+      "Web Push (VAPID)",
+      "SCSS Modules",
+      "Playwright",
       "Vercel",
     ],
     challenges: [
       {
-        challenge: "Race conditions and out-of-order UI updates when typing search queries rapidly.",
+        challenge: "Ensuring medicine stock is deducted accurately across multiple physical boxes with distinct expiration dates without race conditions.",
         solution:
-          "Paired 400ms query debouncing with AbortController signal cleanup so superseded API requests cancel before committing state.",
+          "Architected a First-Expiry-First-Out (FEFO) SQL transaction pipeline in Supabase PostgreSQL that automatically sorts and decrements stock from the earliest valid batch box, tracking physical bottle open dates and restoring exact batch counts on dose undo.",
       },
       {
-        challenge: "Keeping long artist and song titles legible without layout jitter across narrow mobile cards.",
+        challenge: "Guaranteeing patient privacy and zero medical tracking on public landing and marketing routes while providing seamless session persistence in the app.",
         solution:
-          "Measured DOM scrollWidth vs clientWidth dynamically after render and computed CSS custom duration/distance tokens for conditional marquee scroll.",
+          "Implemented scoped Next.js middleware that strictly prevents cookies on /, /privacy, and /offline, restricting @supabase/ssr cookies exclusively to /app/* and caching verified onboarding status via a 10-minute HMAC-SHA256 signed cookie to eliminate redundant database roundtrips.",
       },
       {
-        challenge: "Upstream catalog preview unavailability or CORS blocks.",
+        challenge: "Delivering reliable cross-device dose notifications without relying on invasive third-party telemetry or notification aggregators.",
         solution:
-          "Routed Deezer catalog calls through Vite proxy configuration and added an automatic iTunes Search mapper returning 500x500 artwork and 30s audio previews.",
+          "Built a direct browser Web Push pipeline using standard VAPID keys, allowing direct dispatch from serverless cron workers to registered Service Worker push endpoints with lock-screen text redaction toggles.",
       },
     ],
-    githubUrl: "https://github.com/SourasishG/Muzo-music-player",
-    liveDemoUrl: "https://code-alpha-muzo-music-player.vercel.app/",
+    githubUrl: "https://github.com/SourasishG/MedBuddy-Medicine-Expiry-Refill-Tracker",
+    liveDemoUrl: "https://medbuddy-s7ven.vercel.app/",
     screens: [
       {
-        id: "muzo-player",
-        label: "Player Deck & Queue",
-        src: "/images/projects/muzo/screenshot-01.jpg",
-        alt: "MUZO soft neumorphic music player showing Now Playing artwork, orange seek scrub bar, transport controls, and Queue panel",
-        caption: "Soft neumorphic player deck, real-time seek timeline, and persistent 11-track Queue / Discovery drawer.",
-        width: 917,
-        height: 670,
+        id: "medbuddy-landing",
+        label: "3D Orbital Stage",
+        src: "/images/projects/medbuddy/landing-hero.png",
+        alt: "MedBuddy landing hero experience showing 3D interactive capsule swarm framing the mobile adherence cabinet",
+        caption: "Interactive Three.js / R3F capsule swarm framing the mobile medicine cabinet with real-time dose schedule HUDs.",
+        width: 1024,
+        height: 485,
+      },
+      {
+        id: "medbuddy-cabinet",
+        label: "Cabinet & Expiry Ledger",
+        src: "/images/projects/medbuddy/cabinet-monitor.jpg",
+        alt: "MedBuddy Home Cabinet showing Metformin, Eye Drops opened countdown, and Cough Syrup expiry status",
+        caption: "FEFO physical inventory ledger tracking open-bottle shelf-life countdowns and multi-box clinical expiry bands.",
+        width: 768,
+        height: 830,
       },
     ],
   },
@@ -251,8 +265,22 @@ export const FEATURED_PROJECTS: FeaturedProject[] = [
 
 export const MORE_WORK_PROJECTS: ArchiveProject[] = [
   {
-    id: "pokemon-atlas-3d",
+    id: "muzo-audio",
     index: "03",
+    name: "MUZO Web Audio Player",
+    category: "Web Audio Engine · UI Systems",
+    dateLabel: "Sep 2026",
+    summary:
+      "Responsive web audio discovery and playback platform engineered around a provider-agnostic singleton audio controller and persistent Zustand queue slices.",
+    architectureNote:
+      "Decoupled single HTMLAudioElement engine (audioEngine.js) isolated outside React component trees via event pub/sub, debounced search with AbortController cancellation, and hand-crafted neumorphic design tokens.",
+    technologies: ["React", "Vite", "JavaScript ES6+", "Zustand", "HTML5 Audio", "Deezer & iTunes APIs"],
+    githubUrl: "https://github.com/SourasishG/Muzo-music-player",
+    liveDemoUrl: "https://code-alpha-muzo-music-player.vercel.app/",
+  },
+  {
+    id: "pokemon-atlas-3d",
+    index: "04",
     name: "Pokémon Atlas 3D",
     category: "WebGL · R3F Explorer",
     dateLabel: "Aug – Nov 2026",
@@ -265,7 +293,7 @@ export const MORE_WORK_PROJECTS: ArchiveProject[] = [
   },
   {
     id: "support-ticket-dashboard",
-    index: "04",
+    index: "05",
     name: "Support Ticket Dashboard",
     category: "Next.js 16 · Resilience UI",
     dateLabel: "Sep – Oct 2026",
@@ -279,7 +307,7 @@ export const MORE_WORK_PROJECTS: ArchiveProject[] = [
   },
   {
     id: "face-recognition-system",
-    index: "05",
+    index: "06",
     name: "Face Recognition System",
     category: "Computer Vision · PyTorch",
     dateLabel: "Oct 2026",
@@ -292,7 +320,7 @@ export const MORE_WORK_PROJECTS: ArchiveProject[] = [
   },
   {
     id: "gradient-descent-visualizer",
-    index: "06",
+    index: "07",
     name: "Gradient Descent Visualizer",
     category: "ML Foundations · NumPy",
     dateLabel: "Oct 2026",

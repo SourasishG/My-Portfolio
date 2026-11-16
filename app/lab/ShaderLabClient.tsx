@@ -204,8 +204,8 @@ function ShaderLabInteractive() {
 
   const [s3Values] = useControls("S3 — Halftone Reveal", () => ({
     sample: {
-      options: ["MUZO", "Office Aid"] as const,
-      value: "MUZO" as const,
+      options: ["MedBuddy", "Office Aid"] as const,
+      value: "MedBuddy" as const,
     },
     dotDensity: { value: 78.0, min: 32.0, max: 130.0, step: 1.0 },
     revealRadius: { value: 0.42, min: 0.0, max: 1.45, step: 0.01 },
