@@ -118,7 +118,11 @@ export function SmoothScrollProvider({
     window.addEventListener("resize", syncActiveSection, { passive: true });
     const initialRaf = window.requestAnimationFrame(syncActiveSection);
 
-    if (reducedMotion) {
+    const isTouchOnly =
+      typeof window !== "undefined" &&
+      window.matchMedia("(pointer: coarse) and (hover: none)").matches;
+
+    if (reducedMotion || isTouchOnly) {
       const onNativeScroll = () => {
         const docHeight = Math.max(
           1,
