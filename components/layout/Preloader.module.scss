@@ -1,52 +1,253 @@
 @use "abstracts/tokens" as *;
 @use "abstracts/mixins" as *;
 
-.overlay {
+.preloaderRoot {
   position: fixed;
   inset: 0;
   z-index: $z-preloader;
-  background-color: $black;
+  background-color: #060709;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp($space-4, 4vw, $space-8);
+  user-select: none;
+  overflow: hidden;
+  cursor: pointer;
+  will-change: transform, opacity;
+  transition:
+    transform 0.65s cubic-bezier(0.85, 0, 0.15, 1),
+    opacity 0.5s ease;
+
+  &[data-exiting="true"] {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+// Background subtle grid & cosmic ambient glow
+.bgAmbient {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 50%, rgba($cyan, 0.05) 0%, transparent 65%),
+    radial-gradient(circle at 50% 60%, rgba($signal, 0.03) 0%, transparent 50%),
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+  background-position: center;
+}
+
+// Top Telemetry Header
+.topBar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: $font-mono;
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  color: $muted;
+}
+
+.systemTag {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  color: $white;
+}
+
+.pulseDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: $cyan;
+  box-shadow: 0 0 8px rgba($cyan, 0.8);
+  animation: pulseBeacon 1.2s infinite ease-in-out;
+}
+
+@keyframes pulseBeacon {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.3);
+  }
+}
+
+.coords {
+  color: rgba($white, 0.65);
+
+  @media (max-width: 640px) {
+    display: none;
+  }
+}
+
+// Central Calibration Stage
+.stageCenter {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $space-5;
+  margin: auto;
+  text-align: center;
+}
+
+// Calibrated HUD Radar Gyro
+.gyroWrapper {
+  position: relative;
+  width: clamp(140px, 22vw, 190px);
+  height: clamp(140px, 22vw, 190px);
   display: grid;
   place-items: center;
-  clip-path: inset(0 0 0 0);
-  cursor: pointer;
 }
 
-.inner {
-  display: grid;
-  justify-items: center;
-  gap: $space-5;
+.gyroSvg {
+  width: 100%;
+  height: 100%;
 }
 
-.markWrap {
-  width: 140px;
-  height: 140px;
+.outerRing {
+  transform-origin: 100px 100px;
+  animation: spinOuter 14s linear infinite;
 }
 
-.meta {
-  display: grid;
-  justify-items: center;
+.middleRing {
+  transform-origin: 100px 100px;
+  animation: spinMiddle 8s linear infinite reverse;
+}
+
+@keyframes spinOuter {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes spinMiddle {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+.coreEmblem {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: clamp(52px, 8vw, 68px);
+  height: clamp(52px, 8vw, 68px);
+}
+
+// Digital Counter & Readout
+.readoutBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: $space-2;
 }
 
-.brand {
-  @include hud-label;
+.percentageNumber {
+  font-family: $font-mono;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
   color: $white;
-  letter-spacing: 0.16em;
+  text-shadow: 0 0 24px rgba($cyan, 0.35);
+
+  .unit {
+    font-size: 0.45em;
+    font-weight: 400;
+    color: $signal;
+    margin-left: 0.15em;
+  }
 }
 
-.skipBtn {
-  min-height: 44px;
-  padding-inline: $space-4;
+// Calibration Progress Bar
+.meterTrack {
+  position: relative;
+  width: clamp(220px, 42vw, 320px);
+  height: 3px;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.meterFill {
+  height: 100%;
+  background: linear-gradient(90deg, $cyan, $signal);
+  border-radius: 9999px;
+  transition: width 0.12s linear;
+  box-shadow: 0 0 10px rgba($signal, 0.65);
+}
+
+.statusMessage {
   font-family: $font-mono;
   font-size: 0.6875rem;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba($white, 0.75);
+  min-height: 1.2em;
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+}
+
+.statusSignalHighlight {
+  color: $signal;
+}
+
+// Bottom Bar
+.bottomBar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: $font-mono;
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
   color: $muted;
-  border: 1px solid $line;
-  transition: color 0.18s ease, border-color 0.18s ease;
+}
+
+.architectLabel {
+  color: rgba($white, 0.55);
+
+  @media (max-width: 640px) {
+    display: none;
+  }
+}
+
+.skipCue {
+  color: $signal;
+  background: rgba($signal, 0.08);
+  border: 1px solid rgba($signal, 0.35);
+  padding: 4px 10px;
+  border-radius: $radius-xs;
+  font-family: $font-mono;
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 
   &:hover {
+    background-color: rgba($signal, 0.2);
+    border-color: $signal;
     color: $white;
-    border-color: $line-strong;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .outerRing,
+  .middleRing,
+  .pulseDot {
+    animation: none !important;
+  }
+  .preloaderRoot {
+    transition: opacity 0.2s ease !important;
   }
 }

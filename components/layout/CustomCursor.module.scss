@@ -1,54 +1,178 @@
 @use "abstracts/tokens" as *;
 
-.reticle {
+// Fixed pointer root container
+.cursorContainer {
+  pointer-events: none;
   position: fixed;
-  top: -12px;
-  left: -12px;
+  inset: 0;
   z-index: $z-cursor;
-  width: 24px;
-  height: 24px;
-  border-radius: 9999px;
-  border: 1px solid rgba($cyan, 0.65);
+  overflow: hidden;
+}
+
+// 1. Instant Precision Point Dot (0 latency)
+.pointerDot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 4px;
+  margin-top: -2px;
+  margin-left: -2px;
+  border-radius: 50%;
+  background-color: $white;
+  box-shadow: 0 0 6px rgba($signal, 0.85);
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform, opacity;
+  transition: opacity 0.15s ease, transform 0.18s $ease-expo-out, background-color 0.2s ease;
+
+  &[data-visible="true"] {
+    opacity: 1;
+  }
+
+  &[data-hover="true"] {
+    background-color: $signal;
+    box-shadow: 0 0 10px rgba($signal, 0.95);
+    transform: scale(1.4);
+  }
+}
+
+// 2. Smooth Lerping Precision HUD Reticle
+.reticleFrame {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 32px;
+  height: 32px;
+  margin-top: -16px;
+  margin-left: -16px;
   pointer-events: none;
   opacity: 0;
   will-change: transform, opacity;
   transition:
-    opacity 0.2s ease,
-    width 0.22s $ease-expo-out,
-    height 0.22s $ease-expo-out,
-    top 0.22s $ease-expo-out,
-    left 0.22s $ease-expo-out,
-    border-color 0.2s ease,
-    background-color 0.2s ease;
-
-  &::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 3px;
-    height: 3px;
-    transform: translate(-50%, -50%);
-    border-radius: 50%;
-    background-color: $white;
-  }
+    opacity 0.25s ease,
+    width 0.28s $ease-expo-out,
+    height 0.28s $ease-expo-out,
+    margin-top 0.28s $ease-expo-out,
+    margin-left 0.28s $ease-expo-out;
 
   &[data-visible="true"] {
-    opacity: 0.9;
+    opacity: 0.85;
   }
 
+  // Hover expansion over interactive elements
   &[data-hover="true"] {
-    top: -18px;
-    left: -18px;
-    width: 36px;
-    height: 36px;
-    border-color: $signal;
-    background-color: rgba($signal, 0.08);
+    width: 48px;
+    height: 48px;
+    margin-top: -24px;
+    margin-left: -24px;
+    opacity: 1;
+
+    .cornerBracket {
+      border-color: $signal;
+      box-shadow: 0 0 8px rgba($signal, 0.4);
+    }
+
+    .reticleSvg {
+      transform: rotate(45deg);
+    }
+  }
+
+  // Tactile recoil on mouse click / pointerdown
+  &[data-active="true"] {
+    transform: scale(0.8) !important;
   }
 }
 
+// Precision SVG Corner Brackets Container
+.reticleSvg {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transition: transform 0.35s $ease-expo-out;
+}
+
+// 4 Precision Futuristic Corner Reticle Brackets (┌ ┐ └ ┘)
+.cornerBracket {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-color: rgba($cyan, 0.75);
+  border-style: solid;
+  border-width: 0;
+  transition: border-color 0.2s ease, width 0.22s ease, height 0.22s ease, box-shadow 0.2s ease;
+}
+
+.bracketTL {
+  top: 0;
+  left: 0;
+  border-top-width: 1.5px;
+  border-left-width: 1.5px;
+}
+
+.bracketTR {
+  top: 0;
+  right: 0;
+  border-top-width: 1.5px;
+  border-right-width: 1.5px;
+}
+
+.bracketBL {
+  bottom: 0;
+  left: 0;
+  border-bottom-width: 1.5px;
+  border-left-width: 1.5px;
+}
+
+.bracketBR {
+  bottom: 0;
+  right: 0;
+  border-bottom-width: 1.5px;
+  border-right-width: 1.5px;
+}
+
+// Faint Cardinal Crosshair Ticks (12, 3, 6, 9 o'clock)
+.crosshairTick {
+  position: absolute;
+  background-color: rgba($white, 0.25);
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+
+.tickN {
+  top: -4px;
+  left: 50%;
+  width: 1px;
+  height: 3px;
+  transform: translateX(-50%);
+}
+
+.tickS {
+  bottom: -4px;
+  left: 50%;
+  width: 1px;
+  height: 3px;
+  transform: translateX(-50%);
+}
+
+.tickW {
+  left: -4px;
+  top: 50%;
+  width: 3px;
+  height: 1px;
+  transform: translateY(-50%);
+}
+
+.tickE {
+  right: -4px;
+  top: 50%;
+  width: 3px;
+  height: 1px;
+  transform: translateY(-50%);
+}
+
+// Completely disabled on touch screens and coarse pointers
 @media (hover: none), (pointer: coarse) {
-  .reticle {
-    display: none;
+  .cursorContainer {
+    display: none !important;
   }
 }
