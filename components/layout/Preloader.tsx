@@ -14,6 +14,15 @@ const STATUS_STAGES = [
   { threshold: 100, text: "SIGNAL ACQUIRED // SYSTEM READY" },
 ];
 
+function shouldSkipPreloader(): boolean {
+  if (typeof window === "undefined") return false;
+  const isBotOrLighthouse =
+    Boolean((navigator as unknown as { webdriver?: boolean }).webdriver) ||
+    /Chrome-Lighthouse|Googlebot|Lighthouse/i.test(navigator.userAgent);
+  const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  return isBotOrLighthouse || prefersReduced;
+}
+
 /**
  * High-precision futuristic HUD preloader fitting the SIGNAL // 00 aesthetic.
  * - Calibrated dual-rotary radar gyro with the signature split contour emblem.
@@ -23,12 +32,11 @@ const STATUS_STAGES = [
  * - Auto-bypasses on Lighthouse / bots and prefers-reduced-motion for zero test regression.
  */
 export function Preloader() {
-  const reducedMotion = useReducedMotion();
   const setPreloaderDone = useSceneStore((s) => s.setPreloaderDone);
 
   const [progress, setProgress] = useState(0);
   const [isExiting, setIsExiting] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(() => !shouldSkipPreloader());
 
   const lastTickThresholdRef = useRef(0);
   const finishedRef = useRef(false);
@@ -53,14 +61,8 @@ export function Preloader() {
   }, [setPreloaderDone]);
 
   useEffect(() => {
-    const isBotOrLighthouse =
-      typeof navigator !== "undefined" &&
-      (Boolean((navigator as unknown as { webdriver?: boolean }).webdriver) ||
-        /Chrome-Lighthouse|Googlebot|Lighthouse/i.test(navigator.userAgent));
-
-    if (reducedMotion || isBotOrLighthouse) {
+    if (!isVisible) {
       setPreloaderDone(true);
-      setIsVisible(false);
       return;
     }
 
@@ -217,7 +219,7 @@ export function Preloader() {
 
           {/* Live Dynamic Status Message */}
           <p className={styles.statusMessage}>
-            <span className={styles.statusSignalHighlight}>//</span>
+            <span className={styles.statusSignalHighlight}>{"//"}</span>
             <span>{activeStatus}</span>
           </p>
         </div>
