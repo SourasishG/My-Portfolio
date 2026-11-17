@@ -44,6 +44,7 @@ export function Hero() {
   const useStaticFallback = useSceneStore((s) => s.useStaticFallback);
   const motionEnabled = useSceneStore((s) => s.motionEnabled);
   const canvasReady = useSceneStore((s) => s.canvasReady);
+  const preloaderDone = useSceneStore((s) => s.preloaderDone);
 
   const showFallbackInDom =
     useStaticFallback || !motionEnabled || reducedMotion || !isDesktop || !canvasReady;
@@ -70,7 +71,7 @@ export function Hero() {
 
       let rafId: number | null = null;
 
-      if (!preferReduced && !isLighthouse && nameEl) {
+      if (!preferReduced && !isLighthouse && nameEl && preloaderDone) {
         rafId = requestAnimationFrame(() => {
           requestAnimationFrame(() => {
             if (!nameRef.current) return;
@@ -114,7 +115,7 @@ export function Hero() {
         split?.revert();
       };
     },
-    { scope: sectionRef, dependencies: [reducedMotion, motionEnabled], revertOnUpdate: true }
+    { scope: sectionRef, dependencies: [reducedMotion, motionEnabled, preloaderDone], revertOnUpdate: true }
   );
 
   // High-frequency pointer tracking on the central rotary stage (0 React setState)
