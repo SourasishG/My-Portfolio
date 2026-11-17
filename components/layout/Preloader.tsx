@@ -110,7 +110,7 @@ export function Preloader() {
       cancelAnimationFrame(animFrame);
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [handleFinish, reducedMotion, setPreloaderDone]);
+  }, [handleFinish, isVisible, setPreloaderDone]);
 
   if (!isVisible) {
     return null;
