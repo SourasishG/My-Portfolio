@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { playAtmosphericChime, playRotaryTick } from "@/lib/sound";
 import { useSceneStore } from "@/lib/store";
 import styles from "./Preloader.module.scss";
