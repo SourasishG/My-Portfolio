@@ -2,15 +2,19 @@
 
 import { useEffect, useRef, useState } from "react";
 
-// Silence known upstream Three.js deprecation warning emitted inside @react-three/fiber's internal store
+// Silence known upstream Three.js deprecation warning emitted inside @react-three/fiber's internal store (guarded once)
 if (typeof window !== "undefined") {
-  const origWarn = console.warn;
-  console.warn = (...args: unknown[]) => {
-    if (typeof args[0] === "string" && args[0].includes("THREE.Clock: This module has been deprecated")) {
-      return;
-    }
-    origWarn.apply(console, args);
-  };
+  const win = window as unknown as { __signalThreeWarnPatched?: boolean };
+  if (!win.__signalThreeWarnPatched) {
+    win.__signalThreeWarnPatched = true;
+    const origWarn = console.warn;
+    console.warn = (...args: unknown[]) => {
+      if (typeof args[0] === "string" && args[0].includes("THREE.Clock: This module has been deprecated")) {
+        return;
+      }
+      origWarn.apply(console, args);
+    };
+  }
 }
 
 import dynamic from "next/dynamic";
