@@ -40,7 +40,7 @@ function syncActiveSection() {
 
   for (const id of ORDERED_SECTIONS) {
     const el = document.getElementById(id);
-    if (!el || el.dataset.stagingSentinel === "true") continue;
+    if (!el) continue;
 
     const rect = el.getBoundingClientRect();
     if (rect.top <= probeY) {
@@ -73,7 +73,6 @@ export function SmoothScrollProvider({
   const pathname = usePathname();
   const isLabRoute = pathname?.startsWith("/lab") ?? false;
   const reducedMotion = useReducedMotion();
-  const lenisRef = useRef<Lenis | null>(null);
 
   // Sync active section immediately upon client route transitions onto "/"
   useEffect(() => {
@@ -147,7 +146,6 @@ export function SmoothScrollProvider({
       wheelMultiplier: 0.95,
       touchMultiplier: 1.15,
     });
-    lenisRef.current = lenis;
 
     lenis.on("scroll", (instance: Lenis) => {
       ScrollTrigger.update();
@@ -203,7 +201,6 @@ export function SmoothScrollProvider({
       document.removeEventListener("click", onAnchorClick);
       gsap.ticker.remove(onTick);
       lenis.destroy();
-      lenisRef.current = null;
     };
   }, [isLabRoute, reducedMotion]);
 
