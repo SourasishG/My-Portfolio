@@ -41,10 +41,6 @@ const DynamicToolkitConstellation = dynamic(
   () => import("@/components/canvas/ToolkitConstellation").then((m) => m.ToolkitConstellation),
   { ssr: false }
 );
-const DynamicVelocityPlane = dynamic(
-  () => import("@/components/canvas/VelocityPlane").then((m) => m.VelocityPlane),
-  { ssr: false }
-);
 const DynamicChromeArches = dynamic(
   () => import("@/components/canvas/ChromeArches").then((m) => m.ChromeArches),
   { ssr: false }
@@ -88,8 +84,10 @@ export function SceneRoot() {
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   const activeSection = useSceneStore((s) => s.activeSection);
   const webglFailed = useSceneStore((s) => s.webglFailed);
+  const motionEnabled = useSceneStore((s) => s.motionEnabled);
   const setWebglFailed = useSceneStore((s) => s.setWebglFailed);
   const setUseStaticFallback = useSceneStore((s) => s.setUseStaticFallback);
+  const setCanvasReady = useSceneStore((s) => s.setCanvasReady);
 
   const [tabHidden, setTabHidden] = useState(false);
   const cleanupContextListenersRef = useRef<(() => void) | null>(null);
@@ -113,14 +111,22 @@ export function SceneRoot() {
   const shouldRenderCanvas =
     !isLabRoute &&
     !reducedMotion &&
+    motionEnabled &&
     !webglFailed &&
     gpuProfile.webglSupported &&
     gpuProfile.webglViable;
 
   useEffect(() => {
+    if (!shouldRenderCanvas) {
+      setCanvasReady(false);
+    }
+  }, [shouldRenderCanvas, setCanvasReady]);
+
+  useEffect(() => {
     const needsFallback =
       !isLabRoute &&
       (reducedMotion ||
+        !motionEnabled ||
         webglFailed ||
         (gpuProfile.ready && (!gpuProfile.webglSupported || !gpuProfile.webglViable)));
     setUseStaticFallback(needsFallback);
@@ -129,6 +135,7 @@ export function SceneRoot() {
     gpuProfile.webglSupported,
     gpuProfile.webglViable,
     isLabRoute,
+    motionEnabled,
     reducedMotion,
     setUseStaticFallback,
     webglFailed,
@@ -149,9 +156,9 @@ export function SceneRoot() {
     const el = cosmicBackdropRef.current;
     if (!el) return;
 
-    let ticking = false;
+    let rafId: number | null = null;
     const updateScrollParallax = () => {
-      ticking = false;
+      rafId = null;
       const scrollY = window.scrollY || window.pageYOffset || 0;
       const vh = window.innerHeight || 800;
 
@@ -175,9 +182,8 @@ export function SceneRoot() {
     };
 
     const onScroll = () => {
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(updateScrollParallax);
+      if (rafId === null) {
+        rafId = requestAnimationFrame(updateScrollParallax);
       }
     };
 
@@ -186,6 +192,7 @@ export function SceneRoot() {
 
     return () => {
       window.removeEventListener("scroll", onScroll);
+      if (rafId !== null) cancelAnimationFrame(rafId);
     };
   }, [isHomeRoute]);
 
@@ -202,9 +209,6 @@ export function SceneRoot() {
   const showToolkitConstellation = isHomeRoute && activeSection === "toolkit";
   const mountToolkitConstellation =
     isHomeRoute && (activeSection === "toolkit" || activeSection === "projects" || activeSection === "journey");
-
-  const showVelocityPlane = isLabRoute;
-  const mountVelocityPlane = isLabRoute;
 
   const showChromeArches = isHomeRoute && activeSection === "aspirations";
   const mountChromeArches =
