@@ -106,100 +106,100 @@ export function Projects() {
         (typeof window !== "undefined" &&
           window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
-      let cleanupMm: (() => void) | undefined;
+      let innerCtx: gsap.Context | null = null;
+      let mm: gsap.MatchMedia | null = null;
       let killed = false;
 
       const timer = setTimeout(() => {
         if (killed || !sectionRef.current) return;
 
-        const revealEls = sectionEl.querySelectorAll(".projects-reveal");
+        innerCtx = gsap.context(() => {
+          const revealEls = sectionEl.querySelectorAll(".projects-reveal");
 
-        if (preferReduced) {
-          pinTriggerRef.current = null;
+          if (preferReduced) {
+            pinTriggerRef.current = null;
+            if (tracePath) {
+              gsap.set(tracePath, { clearProps: "strokeDasharray,strokeDashoffset" });
+            }
+            if (revealEls.length > 0) {
+              gsap.set(revealEls, { clearProps: "opacity,transform" });
+            }
+            return;
+          }
+
           if (tracePath) {
-            gsap.set(tracePath, { clearProps: "strokeDasharray,strokeDashoffset" });
-          }
-          if (revealEls.length > 0) {
-            gsap.set(revealEls, { clearProps: "opacity,transform" });
-          }
-          return;
-        }
-
-        if (tracePath) {
-          gsap.set(tracePath, { strokeDasharray: 1, strokeDashoffset: 1 });
-          gsap.to(tracePath, {
-            strokeDashoffset: 0,
-            duration: 0.9,
-            ease: "expo.out",
-            scrollTrigger: {
-              trigger: sectionEl,
-              start: "top 80%",
-              once: true,
-            },
-          });
-        }
-
-        if (revealEls.length > 0) {
-          gsap.from(revealEls, {
-            y: 16,
-            duration: 0.58,
-            ease: "expo.out",
-            stagger: 0.05,
-            clearProps: "transform",
-            scrollTrigger: {
-              trigger: sectionEl,
-              start: "top 84%",
-              once: true,
-            },
-          });
-        }
-
-        const mm = gsap.matchMedia();
-        if (usePinnedDesktop && pinEl) {
-          mm.add("(min-width: 1024px)", () => {
-            const pinSt = ScrollTrigger.create({
-              trigger: pinEl,
-              start: "top 68px",
-              end: "+=820",
-              pin: true,
-              scrub: 0.25,
-              anticipatePin: 1,
-              invalidateOnRefresh: true,
-              refreshPriority: 1,
-              onUpdate: (self) => {
-                if (progressFillRef.current) {
-                  progressFillRef.current.style.transform = `scaleX(${self.progress})`;
-                }
-                const nextIdx = self.progress >= 0.48 ? 1 : 0;
-                if (nextIdx !== lastPinnedIdxRef.current) {
-                  lastPinnedIdxRef.current = nextIdx;
-                  setActiveFeaturedIdx(nextIdx);
-                }
+            gsap.set(tracePath, { strokeDasharray: 1, strokeDashoffset: 1 });
+            gsap.to(tracePath, {
+              strokeDashoffset: 0,
+              duration: 0.9,
+              ease: "expo.out",
+              scrollTrigger: {
+                trigger: sectionEl,
+                start: "top 80%",
+                once: true,
               },
             });
+          }
 
-            pinTriggerRef.current = pinSt;
-            ScrollTrigger.sort();
-            ScrollTrigger.refresh();
-            return () => {
-              pinTriggerRef.current = null;
-              pinSt.kill();
-            };
-          });
-        } else {
-          pinTriggerRef.current = null;
-        }
+          if (revealEls.length > 0) {
+            gsap.from(revealEls, {
+              y: 16,
+              duration: 0.58,
+              ease: "expo.out",
+              stagger: 0.05,
+              clearProps: "transform",
+              scrollTrigger: {
+                trigger: sectionEl,
+                start: "top 84%",
+                once: true,
+              },
+            });
+          }
 
-        cleanupMm = () => {
-          pinTriggerRef.current = null;
-          mm.revert();
-        };
+          mm = gsap.matchMedia();
+          if (usePinnedDesktop && pinEl) {
+            mm.add("(min-width: 1024px)", () => {
+              const pinSt = ScrollTrigger.create({
+                trigger: pinEl,
+                start: "top 68px",
+                end: "+=820",
+                pin: true,
+                scrub: 0.25,
+                anticipatePin: 1,
+                invalidateOnRefresh: true,
+                refreshPriority: 1,
+                onUpdate: (self) => {
+                  if (progressFillRef.current) {
+                    progressFillRef.current.style.transform = `scaleX(${self.progress})`;
+                  }
+                  const nextIdx = self.progress >= 0.48 ? 1 : 0;
+                  if (nextIdx !== lastPinnedIdxRef.current) {
+                    lastPinnedIdxRef.current = nextIdx;
+                    setActiveFeaturedIdx(nextIdx);
+                  }
+                },
+              });
+
+              pinTriggerRef.current = pinSt;
+              ScrollTrigger.sort();
+              ScrollTrigger.refresh();
+              return () => {
+                pinTriggerRef.current = null;
+                pinSt.kill();
+              };
+            });
+          } else {
+            pinTriggerRef.current = null;
+          }
+        }, sectionEl);
       }, 120);
 
       return () => {
         killed = true;
         clearTimeout(timer);
-        cleanupMm?.();
+        pinTriggerRef.current = null;
+        mm?.revert();
+        innerCtx?.revert();
       };
     },
     {

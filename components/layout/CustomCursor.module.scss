@@ -1,6 +1,5 @@
 @use "abstracts/tokens" as *;
 
-// Fixed pointer root container
 .cursorContainer {
   pointer-events: none;
   position: fixed;
@@ -9,7 +8,7 @@
   overflow: hidden;
 }
 
-// 1. Instant Precision Point Dot (0 latency)
+// 1. Instant Precision Point Dot (0 latency; positioning via inline translate3d)
 .pointerDot {
   position: fixed;
   top: 0;
@@ -18,26 +17,36 @@
   height: 4px;
   margin-top: -2px;
   margin-left: -2px;
-  border-radius: 50%;
-  background-color: $white;
-  box-shadow: 0 0 6px rgba($signal, 0.85);
   pointer-events: none;
   opacity: 0;
   will-change: transform, opacity;
-  transition: opacity 0.15s ease, transform 0.18s $ease-expo-out, background-color 0.2s ease;
+  transition: opacity 0.15s ease;
 
   &[data-visible="true"] {
     opacity: 1;
   }
 
-  &[data-hover="true"] {
+  &[data-hover="true"] .dotCore {
     background-color: $signal;
     box-shadow: 0 0 10px rgba($signal, 0.95);
-    transform: scale(1.4);
+    transform: scale(1.45);
   }
 }
 
-// 2. Smooth Lerping Precision HUD Reticle
+.dotCore {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: $white;
+  box-shadow: 0 0 6px rgba($signal, 0.85);
+  transition:
+    transform 0.18s $ease-expo-out,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+// 2. Smooth Lerping Precision HUD Reticle (positioning via inline translate3d)
 .reticleFrame {
   position: fixed;
   top: 0;
@@ -60,7 +69,6 @@
     opacity: 0.85;
   }
 
-  // Hover expansion over interactive elements
   &[data-hover="true"] {
     width: 48px;
     height: 48px;
@@ -78,21 +86,24 @@
     }
   }
 
-  // Tactile recoil on mouse click / pointerdown
-  &[data-active="true"] {
-    transform: scale(0.8) !important;
+  // Tactile recoil applied to child so inline translate3d on .reticleFrame is never overridden
+  &[data-active="true"] .reticleSvg {
+    transform: scale(0.78);
+  }
+
+  &[data-hover="true"][data-active="true"] .reticleSvg {
+    transform: rotate(45deg) scale(0.78);
   }
 }
 
-// Precision SVG Corner Brackets Container
 .reticleSvg {
   width: 100%;
   height: 100%;
   position: relative;
-  transition: transform 0.35s $ease-expo-out;
+  transition: transform 0.28s $ease-expo-out;
 }
 
-// 4 Precision Futuristic Corner Reticle Brackets (┌ ┐ └ ┘)
+// 4 Precision Futuristic Corner Reticle Brackets
 .cornerBracket {
   position: absolute;
   width: 7px;
@@ -100,7 +111,7 @@
   border-color: rgba($cyan, 0.75);
   border-style: solid;
   border-width: 0;
-  transition: border-color 0.2s ease, width 0.22s ease, height 0.22s ease, box-shadow 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .bracketTL {
@@ -135,7 +146,6 @@
 .crosshairTick {
   position: absolute;
   background-color: rgba($white, 0.25);
-  transition: background-color 0.2s ease, opacity 0.2s ease;
 }
 
 .tickN {
@@ -170,7 +180,6 @@
   transform: translateY(-50%);
 }
 
-// Completely disabled on touch screens and coarse pointers
 @media (hover: none), (pointer: coarse) {
   .cursorContainer {
     display: none !important;

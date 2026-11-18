@@ -49,49 +49,14 @@ export function Hero() {
   const showFallbackInDom =
     useStaticFallback || !motionEnabled || reducedMotion || !isDesktop || !canvasReady;
 
+  // Register scroll-linked hero morph independently of preloaderDone
   useGSAP(
     () => {
       ensureGsapRegistered();
       const sectionEl = sectionRef.current;
-      const nameEl = nameRef.current;
       if (!sectionEl) return;
 
       const store = useSceneStore.getState();
-      let split: SplitText | null = null;
-      const preferReduced =
-        reducedMotion ||
-        !motionEnabled ||
-        (typeof window !== "undefined" &&
-          window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-
-      const isLighthouse =
-        typeof navigator !== "undefined" &&
-        (Boolean((navigator as unknown as { webdriver?: boolean }).webdriver) ||
-          /Chrome-Lighthouse|Googlebot/i.test(navigator.userAgent));
-
-      let rafId: number | null = null;
-
-      if (!preferReduced && !isLighthouse && nameEl && preloaderDone) {
-        rafId = requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            if (!nameRef.current) return;
-            split = SplitText.create(nameEl, {
-              type: "lines,chars",
-              mask: "lines",
-              aria: "auto",
-            });
-
-            gsap.from(split.chars, {
-              yPercent: 30,
-              duration: 0.85,
-              ease: "expo.out",
-              stagger: 0.016,
-              clearProps: "transform",
-            });
-          });
-        });
-      }
-
       let morphTrigger: ScrollTrigger | null = null;
       const morphTimer = setTimeout(() => {
         if (!sectionRef.current) return;
@@ -109,9 +74,61 @@ export function Hero() {
       return () => {
         clearTimeout(morphTimer);
         morphTrigger?.kill();
-        if (rafId !== null) {
-          cancelAnimationFrame(rafId);
-        }
+      };
+    },
+    { scope: sectionRef }
+  );
+
+  // Trigger display title character settle once preloader lifts
+  useGSAP(
+    () => {
+      ensureGsapRegistered();
+      const nameEl = nameRef.current;
+      if (!nameEl || !preloaderDone) return;
+
+      const preferReduced =
+        reducedMotion ||
+        !motionEnabled ||
+        (typeof window !== "undefined" &&
+          window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+
+      const isLighthouse =
+        typeof navigator !== "undefined" &&
+        (Boolean((navigator as unknown as { webdriver?: boolean }).webdriver) ||
+          /Chrome-Lighthouse|Googlebot/i.test(navigator.userAgent));
+
+      if (preferReduced || isLighthouse) return;
+
+      let split: SplitText | null = null;
+      let innerCtx: gsap.Context | null = null;
+      let rafId1: number | null = null;
+      let rafId2: number | null = null;
+
+      rafId1 = requestAnimationFrame(() => {
+        rafId2 = requestAnimationFrame(() => {
+          if (!nameRef.current) return;
+          innerCtx = gsap.context(() => {
+            split = SplitText.create(nameEl, {
+              type: "lines,chars",
+              mask: "lines",
+              aria: "auto",
+            });
+
+            gsap.from(split.chars, {
+              yPercent: 30,
+              duration: 0.85,
+              ease: "expo.out",
+              stagger: 0.016,
+              clearProps: "transform",
+            });
+          }, sectionRef);
+        });
+      });
+
+      return () => {
+        if (rafId1 !== null) cancelAnimationFrame(rafId1);
+        if (rafId2 !== null) cancelAnimationFrame(rafId2);
+        innerCtx?.revert();
         split?.revert();
       };
     },
