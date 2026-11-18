@@ -60,83 +60,71 @@ export function Aspirations() {
         (typeof window !== "undefined" &&
           window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
-      let cleanup: (() => void) | undefined;
+      let innerCtx: gsap.Context | null = null;
       let killed = false;
 
       const timer = setTimeout(() => {
         if (killed || !sectionRef.current) return;
 
-        const copyEls = sectionEl.querySelectorAll(".aspirations-copy");
+        innerCtx = gsap.context(() => {
+          const copyEls = sectionEl.querySelectorAll(".aspirations-copy");
 
-        if (preferReduced) {
-          if (tracePath) {
-            gsap.set(tracePath, { clearProps: "strokeDasharray,strokeDashoffset" });
-          }
-          if (copyEls.length > 0) {
-            gsap.set(copyEls, { clearProps: "opacity,transform" });
-          }
-          const state = useSceneStore.getState();
-          if (typeof state.setAspirationsProgress === "function") {
-            state.setAspirationsProgress(0.35);
-          } else {
-            state.aspirationsProgress = 0.35;
-          }
-          return;
-        }
-
-        if (tracePath) {
-          gsap.set(tracePath, { strokeDasharray: 1, strokeDashoffset: 1 });
-          gsap.to(tracePath, {
-            strokeDashoffset: 0,
-            duration: 0.9,
-            ease: "expo.out",
-            scrollTrigger: {
-              trigger: sectionEl,
-              start: "top 80%",
-              once: true,
-            },
-          });
-        }
-
-        if (copyEls.length > 0) {
-          gsap.from(copyEls, {
-            y: 16,
-            duration: 0.56,
-            ease: "expo.out",
-            stagger: 0.055,
-            clearProps: "transform",
-            scrollTrigger: {
-              trigger: sectionEl,
-              start: "top 82%",
-              once: true,
-            },
-          });
-        }
-
-        const scrubSt = ScrollTrigger.create({
-          trigger: sectionEl,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: true,
-          onUpdate: (self) => {
-            const state = useSceneStore.getState();
-            if (typeof state.setAspirationsProgress === "function") {
-              state.setAspirationsProgress(self.progress);
-            } else {
-              state.aspirationsProgress = self.progress;
+          if (preferReduced) {
+            if (tracePath) {
+              gsap.set(tracePath, { clearProps: "strokeDasharray,strokeDashoffset" });
             }
-          },
-        });
+            if (copyEls.length > 0) {
+              gsap.set(copyEls, { clearProps: "opacity,transform" });
+            }
+            useSceneStore.getState().setAspirationsProgress(0.35);
+            return;
+          }
 
-        cleanup = () => {
-          scrubSt.kill();
-        };
+          if (tracePath) {
+            gsap.set(tracePath, { strokeDasharray: 1, strokeDashoffset: 1 });
+            gsap.to(tracePath, {
+              strokeDashoffset: 0,
+              duration: 0.9,
+              ease: "expo.out",
+              scrollTrigger: {
+                trigger: sectionEl,
+                start: "top 80%",
+                once: true,
+              },
+            });
+          }
+
+          if (copyEls.length > 0) {
+            gsap.from(copyEls, {
+              y: 16,
+              duration: 0.56,
+              ease: "expo.out",
+              stagger: 0.055,
+              clearProps: "transform",
+              scrollTrigger: {
+                trigger: sectionEl,
+                start: "top 82%",
+                once: true,
+              },
+            });
+          }
+
+          ScrollTrigger.create({
+            trigger: sectionEl,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true,
+            onUpdate: (self) => {
+              useSceneStore.getState().setAspirationsProgress(self.progress);
+            },
+          });
+        }, sectionEl);
       }, 200);
 
       return () => {
         killed = true;
         clearTimeout(timer);
-        cleanup?.();
+        innerCtx?.revert();
       };
     },
     { scope: sectionRef, dependencies: [reducedMotion], revertOnUpdate: true }
