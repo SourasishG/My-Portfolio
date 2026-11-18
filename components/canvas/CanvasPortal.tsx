@@ -55,9 +55,9 @@ export function CanvasPortal() {
         clearTimeout(timeoutId);
       }
     };
-  }, []);
+  }, [isLabRoute]);
 
-  if (!readyToMount) {
+  if (isLabRoute || !readyToMount) {
     return null;
   }
 
