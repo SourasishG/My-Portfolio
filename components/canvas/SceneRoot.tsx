@@ -330,15 +330,6 @@ export function SceneRoot() {
               />
             )}
 
-            {/* S7 — Scroll-Velocity Distortion synced to Section 06 $paper aperture */}
-            {mountVelocityPlane && (
-              <DynamicVelocityPlane
-                visible={showVelocityPlane}
-                reducedMotion={reducedMotion}
-                viewportSelector="#beyond-s7-stage"
-              />
-            )}
-
             {/* S5 — Chrome Fluid Arches synced to Section 07 Aspirations aperture */}
             {mountChromeArches && (
               <DynamicChromeArches
