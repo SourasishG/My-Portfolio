@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+import { usePathname } from "next/navigation";
 
 const DynamicSceneRoot = dynamic(
   () => import("@/components/canvas/SceneRoot").then((mod) => mod.SceneRoot),
@@ -15,11 +16,13 @@ const DynamicSceneRoot = dynamic(
  * Touch / mobile devices stay 100% lightweight on Tier 0/1 vector and halftone DOM fallbacks.
  */
 export function CanvasPortal() {
+  const pathname = usePathname();
+  const isLabRoute = pathname?.startsWith("/lab") ?? false;
   const [readyToMount, setReadyToMount] = useState(false);
 
   useEffect(() => {
-    // Only mount WebGL canvas on desktop viewports (min-width: 1024px)
-    if (typeof window === "undefined" || window.innerWidth < 1024) {
+    // Only mount WebGL canvas on desktop viewports (min-width: 1024px) outside /lab
+    if (isLabRoute || typeof window === "undefined" || window.innerWidth < 1024) {
       return;
     }
 
@@ -52,9 +55,9 @@ export function CanvasPortal() {
         clearTimeout(timeoutId);
       }
     };
-  }, []);
+  }, [isLabRoute]);
 
-  if (!readyToMount) {
+  if (isLabRoute || !readyToMount) {
     return null;
   }
 

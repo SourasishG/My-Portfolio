@@ -138,74 +138,78 @@ export function Contact() {
         (typeof window !== "undefined" &&
           window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
+      let innerCtx: gsap.Context | null = null;
       let killed = false;
       const timer = setTimeout(() => {
         if (killed || !sectionRef.current) return;
 
-        const introEls = sectionEl.querySelectorAll(".contact-intro");
-        const artPaths = lineGroup ? lineGroup.querySelectorAll("path") : [];
+        innerCtx = gsap.context(() => {
+          const introEls = sectionEl.querySelectorAll(".contact-intro");
+          const artPaths = lineGroup ? lineGroup.querySelectorAll("path") : [];
 
-        if (preferReduced) {
+          if (preferReduced) {
+            if (hudPath) {
+              gsap.set(hudPath, { clearProps: "strokeDasharray,strokeDashoffset" });
+            }
+            if (artPaths.length > 0) {
+              gsap.set(artPaths, { clearProps: "strokeDasharray,strokeDashoffset" });
+            }
+            if (introEls.length > 0) {
+              gsap.set(introEls, { clearProps: "opacity,transform" });
+            }
+            return;
+          }
+
           if (hudPath) {
-            gsap.set(hudPath, { clearProps: "strokeDasharray,strokeDashoffset" });
+            gsap.set(hudPath, { strokeDasharray: 1, strokeDashoffset: 1 });
+            gsap.to(hudPath, {
+              strokeDashoffset: 0,
+              duration: 0.9,
+              ease: "expo.out",
+              scrollTrigger: {
+                trigger: sectionEl,
+                start: "top 80%",
+                once: true,
+              },
+            });
           }
+
           if (artPaths.length > 0) {
-            gsap.set(artPaths, { clearProps: "strokeDasharray,strokeDashoffset" });
+            gsap.set(artPaths, { strokeDasharray: 1, strokeDashoffset: 1 });
+            gsap.to(artPaths, {
+              strokeDashoffset: 0,
+              duration: 1.05,
+              stagger: 0.14,
+              ease: "expo.out",
+              scrollTrigger: {
+                trigger: sectionEl,
+                start: "top 75%",
+                once: true,
+              },
+            });
           }
+
           if (introEls.length > 0) {
-            gsap.set(introEls, { clearProps: "opacity,transform" });
+            gsap.from(introEls, {
+              y: 16,
+              duration: 0.56,
+              ease: "expo.out",
+              stagger: 0.06,
+              clearProps: "transform",
+              scrollTrigger: {
+                trigger: sectionEl,
+                start: "top 82%",
+                once: true,
+              },
+            });
           }
-          return;
-        }
-
-        if (hudPath) {
-          gsap.set(hudPath, { strokeDasharray: 1, strokeDashoffset: 1 });
-          gsap.to(hudPath, {
-            strokeDashoffset: 0,
-            duration: 0.9,
-            ease: "expo.out",
-            scrollTrigger: {
-              trigger: sectionEl,
-              start: "top 80%",
-              once: true,
-            },
-          });
-        }
-
-        if (artPaths.length > 0) {
-          gsap.set(artPaths, { strokeDasharray: 1, strokeDashoffset: 1 });
-          gsap.to(artPaths, {
-            strokeDashoffset: 0,
-            duration: 1.05,
-            stagger: 0.14,
-            ease: "expo.out",
-            scrollTrigger: {
-              trigger: sectionEl,
-              start: "top 75%",
-              once: true,
-            },
-          });
-        }
-
-        if (introEls.length > 0) {
-          gsap.from(introEls, {
-            y: 16,
-            duration: 0.56,
-            ease: "expo.out",
-            stagger: 0.06,
-            clearProps: "transform",
-            scrollTrigger: {
-              trigger: sectionEl,
-              start: "top 82%",
-              once: true,
-            },
-          });
-        }
+        }, sectionEl);
       }, 200);
 
       return () => {
         killed = true;
         clearTimeout(timer);
+        innerCtx?.revert();
       };
     },
     { scope: sectionRef, dependencies: [reducedMotion], revertOnUpdate: true }

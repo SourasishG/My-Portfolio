@@ -44,57 +44,61 @@ export function Beyond() {
         (typeof window !== "undefined" &&
           window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
+      let innerCtx: gsap.Context | null = null;
       let killed = false;
       const timer = setTimeout(() => {
         if (killed || !sectionRef.current) return;
 
-        const revealEls = sectionEl.querySelectorAll(
-          ".beyond-headline, .beyond-caption, .beyond-card"
-        );
+        innerCtx = gsap.context(() => {
+          const revealEls = sectionEl.querySelectorAll(
+            ".beyond-headline, .beyond-caption, .beyond-card"
+          );
 
-        if (preferReduced) {
+          if (preferReduced) {
+            if (tracePath) {
+              gsap.set(tracePath, { clearProps: "strokeDasharray,strokeDashoffset" });
+            }
+            if (revealEls.length > 0) {
+              gsap.set(revealEls, { clearProps: "opacity,transform" });
+            }
+            return;
+          }
+
           if (tracePath) {
-            gsap.set(tracePath, { clearProps: "strokeDasharray,strokeDashoffset" });
+            gsap.set(tracePath, { strokeDasharray: 1, strokeDashoffset: 1 });
+            gsap.to(tracePath, {
+              strokeDashoffset: 0,
+              duration: 0.85,
+              ease: "expo.out",
+              scrollTrigger: {
+                trigger: sectionEl,
+                start: "top 80%",
+                once: true,
+              },
+            });
           }
+
           if (revealEls.length > 0) {
-            gsap.set(revealEls, { clearProps: "opacity,transform" });
+            gsap.from(revealEls, {
+              y: 16,
+              duration: 0.56,
+              ease: "expo.out",
+              stagger: 0.055,
+              clearProps: "transform",
+              scrollTrigger: {
+                trigger: sectionEl,
+                start: "top 84%",
+                once: true,
+              },
+            });
           }
-          return;
-        }
-
-        if (tracePath) {
-          gsap.set(tracePath, { strokeDasharray: 1, strokeDashoffset: 1 });
-          gsap.to(tracePath, {
-            strokeDashoffset: 0,
-            duration: 0.85,
-            ease: "expo.out",
-            scrollTrigger: {
-              trigger: sectionEl,
-              start: "top 80%",
-              once: true,
-            },
-          });
-        }
-
-        if (revealEls.length > 0) {
-          gsap.from(revealEls, {
-            y: 16,
-            duration: 0.56,
-            ease: "expo.out",
-            stagger: 0.055,
-            clearProps: "transform",
-            scrollTrigger: {
-              trigger: sectionEl,
-              start: "top 84%",
-              once: true,
-            },
-          });
-        }
+        }, sectionEl);
       }, 180);
 
       return () => {
         killed = true;
         clearTimeout(timer);
+        innerCtx?.revert();
       };
     },
     { scope: sectionRef, dependencies: [reducedMotion], revertOnUpdate: true }

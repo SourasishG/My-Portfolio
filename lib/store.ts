@@ -71,7 +71,7 @@ export const useSceneStore = create<SceneState>((set, get) => ({
   pointer: { x: 0, y: 0 },
   heroMorph: 0,
   aboutSplit: 0,
-  activeProjectVisualSrc: "/images/projects/medbuddy/landing-hero.png",
+  activeProjectVisualSrc: "/images/projects/medbuddy/landing-hero.webp",
   activeProjectVisualSize: { width: 1024, height: 485 },
   projectUV: { x: 0.5, y: 0.5 },
   projectHover: 0,

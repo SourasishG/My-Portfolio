@@ -42,14 +42,15 @@ export function About() {
         (typeof window !== "undefined" &&
           window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
-      let cleanup: (() => void) | undefined;
+      let innerCtx: gsap.Context | null = null;
       let killed = false;
 
       const timer = setTimeout(() => {
         if (killed || !sectionRef.current) return;
 
-        const splitTrigger = apertureEl
-          ? ScrollTrigger.create({
+        innerCtx = gsap.context(() => {
+          if (apertureEl) {
+            ScrollTrigger.create({
               trigger: apertureEl,
               start: "top 88%",
               end: "bottom 18%",
@@ -57,62 +58,56 @@ export function About() {
               onUpdate: (self) => {
                 store.setAboutSplit(Math.min(1, Math.max(0, self.progress * 0.92)));
               },
-            })
-          : null;
+            });
+          }
 
-        const revealEls = sectionEl.querySelectorAll(".about-reveal");
+          const revealEls = sectionEl.querySelectorAll(".about-reveal");
 
-        if (preferReduced) {
+          if (preferReduced) {
+            if (tracePath) {
+              gsap.set(tracePath, { clearProps: "strokeDasharray,strokeDashoffset" });
+            }
+            if (revealEls.length > 0) {
+              gsap.set(revealEls, { clearProps: "opacity,transform" });
+            }
+            return;
+          }
+
           if (tracePath) {
-            gsap.set(tracePath, { clearProps: "strokeDasharray,strokeDashoffset" });
+            gsap.set(tracePath, { strokeDasharray: 1, strokeDashoffset: 1 });
+            gsap.to(tracePath, {
+              strokeDashoffset: 0,
+              duration: 0.9,
+              ease: "expo.out",
+              scrollTrigger: {
+                trigger: sectionEl,
+                start: "top 80%",
+                once: true,
+              },
+            });
           }
+
           if (revealEls.length > 0) {
-            gsap.set(revealEls, { clearProps: "opacity,transform" });
+            gsap.from(revealEls, {
+              y: 18,
+              duration: 0.6,
+              ease: "expo.out",
+              stagger: 0.055,
+              clearProps: "transform",
+              scrollTrigger: {
+                trigger: sectionEl,
+                start: "top 84%",
+                once: true,
+              },
+            });
           }
-          cleanup = () => {
-            splitTrigger?.kill();
-          };
-          return;
-        }
-
-        if (tracePath) {
-          gsap.set(tracePath, { strokeDasharray: 1, strokeDashoffset: 1 });
-          gsap.to(tracePath, {
-            strokeDashoffset: 0,
-            duration: 0.9,
-            ease: "expo.out",
-            scrollTrigger: {
-              trigger: sectionEl,
-              start: "top 80%",
-              once: true,
-            },
-          });
-        }
-
-        if (revealEls.length > 0) {
-          gsap.from(revealEls, {
-            y: 18,
-            duration: 0.6,
-            ease: "expo.out",
-            stagger: 0.055,
-            clearProps: "transform",
-            scrollTrigger: {
-              trigger: sectionEl,
-              start: "top 84%",
-              once: true,
-            },
-          });
-        }
-
-        cleanup = () => {
-          splitTrigger?.kill();
-        };
+        }, sectionEl);
       }, 120);
 
       return () => {
         killed = true;
         clearTimeout(timer);
-        cleanup?.();
+        innerCtx?.revert();
       };
     },
     { scope: sectionRef, dependencies: [reducedMotion], revertOnUpdate: true }

@@ -119,7 +119,7 @@ export const FEATURED_PROJECTS: FeaturedProject[] = [
       {
         id: "medbuddy-landing",
         label: "3D Orbital Stage",
-        src: "/images/projects/medbuddy/landing-hero.png",
+        src: "/images/projects/medbuddy/landing-hero.webp",
         alt: "MedBuddy landing hero experience showing 3D interactive capsule swarm framing the mobile adherence cabinet",
         caption: "Interactive Three.js / R3F capsule swarm framing the mobile medicine cabinet with real-time dose schedule HUDs.",
         width: 1024,
@@ -128,7 +128,7 @@ export const FEATURED_PROJECTS: FeaturedProject[] = [
       {
         id: "medbuddy-cabinet",
         label: "Cabinet & Expiry Ledger",
-        src: "/images/projects/medbuddy/cabinet-monitor.jpg",
+        src: "/images/projects/medbuddy/cabinet-monitor.webp",
         alt: "MedBuddy Home Cabinet showing Metformin, Eye Drops opened countdown, and Cough Syrup expiry status",
         caption: "FEFO physical inventory ledger tracking open-bottle shelf-life countdowns and multi-box clinical expiry bands.",
         width: 768,
