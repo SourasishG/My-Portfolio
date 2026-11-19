@@ -859,7 +859,7 @@ Implements the core visual identity of **SIGNAL V2** inspired by Lorenzo Lottici
      - **Honeypot Trap:** Hidden field (`company`) that traps automated spam bots without invoking external email APIs.
      - **In-Memory IP Rate Limiter:** Sliding window limiting clients to $\le 5$ submissions per 10 minutes, returning HTTP `429 Too Many Requests` with a `Retry-After` header.
      - **Server-Side Zod Validation:** Returns granular field-level error messages (`HTTP 400`).
-     - **Secure Relay:** Relays via server-side Formspree webhook without ever leaking credentials or secrets into client bundles.
+     - **Secure Relay:** Relays via server-side Resend REST API without ever leaking credentials or secrets into client bundles.
 4. **Strict Privacy Boundary (Zero Phone Number Exposure):**
    - In strict compliance with personal privacy rules, the developer's private telephone number is completely excluded from client DOM and server bundles. Direct communication is channeled through verified email, LinkedIn, and GitHub.
 5. **Architectural Footer Colophon:**
@@ -876,7 +876,7 @@ Implements the core visual identity of **SIGNAL V2** inspired by Lorenzo Lottici
           (Exceeded? -> HTTP 429)                                            (Filled? -> Fake HTTP 200)
                       │                                                                   │
                       ▼                                                                   ▼
-           [Server Zod Parsing] ──(Valid)──> [Server Fetch to Formspree] ──> [Delivered: HTTP 200]
+           [Server Zod Parsing] ──(Valid)──> [Server Fetch to Resend API] ──> [Delivered: HTTP 200]
 ```
 
 ### Trade-offs vs Alternatives

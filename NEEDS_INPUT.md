@@ -7,7 +7,7 @@ Updated through **Phase 7 (Final Review & Handoff)**. All core portfolio routes 
 ## Confirmed & Received
 
 - [x] **Checkpoint 1 Approved:** `PLAN.md`, design tokens, `ANIMATION_MAP.md`, `$signal` orange accent (`#FF5B1F`), and single `$paper` (`#F4F4F2`) Section 06 approved.
-- [x] **Contact Provider & Domain:** Formspree confirmed (`/api/contact` server proxy); default `.vercel.app` domain confirmed for initial launch.
+- [x] **Contact Provider & Domain:** Resend confirmed (`/api/contact` server proxy via REST API); default `.vercel.app` domain confirmed for initial launch.
 - [x] **Resume PDF:** Uploaded `Sourasish_Ghosh_CV.pdf` approved as-is for `/public/docs/Sourasish-Ghosh-Resume.pdf` (phone number `+91 99031 29873` strictly omitted from all public HTML).
 - [x] **Portraits Organized in `/public/images/profile/`:**
   - `portrait-main.jpg` (`1024x1024` color studio portrait)
@@ -29,8 +29,8 @@ Updated through **Phase 7 (Final Review & Handoff)**. All core portfolio routes 
 
 ## Remaining Optional & Go-Live Items
 
-- [ ] **Formspree Form Endpoint (`NEEDS INPUT` — required before Vercel go-live):** Set `FORMSPREE_ENDPOINT` and `NEXT_PUBLIC_SITE_URL` inside your local `.env.local` and Vercel Project Environment Variables (never committed to git; `/api/contact` returns an honest `503` relay-pending notice until set).
-- [ ] **Live Vercel Deployment Verification (Checkpoint 6 skipped locally):** Push latest commits to `SourasishG/My-Portfolio` and verify live HTTPS URL, OG card (`/opengraph-image`), `/sitemap.xml`, and end-to-end Formspree email delivery on production.
+- [ ] **Resend API Key (`NEEDS INPUT` — required in Vercel):** Add `RESEND_API_KEY` to Vercel Project Environment Variables (never committed to git; `/api/contact` returns an honest `503` relay-pending notice until set).
+- [ ] **Live Vercel Deployment Verification (Checkpoint 6 skipped locally):** Push latest commits to `SourasishG/My-Portfolio` and verify live HTTPS URL, OG card (`/opengraph-image`), `/sitemap.xml`, and end-to-end Resend email delivery on production.
 - [ ] **Office Aid Live Deployment URL (`NEEDS INPUT` — optional):** No public live demo URL currently exists (repo is configured as a local monorepo + Postman suite); Section 03 displays `Local Full-Stack Monorepo` badge alongside the verified GitHub URL until deployed.
 - [ ] **4th Certificate Image (`NEEDS INPUT` — optional):** Certificate scan image for **Introduction to Large Language Models (`7QAB657M7FS4`)** alongside the verified Coursera URL (`https://coursera.org/verify/7QAB657M7FS4`).
 - [ ] **Employability.life Direct Verification URL (`NEEDS INPUT` — optional):** URL embedded inside the QR code on `XPro27566969` (currently shows the high-res certificate scan directly).
