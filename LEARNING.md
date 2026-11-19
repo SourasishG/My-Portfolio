@@ -387,16 +387,16 @@ Pairs the architectural S4 glass aperture and direct channel controls (one-click
 
 ### Defense-in-Depth Validation & Proxy Architecture
 1. **Shared Schema Validation (`lib/contact-schema.ts`):** Both the browser form (`contactZodResolver`) and Next.js Route Handler validate `name`, `email`, optional `subject`, and `message` against the exact same `zod` rules, keeping error messages identical across instant client feedback and server `400` responses without extra third-party resolver packages.
-2. **Honeypot + Sliding-Window Rate Limit + Secret Isolation:** An off-screen `company` input (`tabIndex={-1}`, `aria-hidden="true"`) catches automated bots silently (`200` no-op without calling Formspree). Legitimate requests pass an in-memory IP sliding-window limiter (`429 Too Many Requests` with `Retry-After`) before reaching `process.env.FORMSPREE_ENDPOINT`, which stays strictly server-side (`503` honest notice when unconfigured instead of faking delivery).
+2. **Honeypot + Sliding-Window Rate Limit + Secret Isolation:** An off-screen `company` input (`tabIndex={-1}`, `aria-hidden="true"`) catches automated bots silently (`200` no-op without calling Resend). Legitimate requests pass an in-memory IP sliding-window limiter (`429 Too Many Requests` with `Retry-After`) before reaching `process.env.RESEND_API_KEY`, which stays strictly server-side (`503` honest notice when unconfigured instead of faking delivery).
 3. **Animated Feedback Isolation (`ANIMATION_MAP.md`):** GSAP draws `.contact-line-art`, `.contact-hud-line`, `.footer-wordmark`, and `.footer-contour-split`, while Framer Motion handles `.contact-submit-btn` and `.contact-form-feedback` (`AnimatePresence`), ensuring no single DOM element ever shares CSS transform ownership between libraries.
 
 ### Interview Questions & Model Answers
-1. **Q:** *Why proxy Formspree submissions through `/api/contact/route.ts` instead of posting directly from the browser `<form action="https://formspree.io/...">`?*  
-   **A:** A server Route Handler keeps the Formspree endpoint private, lets us enforce identical `zod` schema validation, apply IP-based sliding-window rate limiting (`429`), trap bots with a server-checked honeypot, and return structured per-field errors cleanly without redirecting away from the portfolio.
+1. **Q:** *Why proxy email submissions through `/api/contact/route.ts` using Resend's REST API instead of sending directly from the client browser?*  
+   **A:** A server Route Handler keeps the `RESEND_API_KEY` strictly private, lets us enforce identical `zod` schema validation, apply IP-based sliding-window rate limiting (`429`), trap bots with a server-checked honeypot, and return structured per-field errors cleanly without exposing credentials or redirecting away from the portfolio.
 2. **Q:** *If a hidden honeypot field is filled in, why return HTTP `200 OK` instead of `400 Bad Request`?*  
    **A:** Returning `400` signals to a bot script that its spam was detected so it can adapt and strip fields; returning a benign `200` acknowledgement while skipping the email relay wastes zero relay quota and reveals nothing.
-3. **Q:** *What happens if `FORMSPREE_ENDPOINT` is missing or still set to a placeholder in `.env.local` or staging?*  
-   **A:** The route explicitly rejects missing or placeholder (`your_form_id`) values with `503 Service Unavailable` and a helpful fallback message directing visitors to the copyable email (`sourasishghosh062@gmail.com`)—never falsely showing "Message delivered".
+3. **Q:** *What happens if `RESEND_API_KEY` is missing or still set to a placeholder in `.env.local` or Vercel?*  
+   **A:** The route explicitly rejects missing or placeholder (`your_api_key`) values with `503 Service Unavailable` and a helpful fallback message directing visitors to the copyable email (`sourasishghosh062@gmail.com`)—never falsely showing "Message delivered".
 
 ---
 
